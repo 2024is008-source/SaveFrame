@@ -1,0 +1,395 @@
+{
+  "format": "WebP",
+  "images": [
+    {
+      "name": "stories",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-07a250c3-e317-4856-a992-b78f5a87934c.png",
+      "sourceBytes": 1969545,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/stories-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 16678
+        },
+        {
+          "url": "/images/blog/stories-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 42172
+        },
+        {
+          "url": "/images/blog/stories-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 56836
+        }
+      ]
+    },
+    {
+      "name": "photos",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-79e7c7e6-9bd6-45ad-be0a-54a2effbfcdf.png",
+      "sourceBytes": 2854204,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/photos-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 43370
+        },
+        {
+          "url": "/images/blog/photos-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 138558
+        },
+        {
+          "url": "/images/blog/photos-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 190370
+        }
+      ]
+    },
+    {
+      "name": "reels",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-7564aceb-7dd8-4655-a3b0-0ce1da9638e3.png",
+      "sourceBytes": 1906020,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/reels-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 19456
+        },
+        {
+          "url": "/images/blog/reels-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 46244
+        },
+        {
+          "url": "/images/blog/reels-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 61192
+        }
+      ]
+    },
+    {
+      "name": "workflow",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-74d84e8b-f5f7-4daf-839e-25f67225061c.png",
+      "sourceBytes": 2266095,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/workflow-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 27848
+        },
+        {
+          "url": "/images/blog/workflow-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 76430
+        },
+        {
+          "url": "/images/blog/workflow-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 103466
+        }
+      ]
+    },
+    {
+      "name": "profile",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-e132cd17-9e2f-4395-ac2c-fe04d29f67c1.png",
+      "sourceBytes": 2442913,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/profile-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 30502
+        },
+        {
+          "url": "/images/blog/profile-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 89066
+        },
+        {
+          "url": "/images/blog/profile-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 117846
+        }
+      ]
+    },
+    {
+      "name": "story-videos",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-9b727780-0bfd-41ac-a181-b3b0022e8f42.png",
+      "sourceBytes": 2320330,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/story-videos-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 25884
+        },
+        {
+          "url": "/images/blog/story-videos-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 79648
+        },
+        {
+          "url": "/images/blog/story-videos-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 111186
+        }
+      ]
+    },
+    {
+      "name": "copy-post-link",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-5471879a-1811-4442-823b-926ab1424cc7.png",
+      "sourceBytes": 2243466,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/copy-post-link-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 23892
+        },
+        {
+          "url": "/images/blog/copy-post-link-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 62852
+        },
+        {
+          "url": "/images/blog/copy-post-link-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 87306
+        }
+      ]
+    },
+    {
+      "name": "reels-iphone",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-c635e718-5383-46cc-b718-bed20d37fcdc.png",
+      "sourceBytes": 2377608,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/reels-iphone-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 32342
+        },
+        {
+          "url": "/images/blog/reels-iphone-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 89854
+        },
+        {
+          "url": "/images/blog/reels-iphone-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 121514
+        }
+      ]
+    },
+    {
+      "name": "carousel-photos",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-ac5d007d-1398-478c-96fc-a1af1edd64e1.png",
+      "sourceBytes": 2697956,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/carousel-photos-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 33226
+        },
+        {
+          "url": "/images/blog/carousel-photos-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 111604
+        },
+        {
+          "url": "/images/blog/carousel-photos-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 161084
+        }
+      ]
+    },
+    {
+      "name": "reels-audio",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-07b8f8bd-98a2-4113-8c01-ed11c5354b09.png",
+      "sourceBytes": 2048617,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/reels-audio-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 21020
+        },
+        {
+          "url": "/images/blog/reels-audio-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 58928
+        },
+        {
+          "url": "/images/blog/reels-audio-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 81148
+        }
+      ]
+    },
+    {
+      "name": "downloader-troubleshooting",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-1c3b851e-e72f-4f76-9fb7-993b85aa5848.png",
+      "sourceBytes": 2136032,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/downloader-troubleshooting-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 26988
+        },
+        {
+          "url": "/images/blog/downloader-troubleshooting-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 70362
+        },
+        {
+          "url": "/images/blog/downloader-troubleshooting-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 94078
+        }
+      ]
+    },
+    {
+      "name": "video-download-problems",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-7b081f7e-1058-4e58-b26c-66ba4afc4c98.png",
+      "sourceBytes": 2185568,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/video-download-problems-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 18892
+        },
+        {
+          "url": "/images/blog/video-download-problems-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 56766
+        },
+        {
+          "url": "/images/blog/video-download-problems-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 78924
+        }
+      ]
+    },
+    {
+      "name": "photos-phones",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-e534189a-2240-4432-a9c3-71db84c52d11.png",
+      "sourceBytes": 3145412,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/photos-phones-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 38318
+        },
+        {
+          "url": "/images/blog/photos-phones-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 147494
+        },
+        {
+          "url": "/images/blog/photos-phones-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 221638
+        }
+      ]
+    },
+    {
+      "name": "photo-aspect-ratios",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-57a6bc13-4685-4ae5-a732-16513f0969c6.png",
+      "sourceBytes": 2483680,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/photo-aspect-ratios-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 26574
+        },
+        {
+          "url": "/images/blog/photo-aspect-ratios-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 82102
+        },
+        {
+          "url": "/images/blog/photo-aspect-ratios-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 118712
+        }
+      ]
+    },
+    {
+      "name": "media-backup",
+      "source": "C:\\Users\\minuj\\.codex\\generated_images\\01a16d2d-b4b7-7002-a8af-843978310f37\\exec-180a7971-e17e-449e-814e-4b4422d0baa7.png",
+      "sourceBytes": 2479868,
+      "quality": 82,
+      "variants": [
+        {
+          "url": "/images/blog/media-backup-480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 31174
+        },
+        {
+          "url": "/images/blog/media-backup-960.webp",
+          "width": 960,
+          "height": 720,
+          "bytes": 93906
+        },
+        {
+          "url": "/images/blog/media-backup-1200.webp",
+          "width": 1200,
+          "height": 900,
+          "bytes": 131972
+        }
+      ]
+    }
+  ]
+}

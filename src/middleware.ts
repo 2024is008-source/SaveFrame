@@ -1,0 +1,18 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { isLocale } from './i18n/config';
+export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  const candidate = pathname.replace(/^\//, '').replace(/\/$/, '');
+  const locale = isLocale(candidate) && candidate !== 'en' ? candidate : 'en';
+  const localizedHome = locale !== 'en';
+  const canonicalPath = localizedHome ? `/${locale}/` : pathname.length > 1 ? pathname.replace(/\/+$/, '') : '/';
+  if (canonicalPath !== pathname) {
+    const url = new URL(request.url); url.pathname = canonicalPath;
+    return NextResponse.redirect(url, 308);
+  }
+  const headers = new Headers(request.headers);
+  // Always overwrite client-supplied locale headers; non-homepage routes remain English.
+  headers.set('x-saveframe-locale', locale);
+  return NextResponse.next({ request: { headers } });
+}
+export const config = { matcher: ['/((?!api(?:/|$)|_next(?:/|$)|images(?:/|$)|.*\\.[^/]+$).*)'] };
