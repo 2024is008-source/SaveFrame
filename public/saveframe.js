@@ -4,6 +4,8 @@
       window.INSTA_DOWNLOADER_API_ENDPOINT = '/api/media/resolve';
       let resolvedMedia = null;
       let resolveController = null;
+      // Keep in-flight downloads stable when a different carousel thumbnail is selected.
+      const pendingDownloads = new Map();
 
       // Escape API text before inserting it into the reference's HTML templates.
       function escapeHtml(value) {
@@ -18,17 +20,31 @@
       }
 
       function liveQualities(item) {
-        return item.formats.map(format => ({
+        // Photo formats are CDN renditions of this same image, already ordered best first.
+        // Keep carousel items separate; video/audio quality choices remain available.
+        const formats = item.mediaType === 'photo' ? item.formats.slice(0, 1) : item.formats;
+        return formats.map(format => ({
           id: format.formatId,
           label: escapeHtml(formatLabel(format.label)),
           dimensions: escapeHtml(t(format.resolution)),
           format: escapeHtml(format.Container || format.ext),
-          size: escapeHtml(t(format.filesizeFormatted || 'Size unavailable')),
+          size: escapeHtml(visibleFilesize(format)),
         }));
       }
 
       function formatLabel(label) {
         return t(label).replace(/^Original(?= \()/, t('Original')).replace(/source resolution/g, t('Source resolution')).replace(/^Image variant (\d+)$/, (_, index) => t('Image variant {index}', { index }));
+      }
+
+      function visibleFilesize(format) {
+        const size = format?.filesizeFormatted;
+        return !size || size === 'Size unavailable' || size === t('Size unavailable') ? '' : size;
+      }
+
+      function downloadButtonLabel(format) {
+        const size = visibleFilesize(format);
+        const label = t('Download {label} ({size})', { label: formatLabel(format?.label || ''), size });
+        return size ? label : label.replace(/\s*[(（]\s*[)）]/g, '');
       }
 
       function currentConfig() {
@@ -51,6 +67,7 @@
         resolveController = null;
         resolvedMedia = null;
         state.activeCarouselIdx = 0;
+        state.selectedCarouselIndices.clear();
         state.selectedQualityIdx = 0;
         state.loupeZoom = false;
         loadingPanel.classList.add('hidden');
@@ -71,13 +88,17 @@
         UNSUPPORTED_OPERATION: 'This link is not supported. Check the Instagram URL and try again.',
         PRIVATE_CONTENT: 'This media is private or requires a login.', LOGIN_REQUIRED: 'This media is private or requires a login.',
         DELETED_CONTENT: 'This media has been deleted or is unavailable.', EXPIRED_STORY: 'This story has expired or is no longer available.',
+        NO_ACTIVE_STORIES: 'No downloadable active stories were returned for this account.',
+        INVALID_STORY_LINK: 'Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.',
         RATE_LIMITED: 'Instagram is limiting requests. Please wait and try again.',
         EXTRACTOR_FAILURE: 'The media service is unavailable. Please try again later.', YTDLP_NOT_INSTALLED: 'The media service is unavailable. Please try again later.',
         DOWNLOAD_TIMEOUT: 'Download preparation timed out. Please try again.', FILE_TOO_LARGE: 'This file is too large to download.',
         FFMPEG_ERROR: 'The server could not prepare the video and audio.', INSUFFICIENT_DISK_SPACE: 'The server does not have enough storage. Please try again later.',
         JOB_NOT_FOUND: 'This download could not be found. Start a new download.', JOB_CANCELLED: 'Download cancelled.', JOB_NOT_READY: 'Your download is still being prepared.'
       };
-      const apiError = (error, fallback) => t(errorMessages[error?.code] || fallback);
+      const apiError = (error, fallback) => t(error?.code === 'LOGIN_REQUIRED' && state.activeTab === 'story'
+        ? 'Instagram requires login to access this story. This downloader can only retrieve stories that Instagram makes publicly accessible.'
+        : errorMessages[error?.code] || fallback);
       const localError = (error, fallback) => {
         if (error instanceof TypeError) return t('Network error. Check your connection and try again.');
         if (dictionary[error?.message]) return t(error.message);
@@ -161,6 +182,7 @@
         uiStateMode: 'single',       // Real single-item or carousel result
         selectedQualityIdx: 0,
         activeCarouselIdx: 0,
+        selectedCarouselIndices: new Set(),
         loupeZoom: false,
         lang: localeData.locale || 'en',
         loadingTimer: null
@@ -211,13 +233,14 @@
       }
 
       // Parse Instagram URL or username
-      function parseInstagramInput(raw) {
+      function parseInstagramInput(raw, requestedTab = state.activeTab) {
         const val = (raw || '').trim();
         if (!val) {
           return { valid: false, reason: 'empty', message: 'Please paste an Instagram link or @username above to continue.' };
         }
         // Check if @username for profile tab
         if (/^@?[a-zA-Z0-9._]{2,30}$/.test(val) && !val.includes('/')) {
+          if (requestedTab === 'story') return { valid: false, message: errorMessages.INVALID_STORY_LINK };
           return {
             valid: true,
             detectedTab: 'profile',
@@ -247,6 +270,7 @@
         }
 
         const first = pathParts[0].toLowerCase();
+        if (requestedTab === 'story' && first !== 'stories') return { valid: false, message: errorMessages.INVALID_STORY_LINK };
         if (first === 'p') {
           return { valid: true, detectedTab: 'photo', shortcode: pathParts[1] || 'post_id', canonicalUrl: parsedUrl.href };
         }
@@ -257,6 +281,7 @@
           return { valid: true, detectedTab: 'video', shortcode: pathParts[1] || 'video_id', canonicalUrl: parsedUrl.href };
         }
         if (first === 'stories') {
+          if (pathParts.length !== 3 || pathParts[1].toLowerCase() === 'highlights' || !/^\d{5,32}$/.test(pathParts[2])) return { valid: false, message: errorMessages.INVALID_STORY_LINK };
           return { valid: true, detectedTab: 'story', shortcode: pathParts[2] || pathParts[1] || 'story_id', canonicalUrl: parsedUrl.href };
         }
         // Otherwise treat single path segment as profile username
@@ -291,11 +316,12 @@
       // Render Active Tab & Header / Hero Text
       function renderToolState() {
         const cfg = TOOL_CONFIG[state.activeTab];
+        const page = localeData.pageTool;
 
         // Hero Heading: On main homepage view keep "Instagram Downloader" unless user switched tabs or chose a dedicated tool page
         if (state.dedicatedRouteActive) {
-          heroHeading.textContent = cfg.heroHeading;
-          heroDescription.textContent = cfg.heroDescription;
+          heroHeading.textContent = page?.tool === state.activeTab ? page.title : cfg.heroHeading;
+          heroDescription.textContent = page?.tool === state.activeTab ? page.description : cfg.heroDescription;
         } else {
           heroHeading.textContent = t('Instagram Downloader');
           heroDescription.textContent = t('Save supported Instagram photos, videos, and Reels with a simple link.');
@@ -333,13 +359,15 @@
         }
         const primaryImg = previewUrl((resolvedMedia.items[state.activeCarouselIdx] || resolvedMedia.items[0]).thumbnailUrl);
 
-        // 3. Multi-Media Carousel State (3 items)
+        // Carousel preview, compact thumbnail selector, and two download actions.
         if (state.uiStateMode === 'carousel') {
+          const storyCollection = resolvedMedia.category === 'story';
+          const itemName = idx => storyCollection ? t('Story') + ' ' + (idx + 1) : t('Slide {index}', { index: idx + 1 });
           const slides = resolvedMedia.items.map((item, idx) => ({
-            idx, type: escapeHtml(t('{type} · Slide {index} of {count}', { type: t(item.mediaType), index: idx + 1, count: resolvedMedia.items.length })),
+            idx, type: escapeHtml(storyCollection ? itemName(idx) + ' / ' + resolvedMedia.items.length : t('{type} · Slide {index} of {count}', { type: t(item.mediaType), index: idx + 1, count: resolvedMedia.items.length })),
             dim: escapeHtml(t(item.formats[0]?.resolution || 'Source resolution')),
             format: escapeHtml(item.formats[0]?.Container || item.formats[0]?.ext || item.mediaType),
-            size: escapeHtml(t(item.formats[0]?.filesizeFormatted || 'Size unavailable')),
+            size: escapeHtml(visibleFilesize(item.formats[0])),
             img: previewUrl(item.thumbnailUrl), title: escapeHtml(item.title || t('Slide {index}', { index: idx + 1 })),
           }));
           const activeSlide = slides[state.activeCarouselIdx] || slides[0];
@@ -349,7 +377,7 @@
               <div class="flex flex-wrap items-center justify-between gap-2 pb-3.5 mb-4 border-b border-line">
                 <div class="flex items-center gap-2">
                   <span class="px-2.5 py-1 rounded-md bg-brand-violetSoft text-brand-violet text-xs font-semibold">
-                    ${escapeHtml(t('Carousel Post · {count} Media Items', { count: slides.length }))}
+                    ${escapeHtml(storyCollection ? t('Story') + ' · ' + slides.length : t('Carousel Post · {count} Media Items', { count: slides.length }))}
                   </span>
                   <span class="text-xs text-ink-muted font-medium tabular-nums">${cfg.author}</span>
                 </div>
@@ -365,57 +393,60 @@
                       ${activeSlide.type}
                     </div>
                   </div>
-                  <!-- Carousel Thumbnails Switcher -->
-                  <div class="grid grid-cols-3 gap-2 mt-2.5" role="group" aria-label="Carousel slide selector">
-                    ${slides.map((s) => `
-                      <button
-                        type="button"
-                        data-carousel-idx="${s.idx}"
-                        class="carousel-slide-btn p-1.5 rounded-lg border ${s.idx === state.activeCarouselIdx ? 'border-brand-violet bg-brand-violetSoft/50' : 'border-line bg-soft/60 hover:bg-soft'} text-left cursor-pointer ui-transition flex items-center gap-2"
-                      >
-                        <img src="${s.img}" alt="${escapeHtml(t('Slide {index}', { index: s.idx + 1 }))}" class="w-9 h-9 rounded object-cover shrink-0" />
-                        <div class="min-w-0">
-                          <span class="block text-[11px] font-semibold text-ink truncate">${escapeHtml(t('Slide {index}', { index: s.idx + 1 }))}</span>
-                          <span class="block text-[10px] text-ink-muted tabular-nums">${s.format.split(' ')[0]}</span>
-                        </div>
-                      </button>
-                    `).join('')}
-                  </div>
+
                 </div>
 
                 <!-- Slide Quality & Download Options -->
                 <div class="md:col-span-7 flex flex-col justify-between space-y-4">
                   <div>
                     <h3 data-user-content class="font-display font-bold text-base sm:text-lg text-ink">${activeSlide.title}</h3>
-                    <p class="text-xs sm:text-sm text-ink-muted mt-1">
-                      Select an individual carousel slide on the left or download any item below in its source resolution.
+                    <p class="text-xs sm:text-sm text-ink-muted mt-1" aria-live="polite">
+                      ${activeSlide.type} · ${activeSlide.dim} · ${activeSlide.format}${activeSlide.size ? ' · ' + activeSlide.size : ''}
+                    </p>
+                    <p class="text-xs sm:text-sm text-ink-muted mt-2">
+                      ${escapeHtml(t(storyCollection ? 'Public media found. Select a format to download.' : 'Tick the images you want to download. Click a thumbnail to preview it, or download all slides as a ZIP.'))}
                     </p>
                   </div>
 
-                  <div class="space-y-2">
-                    ${slides.map((s) => `
-                      <div class="p-3 rounded-xl border ${s.idx === state.activeCarouselIdx ? 'border-brand-violet bg-brand-violetSoft/25' : 'border-line bg-soft/40'} flex flex-wrap items-center justify-between gap-2">
-                        <div class="flex items-center gap-3">
-                          <span class="w-7 h-7 rounded-lg bg-white border border-line text-xs font-bold text-ink flex items-center justify-center tabular-nums">#${s.idx + 1}</span>
-                          <div>
-                            <span data-user-content class="block text-xs sm:text-sm font-semibold text-ink">${s.title}</span>
-                            <span class="block text-xs text-ink-muted tabular-nums">${s.dim} · ${s.format} · ${s.size}</span>
-                          </div>
-                        </div>
+                  <div class="flex flex-col gap-2.5">
                         <button
                           type="button"
-                          data-dl-title="${s.title}"
-                          data-dl-dim="${s.dim}"
-                          data-item-index="${s.idx}"
-                          class="trigger-download-btn min-h-[38px] px-3.5 py-1.5 rounded-lg ${s.idx === state.activeCarouselIdx ? 'bg-brand-violet text-white hover:bg-brand-violetHover' : 'bg-white border border-line text-ink hover:bg-soft'} text-xs font-semibold cursor-pointer ui-transition inline-flex items-center gap-1.5"
+                          ${state.selectedCarouselIndices.size ? 'data-download-selected="true"' : 'data-item-index="' + activeSlide.idx + '"'}
+                          class="trigger-download-btn min-h-[46px] px-5 py-2.5 rounded-xl bg-brand-violet text-white hover:bg-brand-violetHover text-sm font-semibold cursor-pointer ui-transition inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-wait"
                         >
-                          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                          <span>${escapeHtml(t('Save Slide {index}', { index: s.idx + 1 }))}</span>
+                          <svg aria-hidden="true" class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                          <span>${escapeHtml(state.selectedCarouselIndices.size ? t('Download selected ({count})', { count: state.selectedCarouselIndices.size }) : t('Download slide {index}', { index: activeSlide.idx + 1 }))}${state.selectedCarouselIndices.size > 1 ? ' · ZIP' : ''}</span>
                         </button>
+                    ${resolvedMedia.supportsZipDownload ? `
+                      <button type="button" data-download-all="true" class="trigger-download-btn min-h-[46px] px-5 py-2.5 rounded-xl bg-white border border-brand-violet text-brand-violet hover:bg-brand-violetSoft text-sm font-semibold cursor-pointer ui-transition inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-wait">
+                        <svg aria-hidden="true" class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 3v6m-2 0h4v4h-4zm2 7v2"/></svg>
+                        <span>${escapeHtml(t('Download all {count} slides (ZIP)', { count: slides.length }))}</span>
+                      </button>` : ''}
+                  </div>
+                </div>
+                  <!-- Carousel Thumbnails Switcher -->
+                  <div class="carousel-thumbnail-grid md:col-span-12" role="group" aria-label="Carousel slide selector">
+                    ${slides.map((s) => `
+                      <div class="min-w-0 rounded-lg border ${state.selectedCarouselIndices.has(s.idx) || s.idx === state.activeCarouselIdx ? 'border-brand-violet bg-brand-violetSoft/50' : 'border-line bg-soft/60'} flex items-stretch">
+                      <button
+                        type="button"
+                        data-carousel-idx="${s.idx}"
+                        aria-pressed="${s.idx === state.activeCarouselIdx}"
+                        aria-label="${escapeHtml(itemName(s.idx))}"
+                        class="carousel-slide-btn flex-1 min-w-0 p-1 sm:p-1.5 rounded-lg hover:bg-soft text-left cursor-pointer ui-transition flex items-center gap-1"
+                      >
+                        <img src="${s.img}" alt="${escapeHtml(itemName(s.idx))}" class="w-8 h-8 sm:w-9 sm:h-9 rounded object-cover shrink-0" />
+                        <div class="min-w-0">
+                          <span class="block text-[11px] leading-tight font-semibold text-ink">${escapeHtml(itemName(s.idx))}</span>
+                          <span class="block text-[10px] text-ink-muted tabular-nums">${s.format.split(' ')[0]}</span>
+                        </div>
+                      </button>
+                      <label class="min-w-[44px] min-h-[44px] shrink-0 flex items-center justify-center cursor-pointer">
+                        <input type="checkbox" data-carousel-select="${s.idx}" aria-label="${escapeHtml(t('Select slide {index}', { index: s.idx + 1 }))}" ${state.selectedCarouselIndices.has(s.idx) ? 'checked' : ''} class="w-4 h-4 accent-brand-violet cursor-pointer" />
+                      </label>
                       </div>
                     `).join('')}
                   </div>
-                </div>
               </div>
             </div>
           `;
@@ -424,6 +455,16 @@
             btn.addEventListener('click', () => {
               state.activeCarouselIdx = parseInt(btn.getAttribute('data-carousel-idx'), 10) || 0;
               renderResultSection();
+              resultDynamicContent.querySelector('[data-carousel-idx="' + state.activeCarouselIdx + '"]')?.focus({ preventScroll: true });
+            });
+          });
+          resultDynamicContent.querySelectorAll('[data-carousel-select]').forEach(input => {
+            input.addEventListener('change', () => {
+              const index = Number(input.getAttribute('data-carousel-select'));
+              if (input.checked) state.selectedCarouselIndices.add(index);
+              else state.selectedCarouselIndices.delete(index);
+              renderResultSection();
+              resultDynamicContent.querySelector('[data-carousel-select="' + index + '"]')?.focus({ preventScroll: true });
             });
           });
           translateResult();
@@ -499,7 +540,7 @@
                           <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-white border border-line text-ink-secondary tabular-nums">${q.format.split(' ')[0]}</span>
                         </div>
                         <span class="block text-[11px] text-ink-muted mt-1 tabular-nums">${q.dimensions}</span>
-                        <span class="block text-[11px] font-medium text-brand-violet mt-0.5 tabular-nums">${q.size}</span>
+                        ${q.size ? `<span class="block text-[11px] font-medium text-brand-violet mt-0.5 tabular-nums">${q.size}</span>` : ''}
                       </button>
                     `).join('')}
                   </div>
@@ -514,7 +555,7 @@
                     class="trigger-download-btn flex-1 min-h-[46px] px-5 py-2.5 rounded-xl bg-brand-violet hover:bg-brand-violetHover text-white font-display font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer ui-transition"
                   >
                     <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                    <span>${escapeHtml(t('Download {label} ({size})', { label: formatLabel((resolvedMedia.items[state.activeCarouselIdx] || resolvedMedia.items[0]).formats[state.selectedQualityIdx]?.label || ''), size: t((resolvedMedia.items[state.activeCarouselIdx] || resolvedMedia.items[0]).formats[state.selectedQualityIdx]?.filesizeFormatted || 'Size unavailable') }))}</span>
+                    <span>${escapeHtml(downloadButtonLabel((resolvedMedia.items[state.activeCarouselIdx] || resolvedMedia.items[0]).formats[state.selectedQualityIdx]))}</span>
                   </button>
 
                 </div>
@@ -545,34 +586,62 @@
         attachDownloadTriggers();
       }
 
+      function downloadRequest(btn, media) {
+        if (btn.hasAttribute('data-download-all')) return { url: media.canonicalUrl, zipCarousel: true };
+        if (btn.hasAttribute('data-download-selected')) {
+          const itemIndices = [...state.selectedCarouselIndices].sort((a, b) => a - b);
+          if (itemIndices.length > 1) return { url: media.canonicalUrl, zipCarousel: true, itemIndices };
+          const item = media.items[itemIndices[0]];
+          return { url: media.canonicalUrl, formatId: item.formats[0].formatId, itemIndex: item.index };
+        }
+        const index = Number(btn.getAttribute('data-item-index') ?? state.activeCarouselIdx);
+        const item = media.items[index];
+        const format = item.formats[btn.hasAttribute('data-item-index') ? 0 : state.selectedQualityIdx] || item.formats[0];
+        return { url: media.canonicalUrl, formatId: format.formatId, itemIndex: item.index };
+      }
+
+      function syncDownloadButtons() {
+        if (!resolvedMedia) return;
+        resultDynamicContent.querySelectorAll('.trigger-download-btn').forEach(btn => {
+          const key = JSON.stringify(downloadRequest(btn, resolvedMedia));
+          const pending = pendingDownloads.get(key);
+          const label = btn.querySelector('span');
+          if (!btn.hasAttribute('data-idle-label')) btn.setAttribute('data-idle-label', label?.textContent || '');
+          btn.disabled = Boolean(pending);
+          btn.setAttribute('aria-busy', pending ? 'true' : 'false');
+          if (label) label.textContent = pending ? pending.label : btn.getAttribute('data-idle-label');
+        });
+      }
+
       function attachDownloadTriggers() {
+        syncDownloadButtons();
         document.querySelectorAll('.trigger-download-btn').forEach((btn) => {
           btn.addEventListener('click', async () => {
             if (resolvedMedia) {
               const media = resolvedMedia;
-              const index = Number(btn.getAttribute('data-item-index') ?? state.activeCarouselIdx);
-              const item = media.items[index];
-              const format = item.formats[btn.hasAttribute('data-item-index') ? 0 : state.selectedQualityIdx] || item.formats[0];
-              btn.disabled = true;
-              const originalLabel = btn.querySelector('span')?.textContent;
-              const label = btn.querySelector('span');
-              if (label) label.textContent = t('Preparing download…');
+              const request = downloadRequest(btn, media);
+              const key = JSON.stringify(request);
+              if (pendingDownloads.has(key)) return;
+              const pending = { label: t('Preparing download…') };
+              pendingDownloads.set(key, pending);
+              syncDownloadButtons();
               try {
                 const response = await fetch('/api/media/download', {
                   method: 'POST', headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ url: media.canonicalUrl, formatId: format.formatId, itemIndex: item.index }),
+                  body: JSON.stringify(request),
                 });
                 const payload = await response.json();
                 if (!response.ok) throw new Error(apiError(payload.error, 'Unable to start download.'));
                 showToast('Preparing your download…');
-                const deadline = Date.now() + 180000;
+                const deadline = Date.now() + (request.zipCarousel ? 900000 : 180000);
                 while (Date.now() < deadline) {
                   await new Promise(resolve => setTimeout(resolve, 1000));
                   const statusResponse = await fetch('/api/media/jobs/' + encodeURIComponent(payload.jobId));
                   const statusPayload = await statusResponse.json();
                   if (!statusResponse.ok) throw new Error(apiError(statusPayload.error, 'Unable to check download.'));
                   const job = statusPayload.job;
-                  if (label) label.textContent = t('Preparing download… {progress}%', { progress: Math.round(job.progress || 0) });
+                  pending.label = t('Preparing download… {progress}%', { progress: Math.round(job.progress || 0) });
+                  syncDownloadButtons();
                   if (job.status === 'completed') {
                     const link = document.createElement('a');
                     link.href = '/api/media/download/' + encodeURIComponent(payload.jobId);
@@ -589,8 +658,8 @@
               } catch (error) {
                 setValidationBanner('error', localError(error, 'Unable to download media.'));
               } finally {
-                btn.disabled = false;
-                if (label) label.textContent = originalLabel;
+                pendingDownloads.delete(key);
+                syncDownloadButtons();
               }
               return;
             }
@@ -602,6 +671,10 @@
       // Switch Tab handler
       function selectTab(tabId, fromRouteMenu) {
         if (!TOOL_CONFIG[tabId]) return;
+        if (localeData.pageTool && tabId !== localeData.pageTool.tool) {
+          window.location.assign(TOOL_CONFIG[tabId].route);
+          return;
+        }
         clearLiveResult();
         state.activeTab = tabId;
         state.selectedQualityIdx = 0;
@@ -716,7 +789,7 @@
         try {
           const response = await fetch(window.INSTA_DOWNLOADER_API_ENDPOINT, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: parsed.canonicalUrl }), signal: controller.signal,
+            body: JSON.stringify({ url: parsed.canonicalUrl, tool: state.activeTab }), signal: controller.signal,
           });
           const payload = await response.json();
           if (!response.ok || payload.status !== 'ok') throw new Error(apiError(payload.error, 'Unable to inspect this link.'));
@@ -788,6 +861,7 @@
       // Route-tab links in Header, Mobile Drawer, and Footer
       document.querySelectorAll('[data-route-tab]').forEach((btn) => {
         btn.addEventListener('click', () => {
+          if (btn.tagName === 'A') return;
           const tabId = btn.getAttribute('data-route-tab');
           closeAllDropdowns();
           closeMobileMenu();
@@ -796,7 +870,8 @@
         });
       });
 
-      document.getElementById('nav-carousel-inspector-btn').addEventListener('click', () => {
+      document.getElementById('nav-carousel-inspector-btn').addEventListener('click', (event) => {
+        if (event.currentTarget.tagName === 'A') return;
         closeAllDropdowns();
         selectTab('photo', true);
         urlInput.focus();
@@ -894,11 +969,11 @@
         'contact': {
           title: 'Contact Support & Takedown Requests',
           html: `
-            <p>Need help integrating the SaveFrame UI with your backend endpoint or submitting a copyright inquiry?</p>
+            <p>For support, include the public link, browser, device and displayed error. For copyright inquiries, identify the work and the link involved. Never send passwords or login cookies.</p>
             <div class="p-4 rounded-xl bg-soft border border-line space-y-1.5 text-xs sm:text-sm">
-              <p><strong>Support Email:</strong> support@saveframe.app</p>
-              <p><strong>Copyright &amp; Removal Requests:</strong> legal@saveframe.app</p>
-              <p><strong>Response Window:</strong> Within 1 business day</p>
+              <p><strong>Support Email:</strong> ${escapeHtml(localeData.publicSettings?.contactEmail || 'backbencherz@gmail.com')}</p>
+              <p><strong>Copyright &amp; Removal Requests:</strong> backbencherz@gmail.com</p>
+              <p>No response-time guarantee is published.</p>
             </div>
           `
         }
@@ -918,6 +993,7 @@
 
       document.querySelectorAll('.open-legal-btn').forEach((btn) => {
         btn.addEventListener('click', () => {
+          if (btn.tagName === 'A') return;
           openModal(btn.getAttribute('data-modal-target'));
         });
       });
@@ -942,7 +1018,9 @@
       renderToolState();
       const initialQuery = new URLSearchParams(window.location.search);
       const initialTool = initialQuery.get('tool');
+      if(!initialTool && !localeData.pageTool && TOOL_CONFIG[localeData.publicSettings?.defaultTool] && localeData.publicSettings.defaultTool!=='photo') selectTab(localeData.publicSettings.defaultTool,false);
       if (initialTool && TOOL_CONFIG[initialTool]) selectTab(initialTool, true);
+      if (localeData.pageTool) selectTab(localeData.pageTool.tool, true);
       const initialInfo = initialQuery.get('info');
       if (initialInfo && ['privacy', 'terms', 'contact'].includes(initialInfo)) openModal(initialInfo);
     };

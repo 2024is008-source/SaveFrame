@@ -31,7 +31,7 @@ export async function DELETE(_req: NextRequest, context: { params: Promise<{ job
   try {
     const { jobId } = await context.params;
     const job = ctx.downloadManager.cancelJob(jobId);
-    return NextResponse.json({ status: 'ok', job });
+    return NextResponse.json({ status: 'ok', job: {jobId:job.jobId,status:job.status,progress:job.progress,error:job.error} });
   } catch (err: any) {
     return NextResponse.json(
       { status: 'error', error: { code: err?.code || 'JOB_NOT_FOUND', message: err?.userMessage || err?.message } },

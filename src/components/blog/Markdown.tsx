@@ -1,10 +1,14 @@
 import { Fragment } from 'react';
 import { headingId } from '../../lib/blog';
+import { toolPaths } from '../../lib/navigation';
 
 function inline(text: string) {
   return text.split(/(\[[^\]]+\]\([^\s)]+\)|\*\*[^*]+\*\*|`[^`]+`)/g).map((piece, index) => {
     const link = piece.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
-    if (link && /^(https:\/\/|\/(?!\/)|#)/.test(link[2])) return <a key={index} href={link[2]}>{link[1]}</a>;
+    if (link && /^(https:\/\/|\/(?!\/)|#)/.test(link[2])) {
+      const tool = link[2].match(/^\/\?tool=(photo|reels|story|video|profile)#main-tool$/);
+      return <a key={index} href={tool ? toolPaths[tool[1]] : link[2]}>{link[1]}</a>;
+    }
     if (piece.startsWith('**') && piece.endsWith('**')) return <strong key={index}>{piece.slice(2, -2)}</strong>;
     if (piece.startsWith('`') && piece.endsWith('`')) return <code key={index}>{piece.slice(1, -1)}</code>;
     return <Fragment key={index}>{piece}</Fragment>;

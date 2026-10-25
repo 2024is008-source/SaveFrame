@@ -40,6 +40,16 @@ const STORY_REGEX =
   /^\/stories\/([A-Za-z0-9._]{1,30})(?:\/([0-9]{5,32}))?\/?$/;
 const PROFILE_REGEX = /^\/([A-Za-z0-9._]{2,30})\/?$/;
 
+/** Direct story videos only. Do not turn a profile URL into a bulk story request. */
+export function validateMediaInput(rawUrl: string, tool?: string): ValidatedInstagramUrl {
+  const validated = validateInstagramUrl(rawUrl);
+  if ((tool === 'story' && validated.category !== 'story') ||
+      (validated.category === 'story' && (!validated.storyId || validated.username === 'highlights'))) {
+    throw new DownloaderAppError('INVALID_STORY_LINK', 'Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.', 400);
+  }
+  return validated;
+}
+
 /**
  * Checks whether an IPv4 or IPv6 address belongs to a private, loopback,
  * link-local, multicast, or metadata range (SSRF defense).

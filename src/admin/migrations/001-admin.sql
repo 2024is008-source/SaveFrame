@@ -1,0 +1,17 @@
+CREATE TABLE admin_users (id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, password_hash TEXT NOT NULL, totp_secret TEXT, totp_pending TEXT, totp_enabled INTEGER NOT NULL DEFAULT 0, totp_last_step INTEGER NOT NULL DEFAULT -1, created_at INTEGER NOT NULL);
+CREATE TABLE admin_sessions (token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE, csrf_token TEXT NOT NULL, created_at INTEGER NOT NULL, last_seen INTEGER NOT NULL, expires_at INTEGER NOT NULL);
+CREATE INDEX sessions_expiry ON admin_sessions(expires_at);
+CREATE TABLE login_limits (bucket TEXT PRIMARY KEY, attempts INTEGER NOT NULL, reset_at INTEGER NOT NULL);
+CREATE TABLE download_requests (id TEXT PRIMARY KEY, job_id TEXT UNIQUE, runtime_id TEXT, media_type TEXT NOT NULL DEFAULT 'unknown', status TEXT NOT NULL DEFAULT 'received', requested_at INTEGER NOT NULL, started_at INTEGER, prepared_at INTEGER, failed_at INTEGER, delivered_at INTEGER, error_code TEXT, duration_ms INTEGER);
+CREATE INDEX requests_time_type ON download_requests(requested_at, media_type);
+CREATE INDEX requests_status ON download_requests(status, requested_at);
+CREATE TABLE download_events (id INTEGER PRIMARY KEY, correlation_id TEXT NOT NULL, job_id TEXT, event_type TEXT NOT NULL, media_type TEXT NOT NULL DEFAULT 'unknown', error_code TEXT, duration_ms INTEGER, created_at INTEGER NOT NULL, UNIQUE(correlation_id, event_type));
+CREATE INDEX events_time_type ON download_events(created_at, event_type);
+CREATE TABLE daily_statistics (day TEXT NOT NULL, media_type TEXT NOT NULL, requests INTEGER NOT NULL, prepared INTEGER NOT NULL, failed INTEGER NOT NULL, delivered INTEGER NOT NULL, processing_ms INTEGER NOT NULL, processing_samples INTEGER NOT NULL, PRIMARY KEY(day, media_type));
+CREATE TABLE seo_overrides (route TEXT PRIMARY KEY, draft_json TEXT, published_json TEXT, version INTEGER NOT NULL DEFAULT 0, updated_at INTEGER NOT NULL, updated_by TEXT REFERENCES admin_users(id));
+CREATE TABLE seo_revisions (id INTEGER PRIMARY KEY, route TEXT NOT NULL, data_json TEXT NOT NULL, action TEXT NOT NULL, created_at INTEGER NOT NULL, actor_id TEXT REFERENCES admin_users(id));
+CREATE INDEX seo_history ON seo_revisions(route, id DESC);
+CREATE TABLE verification_files (filename TEXT PRIMARY KEY, content TEXT NOT NULL, mime_type TEXT NOT NULL, kind TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 1, active INTEGER NOT NULL DEFAULT 1, created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL, verified_at INTEGER);
+CREATE TABLE admin_audit_events (id INTEGER PRIMARY KEY, actor_id TEXT, action TEXT NOT NULL, target TEXT NOT NULL, detail TEXT NOT NULL DEFAULT '', created_at INTEGER NOT NULL);
+CREATE INDEX audit_time ON admin_audit_events(created_at DESC);
+CREATE TABLE public_settings (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at INTEGER NOT NULL);

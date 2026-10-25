@@ -1,21 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getApiContext } from '../../singleton';
 import { DownloaderAppError } from '../../../../types/media.types';
+import { beginDownload, jobEvent } from '../../../../admin/analytics';
+import { readMediaJson } from '../../../../api/request';
 
 export async function POST(req: NextRequest) {
   const ctx = getApiContext();
+  const analyticsId=beginDownload();
   try {
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
     const rl = await ctx.redisStore.checkRateLimit(ip, 'download', 15, 60);
     if (!rl.allowed) {
       throw new DownloaderAppError('RATE_LIMITED', 'Download rate limit exceeded.', 429, true);
     }
-    const body = await req.json();
+    const body = await readMediaJson(req);
     const job = await ctx.downloadManager.createJob({
       url: body.url || '',
       formatId: body.formatId,
       itemIndex: body.itemIndex,
+      itemIndices: body.itemIndices,
       zipCarousel: Boolean(body.zipCarousel),
+      analyticsId,
     });
     return NextResponse.json(
       {
@@ -28,9 +33,11 @@ export async function POST(req: NextRequest) {
       { status: 202 }
     );
   } catch (err: any) {
+    const known=err instanceof DownloaderAppError;
+    jobEvent(analyticsId,'download_failed',null,'unknown',err?.code || 'EXTRACTOR_FAILURE');
     return NextResponse.json(
-      { status: 'error', error: { code: err?.code || 'EXTRACTOR_FAILURE', message: err?.userMessage || err?.message } },
-      { status: err?.statusCode || 500 }
+      { status: 'error', error: { code: known ? err.code : 'EXTRACTOR_FAILURE', message: known ? err.userMessage : 'Unable to prepare this download. Please try again.' } },
+      { status: known ? err.statusCode : 500 }
     );
   }
 }

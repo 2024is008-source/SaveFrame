@@ -12,7 +12,11 @@ import { InstagramAuthorizedAdapters } from '../services/instagram-adapters.serv
 import { YtDlpService } from '../services/yt-dlp.service';
 import { DownloadManagerService } from '../services/download-manager.service';
 import { RedisStoreService } from '../services/redis-store.service';
-import { createSaveFrameServer } from '../server';
+import { handleApiRequest, type ApiContext } from '../api/media-router';
+// The old standalone server entrypoint was removed when Next.js became the host.
+function createSaveFrameServer(context: ApiContext) {
+  return http.createServer((request,response)=> { handleApiRequest(request,response,context).then(handled=>{if(!handled){response.statusCode=404;response.end('Not found');}}).catch(()=>{response.statusCode=500;response.end('Test server error');}); });
+}
 
 function httpRequest(
   baseUrl: string,

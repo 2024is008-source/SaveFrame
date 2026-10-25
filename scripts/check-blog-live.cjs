@@ -28,7 +28,7 @@ async function main() {
   assert.match(home, /How to Download Instagram Stories by Link/);
   assert.ok(!home.includes('Understanding Instagram Reels Export Settings'));
   const sitemap = await page('/sitemap.xml');
-  assert.equal((sitemap.match(/<loc>/g) || []).length, 26);
+  assert.equal((sitemap.match(/<loc>/g) || []).length, 37);
   assert.ok(!sitemap.includes('localhost'));
   assert.match(await page('/robots.txt'), /Sitemap: https:\/\/saveframe.site\/sitemap.xml/);
   console.log('Live checks passed: 15 articles, 404, search, categories, pagination, home cards, canonical URLs, structured data, robots and sitemap.');

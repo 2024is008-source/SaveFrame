@@ -5,10 +5,10 @@ import * as crypto from 'crypto';
 import {
   DownloadJob,
   DownloaderAppError,
-  InstagramMediaCategory,
 } from '../types/media.types';
-import { validateInstagramUrl, sanitizeFilename } from '../security/url-validator';
+import { validateMediaInput, sanitizeFilename } from '../security/url-validator';
 import { YtDlpService } from './yt-dlp.service';
+import { beginDownload, attachJob, jobEvent, recoverInterruptedJobs } from '../admin/analytics';
 
 export interface DownloadManagerConfig {
   tempDir?: string;
@@ -16,13 +16,16 @@ export interface DownloadManagerConfig {
   retentionMs?: number;
   minFreeDiskBytes?: number;
   maxFileSizeBytes?: number;
+  maxQueuedJobs?: number;
 }
 
 export interface CreateDownloadJobInput {
   url: string;
   formatId?: string;
   itemIndex?: number;
+  itemIndices?: number[];
   zipCarousel?: boolean;
+  analyticsId?: string;
 }
 
 /**
@@ -41,10 +44,10 @@ const CRC32_TABLE = (() => {
   return table;
 })();
 
-function computeCrc32(buf: Buffer): number {
+async function computeCrc32(filename: string): Promise<number> {
   let crc = 0xffffffff;
-  for (let i = 0; i < buf.length; i++) {
-    crc = CRC32_TABLE[(crc ^ buf[i]) & 0xff] ^ (crc >>> 8);
+  for await(const buf of fs.createReadStream(filename,{highWaterMark:65536})) {
+    for (let i = 0; i < buf.length; i++) crc = CRC32_TABLE[(crc ^ buf[i]) & 0xff] ^ (crc >>> 8);
   }
   return (crc ^ 0xffffffff) >>> 0;
 }
@@ -55,17 +58,23 @@ function computeCrc32(buf: Buffer): number {
  */
 export async function buildZipArchive(
   entries: Array<{ archiveName: string; filePath: string }>,
-  destZipPath: string
+  destZipPath: string,
+  maxBytes = 150 * 1024 * 1024
 ): Promise<number> {
-  const localParts: Buffer[] = [];
+  let estimate=22;
+  for(const entry of entries){const size=(await fs.promises.stat(entry.filePath)).size;const name=sanitizeFilename(entry.archiveName,path.extname(entry.archiveName).slice(1)||'bin');estimate+=76+2*Buffer.byteLength(name)+size;}
+  if(estimate>maxBytes)throw new DownloaderAppError('FILE_TOO_LARGE','Carousel ZIP archive exceeds the maximum allowed file size.',413);
+  const output=await fs.promises.open(destZipPath,'wx',0o600);
+  let written=0;
+  const write=async(buffer:Buffer)=>{if(written+buffer.length>maxBytes)throw new DownloaderAppError('FILE_TOO_LARGE','Carousel ZIP archive exceeds the maximum allowed file size.',413);let cursor=0;while(cursor<buffer.length){const result=await output.write(buffer,cursor,buffer.length-cursor,null);if(!result.bytesWritten)throw Error('Unable to write archive');cursor+=result.bytesWritten;}written+=buffer.length;};
+  try {
   const centralParts: Buffer[] = [];
   let offset = 0;
 
   for (const entry of entries) {
-    const data = await fs.promises.readFile(entry.filePath);
     const nameBuf = Buffer.from(sanitizeFilename(entry.archiveName, path.extname(entry.archiveName).slice(1) || 'bin'), 'utf8');
-    const crc = computeCrc32(data);
-    const size = data.length;
+    const size = (await fs.promises.stat(entry.filePath)).size;
+    const crc = await computeCrc32(entry.filePath);
 
     // Local file header (30 bytes + filename)
     const localHeader = Buffer.alloc(30);
@@ -81,7 +90,10 @@ export async function buildZipArchive(
     localHeader.writeUInt16LE(nameBuf.length, 26); // Filename length
     localHeader.writeUInt16LE(0, 28); // Extra field length
 
-    localParts.push(localHeader, nameBuf, data);
+    await write(localHeader);await write(nameBuf);
+    let copied=0;
+    for await(const chunk of fs.createReadStream(entry.filePath,{highWaterMark:65536})){await write(chunk);copied+=chunk.length;}
+    if(copied!==size)throw Error('Archive source changed during packaging');
 
     // Central directory header (46 bytes + filename)
     const centralHeader = Buffer.alloc(46);
@@ -118,9 +130,10 @@ export async function buildZipArchive(
   eocd.writeUInt32LE(offset, 16); // Central dir offset
   eocd.writeUInt16LE(0, 20); // Comment length
 
-  const finalZip = Buffer.concat([...localParts, centralDirBuffer, eocd]);
-  await fs.promises.writeFile(destZipPath, finalZip, { mode: 0o600 });
-  return finalZip.length;
+  await write(centralDirBuffer);await write(eocd);
+  return written;
+  } catch(error){await output.close();await fs.promises.unlink(destZipPath).catch(()=>{});throw error;}
+  finally{await output.close().catch(()=>{});}
 }
 
 export class DownloadManagerService {
@@ -133,6 +146,7 @@ export class DownloadManagerService {
   private readonly jobs = new Map<string, DownloadJob>();
   private readonly queue: string[] = [];
   private activeCount = 0;
+  private readonly maxQueuedJobs: number;
   private cleanupTimer?: NodeJS.Timeout;
 
   constructor(ytDlpService: YtDlpService, config?: DownloadManagerConfig) {
@@ -144,6 +158,9 @@ export class DownloadManagerService {
     this.maxConcurrent =
       config?.maxConcurrentDownloads ||
       parseInt(process.env.MAX_CONCURRENT_DOWNLOADS || '3', 10);
+    if(!Number.isInteger(this.maxConcurrent)||this.maxConcurrent<1||this.maxConcurrent>8) this.maxConcurrent=3;
+    const configuredQueue=config?.maxQueuedJobs ?? Number(process.env.MAX_QUEUED_DOWNLOADS || 20);
+    this.maxQueuedJobs=Number.isInteger(configuredQueue)&&configuredQueue>0&&configuredQueue<=100?configuredQueue:20;
     this.retentionMs =
       config?.retentionMs ||
       parseInt(process.env.FILE_RETENTION_MS || String(15 * 60 * 1000), 10); // 15 min default
@@ -155,6 +172,7 @@ export class DownloadManagerService {
       parseInt(process.env.MAX_FILE_SIZE_BYTES || String(150 * 1024 * 1024), 10);
 
     fs.mkdirSync(this.tempDir, { recursive: true, mode: 0o700 });
+    recoverInterruptedJobs();
 
     // Start periodic cleanup sweep every 60 seconds
     this.cleanupTimer = setInterval(() => {
@@ -199,7 +217,18 @@ export class DownloadManagerService {
    * Enqueues a new download job after validating URL and available disk space.
    */
   public async createJob(input: CreateDownloadJobInput): Promise<DownloadJob> {
-    const validated = validateInstagramUrl(input.url);
+    const validated = validateMediaInput(input.url);
+    if(this.queue.length>=this.maxQueuedJobs || this.jobs.size>=1000) throw new DownloaderAppError('RATE_LIMITED','The download queue is full. Please try again shortly.',429,true);
+    if(input.itemIndex!==undefined&&(!Number.isInteger(input.itemIndex)||input.itemIndex<0||input.itemIndex>99))throw new DownloaderAppError('UNSUPPORTED_OPERATION','Choose a valid media item.',400);
+    if(input.formatId!==undefined&&(typeof input.formatId!=='string'||input.formatId.length>128))throw new DownloaderAppError('UNSUPPORTED_OPERATION','Choose a valid media format.',400);
+    if (validated.category === 'story' && input.zipCarousel) {
+      throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'Bulk story downloads are not supported. Download a single story video.', 400);
+    }
+    if (input.itemIndices !== undefined && (!input.zipCarousel || !Array.isArray(input.itemIndices) ||
+      input.itemIndices.length === 0 || input.itemIndices.length > 100 ||
+      input.itemIndices.some(index => !Number.isInteger(index) || index < 0))) {
+      throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'Choose valid carousel slides to download.', 400);
+    }
 
     if (validated.category === 'profile' && input.formatId === 'bulk-profile') {
       throw new DownloaderAppError(
@@ -210,6 +239,7 @@ export class DownloadManagerService {
     }
 
     const storage = await this.getStorageHealth();
+    if(this.queue.length>=this.maxQueuedJobs || this.jobs.size>=1000) throw new DownloaderAppError('RATE_LIMITED','The download queue is full. Please try again shortly.',429,true);
     if (!storage.ok) {
       throw new DownloaderAppError(
         'INSUFFICIENT_DISK_SPACE',
@@ -224,11 +254,13 @@ export class DownloadManagerService {
 
     const job: DownloadJob = {
       jobId,
+      analyticsId: input.analyticsId || beginDownload(validated.category),
       url: validated.canonicalUrl,
       shortcode: validated.shortcode,
       category: validated.category,
       formatId: input.formatId || 'best',
       itemIndex: input.itemIndex ?? 0,
+      itemIndices: input.itemIndices ? [...new Set(input.itemIndices)].sort((a, b) => a - b) : undefined,
       isCarouselZip: Boolean(input.zipCarousel),
       status: 'queued',
       progress: 0,
@@ -239,6 +271,7 @@ export class DownloadManagerService {
     };
 
     this.jobs.set(jobId, job);
+    attachJob(job.analyticsId!, jobId, job.category);
     this.queue.push(jobId);
     this.processQueue();
 
@@ -273,12 +306,14 @@ export class DownloadManagerService {
     this.ytDlpService.cancelDownload(jobId);
 
     job.status = 'cancelled';
+    job.expiresAt=Date.now()+this.retentionMs;
     job.updatedAt = Date.now();
     job.error = {
       code: 'JOB_CANCELLED',
       message: 'Download was cancelled by the user.',
       retryable: true,
     };
+    jobEvent(job.analyticsId,'download_failed',job.jobId,job.category,'JOB_CANCELLED');
 
     if (job.outputFilePath) {
       fs.promises.unlink(job.outputFilePath).catch(() => {});
@@ -306,13 +341,18 @@ export class DownloadManagerService {
   }
 
   private async executeJob(job: DownloadJob): Promise<void> {
+    const partialFiles:string[]=[];
+    const processingStarted = Date.now();
     job.status = 'processing';
     job.progress = 5;
     job.updatedAt = Date.now();
+    jobEvent(job.analyticsId,'download_started',job.jobId,job.category);
 
     try {
       if (job.isCarouselZip) {
         const metadata = await this.ytDlpService.extractMetadata(job.url);
+        job.category = metadata.category;
+        attachJob(job.analyticsId!,job.jobId,job.category);
         if (!metadata.items.length) {
           throw new DownloaderAppError(
             'EXTRACTOR_FAILURE',
@@ -322,20 +362,25 @@ export class DownloadManagerService {
         }
 
         const downloadedEntries: Array<{ archiveName: string; filePath: string }> = [];
-        const totalItems = metadata.items.length;
+        const indices = job.itemIndices || metadata.items.map((_, index) => index);
+        if (indices.some(index => index >= metadata.items.length)) {
+          throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'A selected slide is no longer available. Inspect the post again.', 400);
+        }
+        const totalItems = indices.length;
 
         for (let i = 0; i < totalItems; i++) {
           if ((job.status as string) === 'cancelled') {
             throw new DownloaderAppError('JOB_CANCELLED', 'Cancelled', 499);
           }
 
-          const item = metadata.items[i];
+          const itemIndex = indices[i];
+          const item = metadata.items[itemIndex];
           const artifact = await this.ytDlpService.downloadMedia(job.url, {
             jobId: `${job.jobId}_part${i + 1}`,
-            itemIndex: i,
+            itemIndex,
             formatId: item.formats[0]?.formatId || 'best',
             outputDir: this.tempDir,
-            filenamePrefix: `${String(i + 1).padStart(2, '0')}_${metadata.shortcode}`,
+            filenamePrefix: `${metadata.uploader?.username || 'instagram'}_${String(itemIndex + 1).padStart(2, '0')}_${metadata.shortcode}`,
             onProgress: (p) => {
               const basePct = (i / totalItems) * 85;
               const itemPct = (p.percent / 100) * (85 / totalItems);
@@ -348,6 +393,9 @@ export class DownloadManagerService {
             archiveName: artifact.safeFilename,
             filePath: artifact.filePath,
           });
+          partialFiles.push(artifact.filePath);
+          if((job.status as string)==='cancelled')throw new DownloaderAppError('JOB_CANCELLED','Cancelled',499);
+          if(downloadedEntries.reduce((sum,entry)=>sum+fs.statSync(entry.filePath).size,0)>this.maxFileSizeBytes)throw new DownloaderAppError('FILE_TOO_LARGE','Carousel archive exceeds the allowed size.',413);
         }
 
         job.status = 'packaging_zip';
@@ -355,16 +403,18 @@ export class DownloadManagerService {
         job.updatedAt = Date.now();
 
         const zipFilename = sanitizeFilename(
-          `saveframe_carousel_${metadata.shortcode}_${totalItems}items`,
+          `${metadata.uploader?.username || 'instagram'}_${metadata.shortcode}_${totalItems}items`,
           'zip'
         );
         const zipFilePath = path.join(this.tempDir, `${job.jobId}_${zipFilename}`);
-        const zipBytes = await buildZipArchive(downloadedEntries, zipFilePath);
+        const zipBytes = await buildZipArchive(downloadedEntries, zipFilePath, this.maxFileSizeBytes);
+        if((job.status as string)==='cancelled'){await fs.promises.unlink(zipFilePath).catch(()=>{});throw new DownloaderAppError('JOB_CANCELLED','Cancelled',499);}
 
         // Clean up individual part files
         for (const entry of downloadedEntries) {
           await fs.promises.unlink(entry.filePath).catch(() => {});
         }
+        partialFiles.length=0;
 
         if (zipBytes > this.maxFileSizeBytes) {
           await fs.promises.unlink(zipFilePath).catch(() => {});
@@ -385,6 +435,7 @@ export class DownloadManagerService {
         job.status = 'completed';
         job.updatedAt = Date.now();
         job.expiresAt = Date.now() + this.retentionMs;
+        jobEvent(job.analyticsId,'media_prepared',job.jobId,job.category,undefined,Date.now()-processingStarted);
         return;
       }
 
@@ -403,7 +454,11 @@ export class DownloadManagerService {
         },
       });
 
+      if((job.status as string)==='cancelled'){await fs.promises.unlink(artifact.filePath).catch(()=>{});throw new DownloaderAppError('JOB_CANCELLED','Cancelled',499);}
       job.outputFilePath = artifact.filePath;
+      if(job.category==='photo' && artifact.mimeType.startsWith('video/')) {
+        job.category='video'; attachJob(job.analyticsId!,job.jobId,job.category);
+      }
       job.safeFilename = artifact.safeFilename;
       job.mimeType = artifact.mimeType;
       job.filesizeBytes = artifact.filesizeBytes;
@@ -413,6 +468,7 @@ export class DownloadManagerService {
       job.status = 'completed';
       job.updatedAt = Date.now();
       job.expiresAt = Date.now() + this.retentionMs;
+      jobEvent(job.analyticsId,'media_prepared',job.jobId,job.category,undefined,Date.now()-processingStarted);
     } catch (err: any) {
       if ((job.status as string) === 'cancelled' || err?.code === 'JOB_CANCELLED') {
         job.status = 'cancelled';
@@ -421,6 +477,7 @@ export class DownloadManagerService {
           message: 'Download was cancelled.',
           retryable: true,
         };
+        jobEvent(job.analyticsId,'download_failed',job.jobId,job.category,'JOB_CANCELLED');
         return;
       }
 
@@ -429,7 +486,7 @@ export class DownloadManagerService {
           ? err
           : new DownloaderAppError(
               'EXTRACTOR_FAILURE',
-              err?.message || 'Download failed unexpectedly.',
+              'Download failed unexpectedly.',
               500,
               true
             );
@@ -441,6 +498,9 @@ export class DownloadManagerService {
         message: appErr.userMessage,
         retryable: appErr.retryable,
       };
+      jobEvent(job.analyticsId,'download_failed',job.jobId,job.category,appErr.code,Date.now()-processingStarted);
+    } finally {
+      for(const filename of partialFiles)await fs.promises.unlink(filename).catch(()=>{});
     }
   }
 
@@ -451,7 +511,7 @@ export class DownloadManagerService {
     const now = Date.now();
     let cleaned = 0;
     for (const [jobId, job] of this.jobs.entries()) {
-      if (now > job.expiresAt) {
+      if (now > job.expiresAt && ['completed','failed','cancelled'].includes(job.status)) {
         if (job.outputFilePath) {
           await fs.promises.unlink(job.outputFilePath).catch(() => {});
         }

@@ -527,6 +527,18 @@ img { max-width: 100%; height: auto; }
       }
     }
 
+    /* Compact thumbnail choices use the available width without stretched desktop cards. */
+    .carousel-thumbnail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    @media (min-width: 640px) {
+      .carousel-thumbnail-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      }
+    }
+
     /* Loupe zoom inspection mode */
     .loupe-active img {
       transform: scale(1.65);

@@ -4,13 +4,18 @@ import { ArticleCard } from '../../components/blog/ArticleCard';
 import { BlogShell } from '../../components/blog/BlogShell';
 import { categories, filterPosts, getPublishedPosts } from '../../lib/blog';
 import { absoluteUrl, hasPublicSiteUrl } from '../../lib/site';
+import { pageGraph, jsonLd } from '../../lib/seo';
+import { applySeo } from '../../admin/public-seo';
+export const dynamic='force-dynamic';
 
 type Query = { q?: string; category?: string; page?: string };
 export async function generateMetadata({ searchParams }: { searchParams: Promise<Query> }): Promise<Metadata> {
   const query = await searchParams;
-  const title = 'Instagram Download Guides & Tutorials | SaveFrame';
+  const page = Math.min(Math.ceil(getPublishedPosts().length / 9), Math.max(1, Number.parseInt(query.page || '1', 10) || 1));
+  const title = page > 1 ? `Instagram Download Guides — Page ${page} | SaveFrame` : 'Instagram Download Guides & Tutorials | SaveFrame';
   const description = 'Practical guides to downloading supported Instagram photos, Reels, videos, and stories, with clear troubleshooting and backup advice.';
-  return { title, description, alternates: { canonical: absoluteUrl('/blog') }, robots: { index: hasPublicSiteUrl && !query.q && !query.category && !query.page, follow: true }, openGraph: { title, description, url: absoluteUrl('/blog'), images: [{ url: absoluteUrl('/images/blog/reels-1200.webp'), width: 1200, height: 900, alt: 'SaveFrame Instagram download guides' }], type: 'website' }, twitter: { card: 'summary_large_image', title, description, images: [absoluteUrl('/images/blog/reels-1200.webp')] } };
+  const canonical = absoluteUrl(page > 1 && !query.q && !query.category ? `/blog?page=${page}` : '/blog');
+  return applySeo(page>1?'/blog?page='+page:'/blog',{ title, description: page > 1 ? `Page ${page} of SaveFrame's Instagram guides: audio, mobile photo downloads, troubleshooting, image dimensions and keeping your own media backups.` : description, alternates: { canonical }, robots: { index: hasPublicSiteUrl && !query.q && !query.category, follow: true }, openGraph: { title, description, url: canonical, images: [{ url: absoluteUrl('/images/blog/reels-1200.webp'), width: 1200, height: 900, alt: 'SaveFrame Instagram download guides' }], type: 'website' }, twitter: { card: 'summary_large_image', title, description, images: [absoluteUrl('/images/blog/reels-1200.webp')] } });
 }
 export default async function BlogIndex({ searchParams }: { searchParams: Promise<Query> }) {
   const query = await searchParams;
@@ -27,7 +32,7 @@ export default async function BlogIndex({ searchParams }: { searchParams: Promis
     if (next.page && next.page > 1) params.set('page', String(next.page));
     return '/blog' + (params.size ? '?' + params : '');
   };
-  return <BlogShell><div className="blog-container">
+  return <BlogShell><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(pageGraph(page > 1 && !q && !category ? `/blog?page=${page}` : '/blog', 'Instagram Download Guides & Tutorials', 'Practical Instagram media guides.')) }} /><div className="blog-container">
     <nav className="breadcrumbs" aria-label="Breadcrumb"><Link href="/">Home</Link><span aria-hidden="true">/</span><span>Guides</span></nav>
     <header className="blog-intro"><h1>Instagram Download Guides &amp; Tutorials</h1><p>Clear instructions for saving supported public media, finding your files, and keeping an organized archive of your own work.</p></header>
     {!q && !category && page === 1 && <section aria-labelledby="featured-heading"><h2 id="featured-heading" className="blog-section-heading">Start with these guides</h2><div className="guide-grid">{['how-to-download-instagram-stories-by-link', 'how-to-download-instagram-photos-online', 'how-to-download-instagram-reels-mp4'].map(slug => <ArticleCard key={slug} post={all.find(post => post.slug === slug)!} />)}</div></section>}

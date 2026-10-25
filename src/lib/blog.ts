@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import records from '../content/blog/posts.json';
+import { pageDescription } from '../admin/public-seo';
 
 export const categories = ['Instagram Reels', 'Instagram Photos', 'Instagram Videos', 'Instagram Stories', 'Profile Pictures', 'Troubleshooting', 'Tips & Guides'];
 export interface BlogPost {
@@ -13,7 +14,7 @@ export function getPublishedPosts(): BlogPost[] {
   return records.filter(post => post.published).map(post => {
     const content = fs.readFileSync(path.join(contentRoot, `${post.slug}.md`), 'utf8');
     const wordCount = content.trim().split(/\s+/).length;
-    return { ...post, content, wordCount, readingMinutes: Math.max(1, Math.ceil(wordCount / 220)) };
+    return { ...post, description:pageDescription('/blog/'+post.slug,post.description), content, wordCount, readingMinutes: Math.max(1, Math.ceil(wordCount / 220)) };
   }).sort((a, b) => b.publishedAt.localeCompare(a.publishedAt) || records.findIndex(p => p.slug === a.slug) - records.findIndex(p => p.slug === b.slug));
 }
 export function getPost(slug: string) { return getPublishedPosts().find(post => post.slug === slug); }

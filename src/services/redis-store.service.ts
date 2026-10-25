@@ -24,7 +24,6 @@ export class RedisStoreService {
   private readonly memoryCache = new Map<string, CacheEntry<string>>();
   private readonly rateBuckets = new Map<string, { count: number; resetAt: number }>();
   private redisReachable = false;
-  private lastPingMs?: number;
 
   constructor() {
     const redisUrl = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
@@ -101,7 +100,6 @@ export class RedisStoreService {
     const start = Date.now();
     const pong = await this.execRespCommand(['PING'], 400);
     const latencyMs = Date.now() - start;
-    this.lastPingMs = latencyMs;
     if (pong === 'PONG') {
       return { ok: true, mode: 'redis', latencyMs };
     }
@@ -164,6 +162,8 @@ export class RedisStoreService {
     const existing = this.rateBuckets.get(bucketKey);
 
     if (!existing || now > existing.resetAt) {
+      if(this.rateBuckets.size>=1000)for(const [key,bucket]of this.rateBuckets)if(now>bucket.resetAt)this.rateBuckets.delete(key);
+      if(!existing&&this.rateBuckets.size>=10000)return {allowed:false,remaining:0,resetAtSeconds:Math.ceil((now+windowSeconds*1000)/1000),limit};
       const resetAt = now + windowSeconds * 1000;
       this.rateBuckets.set(bucketKey, { count: 1, resetAt });
       return {

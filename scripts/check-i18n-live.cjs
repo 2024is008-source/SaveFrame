@@ -41,11 +41,11 @@ async function main() {
   const spoof = await (await fetch(base + '/blog', { headers: { 'x-saveframe-locale': 'ar' } })).text();
   assert.match(spoof, /<html[^>]*lang="en"/);
   const sitemap = await (await fetch(base + '/sitemap.xml')).text();
-  assert.equal((sitemap.match(/<loc>/g) || []).length, 26);
+  assert.equal((sitemap.match(/<loc>/g) || []).length, 37);
   for (const locale of locales) assert.ok(sitemap.includes(`<loc>${origin}${home(locale)}</loc>`));
   assert.ok(sitemap.includes('hreflang="pt-BR"'));
   assert.equal((await fetch(base + '/saveframe.js')).status, 200);
   assert.equal((await fetch(base + '/api/health')).status, 200);
-  console.log('PASS: 10 SSR homepages, localized metadata, lang/dir, 11 hreflang alternatives each, trailing-slash redirects, invalid-locale 404s, English blog isolation, static/API paths and 26 sitemap entries.');
+  console.log('PASS: 10 SSR homepages, localized metadata, lang/dir, 11 hreflang alternatives each, trailing-slash redirects, invalid-locale 404s, English blog isolation, static/API paths and 37 sitemap entries.');
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

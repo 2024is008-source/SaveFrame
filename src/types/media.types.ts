@@ -15,6 +15,8 @@ export type ErrorCode =
   | 'PRIVATE_CONTENT'
   | 'DELETED_CONTENT'
   | 'EXPIRED_STORY'
+  | 'NO_ACTIVE_STORIES'
+  | 'INVALID_STORY_LINK'
   | 'LOGIN_REQUIRED'
   | 'RATE_LIMITED'
   | 'EXTRACTOR_FAILURE'
@@ -51,6 +53,7 @@ export class DownloaderAppError extends Error {
 
 export interface NormalizedFormat {
   formatId: string;
+  sourceFormatId?: string; // Audio extracted from a combined video/audio source.
   label: string;
   ext: 'mp4' | 'm4a' | 'jpg' | 'webp';
   Container: string;
@@ -116,11 +119,13 @@ export type JobStatus =
 
 export interface DownloadJob {
   jobId: string;
+  analyticsId?: string;
   url: string;
   shortcode: string;
   category: InstagramMediaCategory;
   formatId: string;
   itemIndex?: number;
+  itemIndices?: number[];
   isCarouselZip: boolean;
   status: JobStatus;
   progress: number;

@@ -11,6 +11,7 @@ import {
 } from '../types/media.types';
 import {
   validateInstagramUrl,
+  validateMediaInput,
   assertSafeHostResolution,
   sanitizeFilename,
 } from '../security/url-validator';
@@ -287,8 +288,8 @@ export class YtDlpService {
    * Validates the Instagram URL, invokes `yt-dlp --dump-single-json --no-download`,
    * handles single-photo and profile fallback adapters, and normalizes the output.
    */
-  public async extractMetadata(rawUrl: string): Promise<NormalizedMediaResult> {
-    const validated = validateInstagramUrl(rawUrl);
+  public async extractMetadata(rawUrl: string, tool?: string): Promise<NormalizedMediaResult> {
+    const validated = validateMediaInput(rawUrl, tool);
     const cached = this.metadataCache.get(validated.canonicalUrl);
     if (cached && cached.expiresAt > Date.now()) return cached.data;
     this.metadataCache.delete(validated.canonicalUrl);
@@ -308,6 +309,7 @@ export class YtDlpService {
       // Instagram photo carousels expose thumbnails without video formats.
       // Keep those entries so they can be normalized as downloadable images.
       ...(validated.category === 'photo' ? ['--ignore-no-formats-error'] : []),
+      ...(validated.category === 'story' ? ['--no-playlist'] : []),
       '--socket-timeout',
       String(this.socketTimeoutSeconds),
       '--',
@@ -403,9 +405,11 @@ export class YtDlpService {
       );
     }
 
-    const prefix = options.filenamePrefix || `saveframe_${metadata.shortcode}`;
+    const audioOnly = selectedFormat.hasAudio && !selectedFormat.hasVideo;
+    const prefix = options.filenamePrefix || `${metadata.uploader.username}_${metadata.shortcode}`;
+    const itemSuffix = metadata.items.length > 1 ? `_${item.index + 1}` : '';
     const safeFilename = sanitizeFilename(
-      `${prefix}_${item.index + 1}_${selectedFormat.formatId}`,
+      `${prefix}${itemSuffix}_${audioOnly ? 'audio' : item.mediaType}`,
       selectedFormat.ext
     );
     const finalFilePath = path.join(options.outputDir, `${options.jobId}_${safeFilename}`);
@@ -440,12 +444,13 @@ export class YtDlpService {
     }
 
     // Case B: Video / Reel / Story Video via yt-dlp subprocess
+    const sourceFormatId = selectedFormat.sourceFormatId || selectedFormat.formatId;
     const maxFileSizeArg = `${Math.floor(this.maxFileSizeBytes / (1024 * 1024))}M`;
     const formatSelector =
-      selectedFormat.formatId && selectedFormat.formatId !== 'best'
+      sourceFormatId && sourceFormatId !== 'best'
         ? selectedFormat.needsMerge
-          ? `${selectedFormat.formatId}+bestaudio/best`
-          : selectedFormat.formatId
+          ? `${sourceFormatId}+bestaudio/best`
+          : sourceFormatId
         : 'best[ext=mp4]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best';
 
     const args: string[] = [
@@ -458,12 +463,11 @@ export class YtDlpService {
       maxFileSizeArg,
       '-f',
       formatSelector,
-      '--merge-output-format',
-      selectedFormat.ext === 'm4a' ? 'm4a' : 'mp4',
+      ...(audioOnly ? ['--extract-audio', '--audio-format', 'm4a'] : ['--merge-output-format', 'mp4']),
       '--ffmpeg-location',
       this.ffmpegPath,
       '-o',
-      finalFilePath,
+      audioOnly ? finalFilePath.replace(/\.m4a$/, '.%(ext)s') : finalFilePath,
     ];
 
     if (metadata.isCarousel) {
@@ -508,7 +512,7 @@ export class YtDlpService {
             etaSeconds,
             stage: 'processing',
           });
-        } else if (line.includes('[Merger]') || line.includes('Merging formats')) {
+        } else if (line.includes('[Merger]') || line.includes('Merging formats') || line.includes('[ExtractAudio]')) {
           options.onProgress({
             percent: 95,
             downloadedBytes: 0,
@@ -656,6 +660,9 @@ export class YtDlpService {
     raw: any,
     validated: { canonicalUrl: string; category: InstagramMediaCategory; shortcode: string }
   ): NormalizedMediaResult {
+    if (validated.category === 'story' && raw?._type === 'playlist' && Array.isArray(raw.entries) && !raw.entries.length) {
+      throw new DownloaderAppError('NO_ACTIVE_STORIES', 'No downloadable active stories were returned by Instagram.', 404);
+    }
     const isPlaylist =
       raw._type === 'playlist' && Array.isArray(raw.entries) && raw.entries.length > 0;
     const rawEntries: any[] = isPlaylist ? raw.entries : [raw];
@@ -756,8 +763,11 @@ export class YtDlpService {
       };
     });
 
+    if (validated.category === 'story' && (items.length !== 1 || items[0].mediaType !== 'video')) {
+      throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'Use a direct link to one story video. Bulk story downloads are not supported.', 400);
+    }
     let resolvedCategory: InstagramMediaCategory = validated.category;
-    if (items.length > 1) {
+    if (items.length > 1 && validated.category !== 'story') {
       resolvedCategory = 'carousel';
     } else if (
       resolvedCategory === 'photo' &&
@@ -871,6 +881,15 @@ export class YtDlpService {
 
     if (audioFormats.length > 0) {
       deduped.push(audioFormats[0]);
+    } else {
+      // A combined stream can still provide audio when Instagram has no separate track.
+      const combined = deduped.find(format => !format.needsMerge);
+      if (combined) deduped.push({
+        formatId: 'audio-extract', sourceFormatId: combined.formatId,
+        label: 'Audio Track Only (M4A)', ext: 'm4a', Container: 'M4A Audio',
+        resolution: 'Audio Only', hasVideo: false, hasAudio: true, needsMerge: false,
+        filesizeFormatted: 'Size unavailable',
+      });
     }
 
     return deduped;
@@ -923,8 +942,12 @@ export class YtDlpService {
     }
 
     if (category === 'story') {
+      // Upstream often reports "unreachable" together with "login required".
+      // Authentication failure is not evidence that a story has expired.
+      if (/log[ -]?in|log in|authentication|cookies/.test(lower)) {
+        return new DownloaderAppError('LOGIN_REQUIRED', 'Instagram requires login to access this story. Only publicly accessible story videos can be retrieved.', 403, false, stderr);
+      }
       if (
-        lower.includes('unreachable') ||
         lower.includes('expired') ||
         lower.includes('not found') ||
         lower.includes('404')
@@ -933,19 +956,6 @@ export class YtDlpService {
           'EXPIRED_STORY',
           'This Instagram Story is unavailable or has expired past its 24-hour visibility window.',
           404,
-          false,
-          stderr
-        );
-      }
-      if (
-        lower.includes('log in') ||
-        lower.includes('login') ||
-        lower.includes('authentication')
-      ) {
-        return new DownloaderAppError(
-          'LOGIN_REQUIRED',
-          'Instagram restricts Story access to authenticated sessions. SaveFrame does not bypass login restrictions.',
-          403,
           false,
           stderr
         );

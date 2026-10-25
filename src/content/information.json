@@ -1,0 +1,125 @@
+[
+  {
+    "slug": "about",
+    "title": "About SaveFrame",
+    "description": "Learn what SaveFrame does, how its public Instagram media tools work, and the access and quality limits behind every download.",
+    "sections": [
+      [
+        "What SaveFrame helps you do",
+        "SaveFrame is an independent browser interface for inspecting and saving supported public Instagram media. You paste an individual link, check the returned preview and formats, and request a file. The tools cover photos, Reels, feed videos, carousel items, active public stories and available public profile information."
+      ],
+      [
+        "How the tools work",
+        "The application checks submitted links and uses server-side media extraction to inspect accessible source files. Video and audio tracks can be prepared together when supported. The interface shows actual returned options; it does not promise that every public link will resolve or that every file will be high definition."
+      ],
+      [
+        "Our practical limits",
+        "Private content, login-restricted posts, expired stories and deleted media may be unavailable. The service does not ask for Instagram passwords or login cookies. A successful download does not grant ownership or permission to republish the material."
+      ],
+      [
+        "Guides and responsibility",
+        "The SaveFrame blog explains link copying, device downloads, file formats and troubleshooting. Keep originals when you own the account, verify downloaded files before archiving, and respect the creator's rights. SaveFrame is not affiliated with or endorsed by Instagram or Meta Platforms, Inc."
+      ]
+    ]
+  },
+  {
+    "slug": "contact",
+    "title": "Contact SaveFrame",
+    "description": "Find the information to include in a SaveFrame support or copyright request, without sharing passwords, login cookies or private account data.",
+    "sections": [
+      [
+        "Describe the issue",
+        "For a download problem, include the public Instagram link, the tool you used, your browser and device, and the exact error displayed. Mention whether the failure happened during inspection, preparation or file delivery. Do not send private account links, passwords, login cookies or other sensitive information."
+      ],
+      [
+        "Check access first",
+        "Confirm that the link identifies an individual public post, Reel or active story. Private, expired and login-restricted items cannot be made accessible by repeating the request. See the troubleshooting guides for link and playback checks."
+      ],
+      [
+        "Copyright concerns",
+        "If you are a rights holder or authorized representative, identify the original work and the specific public link involved. Explain your relationship to the work and provide a way to follow up. Do not include unnecessary private documents in an initial request."
+      ],
+      [
+        "Response expectations",
+        "There is no published response-time guarantee. The contact channels shown below are the public channels available for this deployment."
+      ]
+    ]
+  },
+  {
+    "slug": "privacy",
+    "title": "SaveFrame Privacy Information",
+    "description": "Understand the public links, technical request data and temporary download files processed by SaveFrame, including external services used by the interface.",
+    "sections": [
+      [
+        "Links and media processing",
+        "When you submit a link, the server processes that public URL to inspect available metadata and prepare your requested file. Metadata and job information may be cached temporarily to support the download. The interface does not require an Instagram password or account registration."
+      ],
+      [
+        "Temporary files and technical data",
+        "Prepared files and job records use temporary storage with an expiration and cleanup process. The current application default is approximately fifteen minutes after processing; deployment settings and cleanup timing can change that period. Network and hosting infrastructure may process IP addresses and request logs for operation and abuse prevention. This is not a promise of zero logging."
+      ],
+      [
+        "External requests",
+        "Media previews can load from Instagram or its content-delivery network. The current interface also loads fonts from Google Fonts. Those services receive the technical data needed to deliver their resources and apply their own policies. Your browser stores downloaded files according to its settings."
+      ],
+      [
+        "Clipboard and account access",
+        "The Paste button requests access to clipboard text when you activate it. You can paste manually if permission is unavailable. Do not submit passwords, cookies, private account information or content you are not authorized to access."
+      ],
+      [
+        "Questions and changes",
+        "Use the contact page for questions about link processing or download data. Hosting services and any future analytics or advertising integrations can have their own data practices, so consult the current disclosures when using the service."
+      ]
+    ]
+  },
+  {
+    "slug": "terms",
+    "title": "SaveFrame Terms of Use",
+    "description": "Read the permitted-use conditions and practical limitations for SaveFrame's public Instagram media inspection and download tools.",
+    "sections": [
+      [
+        "Permitted use",
+        "Use SaveFrame only to inspect and save media you own or have permission to download. You remain responsible for complying with applicable law, the creator's rights and the relevant platform terms. Public visibility alone does not grant reuse rights."
+      ],
+      [
+        "Access boundaries",
+        "Do not use the service to bypass private accounts, authentication, access restrictions or rate limits. Do not submit malicious links, overwhelm the service with automated requests, or attempt to access internal network resources."
+      ],
+      [
+        "Availability and files",
+        "Supported formats depend on what the source provides. Media may become unavailable, requests may fail, and preparation may time out. Verify downloaded files before relying on them. SaveFrame does not guarantee original camera quality, a particular resolution, a complete account archive or unrestricted access."
+      ],
+      [
+        "Independent service",
+        "SaveFrame is not affiliated with, sponsored by or endorsed by Instagram or Meta Platforms, Inc. Product names and marks belong to their respective owners. No download gives you ownership of another person's work."
+      ],
+      [
+        "Questions",
+        "Use the contact page for support information and the copyright page for rights concerns. These conditions cover the public media tools described on this website. Check the current tool instructions before relying on an available format or feature."
+      ]
+    ]
+  },
+  {
+    "slug": "copyright",
+    "title": "Copyright and Responsible Downloading",
+    "description": "Learn how SaveFrame handles responsible media use and what rights holders should include when reporting a copyright concern.",
+    "sections": [
+      [
+        "Download permission matters",
+        "Save only material you own or are authorized to download. A public Instagram link does not make a photo, video or soundtrack free to republish. Attribution is useful context but does not replace permission when permission is required."
+      ],
+      [
+        "What this service provides",
+        "SaveFrame inspects individual public links and prepares supported source media on request. It is not an account archive or a license to reuse the content. Keep the creator, original link, permission context and download date with files used in a project."
+      ],
+      [
+        "Reporting a rights concern",
+        "Identify the work, the specific public Instagram link, the nature of your rights and the issue you want reviewed. Include accurate contact details for follow-up and state whether you are the owner or an authorized representative. Use the public copyright contact below when configured."
+      ],
+      [
+        "Original platform content",
+        "If you need an Instagram post removed from Instagram itself, use Instagram's official reporting process. A request to SaveFrame cannot by itself remove material from another platform. See the contact page for the channels available for this deployment."
+      ]
+    ]
+  }
+]

@@ -6,22 +6,42 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint src next.config.ts",
+    "test": "npm run test:admin && npm run test:downloader && npm run test:stories && npm run test:i18n && npm run test:blog",
+    "test:styles": "node scripts/check-styles.cjs",
     "test:downloader": "node scripts/check-downloader.cjs",
+    "test:stories": "node scripts/check-stories.cjs",
     "test:blog": "node scripts/check-blog.cjs",
-    "test:i18n": "node scripts/check-i18n.cjs"
+    "test:i18n": "node scripts/check-i18n.cjs",
+    "test:seo": "node scripts/check-seo.cjs",
+    "admin:setup": "node scripts/admin.cjs create",
+    "admin:migrate": "node scripts/admin.cjs migrate",
+    "admin:cleanup": "node scripts/admin.cjs cleanup",
+    "test:admin": "node scripts/check-admin.cjs",
+    "test:admin:live": "node scripts/check-admin-live.cjs",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@node-rs/argon2": "^2.2.2",
     "lucide-react": "^0.454.0",
     "next": "^15.0.0",
+    "nodemailer": "^10.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.7",
     "@types/node": "^22.0.0",
+    "@types/nodemailer": "^8.0.2",
     "@types/react": "^19.0.0",
-    "postcss": "^8.4.47",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^15.5.28",
+    "postcss": "^8.5.31",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.6.3"
+  },
+  "overrides": { "next": { "postcss": "$postcss" } },
+  "engines": {
+    "node": ">=24.0.0"
   }
 }

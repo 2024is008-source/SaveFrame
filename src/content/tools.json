@@ -1,0 +1,206 @@
+[
+  {
+    "slug": "reels-downloader",
+    "tool": "reels",
+    "title": "Instagram Reels Downloader",
+    "description": "Download supported public Instagram Reels as MP4. Preview available resolutions, choose video or audio, and check the finished file on your device.",
+    "intro": "Use a direct Reel link to inspect the video and audio Instagram makes available. SaveFrame prepares the selected format on the server and delivers the completed file to your browser. You do not need to install a browser extension or enter an Instagram password.",
+    "heading": "Save a Reel with the right video and sound",
+    "body": "A Reel may offer several resolutions or separate video and audio tracks. Choose a video option when you want moving pictures with available sound; audio-only is a separate choice. FFmpeg combines supported tracks when needed. A higher-resolution option does not guarantee access to a soundtrack that the source does not provide.",
+    "steps": [
+      "Open the individual public Reel in Instagram and copy its direct /reel/ link.",
+      "Paste the link above and confirm the creator and preview match the clip you intended to save.",
+      "Choose an available video format, wait for preparation, and play the downloaded MP4 to check its picture, sound and ending."
+    ],
+    "limits": "Private, deleted, login-restricted or rate-limited Reels may not resolve. SaveFrame does not promise every Reel in HD or recover unavailable music. Keep your original editing files if you need an archival master rather than a platform-compressed copy.",
+    "faqs": [
+      [
+        "Can I download Instagram Reels with audio?",
+        "When accessible video and audio tracks are provided, SaveFrame can prepare them together. Verify the completed file because some audio layers are unavailable outside Instagram."
+      ],
+      [
+        "Does choosing MP4 guarantee compatibility?",
+        "MP4 is a container, not a guarantee of a particular codec. Try a compatible media player and check the available format before converting a copy."
+      ],
+      [
+        "Where is the Reel saved on my phone?",
+        "Your browser usually places it in its downloads folder. On iPhone, check Files; on Android, check the browser download list or Downloads folder."
+      ]
+    ],
+    "guides": [
+      "how-to-download-instagram-reels-mp4",
+      "download-instagram-reels-with-audio",
+      "download-instagram-reels-on-iphone"
+    ]
+  },
+  {
+    "slug": "video-downloader",
+    "tool": "video",
+    "title": "Instagram Video Downloader",
+    "description": "Save supported public Instagram feed videos to your phone or computer. Inspect MP4 options and troubleshoot processing or playback problems.",
+    "intro": "SaveFrame helps you inspect a public Instagram video post and save an available file locally. This page is for feed video links such as /p/ and older /tv/ URLs. For a dedicated short-form clip, use the Reels downloader instead.",
+    "heading": "Check the source video before downloading",
+    "body": "A post thumbnail is a preview image, not the video itself. After the link resolves, choose a video format from the returned options. Resolution, audio and file availability depend on the original post. The browser receives the file after server preparation; it does not need a separate download extension.",
+    "steps": [
+      "Copy the individual public video post link, rather than the profile address or a search result.",
+      "Paste it above. Confirm the preview and choose a returned MP4 video option.",
+      "Allow processing to finish, open the browser download list, and verify playback before moving the file into your archive."
+    ],
+    "limits": "An accessible link in a signed-in Instagram app may still be restricted for a public downloader. Repeated submissions do not remove authentication or rate limits. If the source is unavailable, ask the creator for an authorized original rather than trying to bypass access controls.",
+    "faqs": [
+      [
+        "Can I save Instagram videos on a Windows PC?",
+        "Yes, when the source is supported. The browser receives the prepared file; check Downloads or the save location selected in your browser."
+      ],
+      [
+        "Why is the downloaded video silent?",
+        "Check the original, the selected format, your player volume and output device. A source may expose its video without an accessible audio track."
+      ],
+      [
+        "Can this download an entire account?",
+        "This interface works with individual supported links. It is not an account-wide export or a replacement for Instagram's official data download."
+      ]
+    ],
+    "guides": [
+      "download-instagram-videos-on-pc",
+      "why-instagram-videos-wont-download",
+      "backup-instagram-photos-videos-reels"
+    ]
+  },
+  {
+    "slug": "photo-downloader",
+    "tool": "photo",
+    "title": "Instagram Photo Downloader",
+    "description": "Download supported public Instagram photos from a post link. Preview the image, inspect available dimensions, and save a local copy without signing in.",
+    "intro": "Paste the direct link to a public photo post to inspect and save an available image. SaveFrame presents the source image dimensions when they are known. It does not enlarge a small preview or reconstruct detail removed by Instagram compression.",
+    "heading": "Save a photo rather than a screenshot",
+    "body": "A supported image download preserves the available photo file without the surrounding app interface. It may differ from the creator's original camera file: Instagram can resize or recompress uploads. Keep the supplied extension and inspect the downloaded image dimensions before using it in a layout or print project.",
+    "steps": [
+      "Open the individual public photo post and copy its /p/ link from the share menu.",
+      "Paste the link above and confirm that the preview is the photo you want.",
+      "Select an available image, save the completed download, and check its dimensions in your photo viewer."
+    ],
+    "limits": "Public access and permission are separate questions. Only save your own work or material you are authorized to download. Private posts and posts that require authentication are not supported. The available image can be larger or smaller than a common Instagram feed size; the source determines the result.",
+    "faqs": [
+      [
+        "Can I download a photo without an Instagram account?",
+        "The interface does not ask you to sign in. The post must still be publicly accessible to the server, and Instagram may restrict access."
+      ],
+      [
+        "Will the downloaded photo be the original camera file?",
+        "Not necessarily. The download is the image exposed by the source, which may already have been resized or compressed by Instagram."
+      ],
+      [
+        "What if the post contains several photos?",
+        "Use the carousel downloader to inspect the returned slides individually and keep them in the order you need."
+      ]
+    ],
+    "guides": [
+      "how-to-download-instagram-photos-online",
+      "how-to-copy-instagram-photo-link",
+      "download-instagram-photos-iphone-android"
+    ]
+  },
+  {
+    "slug": "carousel-downloader",
+    "tool": "photo",
+    "title": "Instagram Carousel Downloader",
+    "description": "Download individual photos from supported public Instagram carousels. Preview each returned slide, choose the items you need, and preserve their order.",
+    "intro": "A carousel is one Instagram post with multiple slides. Use the post's direct link to see the items returned by the source, then save the photos you need individually. This makes it easier to check slide order and avoid accidentally keeping only the cover image.",
+    "heading": "Inspect every returned slide",
+    "body": "Select a thumbnail to inspect its preview and use the matching save button for that item. Keep the post link and slide number with your downloaded files if order matters. Mixed photo/video posts can expose different formats per item; inspect what is actually returned rather than assuming every slide is an image.",
+    "steps": [
+      "Copy the direct /p/ link for the complete public carousel post.",
+      "Paste it above. Review the returned slide count and use the thumbnails to identify each photo.",
+      "Select a thumbnail and use Download slide to save one item, or choose Download all to save the returned slides in an ordered ZIP archive."
+    ],
+    "limits": "Download individual slides or package all returned items in one ZIP archive. Large posts take longer to prepare. A returned set may be incomplete if the source restricts some media; compare the result with the original post before treating it as a complete archive.",
+    "faqs": [
+      [
+        "Can I download multiple Instagram photos from one post?",
+        "Yes, when the carousel items are accessible. Select a thumbnail to download one slide, or use Download all to save the returned items together in a ZIP file."
+      ],
+      [
+        "Are all carousel slides the same resolution?",
+        "No. Dimensions and formats can differ between items. Check the metadata for each returned slide."
+      ],
+      [
+        "Why is only one image available?",
+        "The link may identify a single photo, or the source may not expose every carousel item. Compare the returned result with the original post before archiving."
+      ]
+    ],
+    "guides": [
+      "download-instagram-carousel-photos",
+      "instagram-photo-sizes-aspect-ratios",
+      "backup-instagram-photos-videos-reels"
+    ]
+  },
+  {
+    "slug": "story-downloader",
+    "tool": "story",
+    "title": "Instagram Story Downloader",
+    "description": "Download a supported public Instagram story video using its direct story link. Check available formats and understand story access and expiration limits.",
+    "intro": "Paste the direct link to one active public story video. The link must contain /stories/, the account username and the numeric story identifier. Profile links do not identify a single story and are not accepted in this tool.",
+    "heading": "Check story access and expiration",
+    "body": "SaveFrame checks the specified story video and offers available download formats when Instagram permits public access. Some stories require login even when their account is public. Available files depend on what Instagram allows the tool to access. This tool cannot bypass login restrictions or restore expired stories.",
+    "steps": [
+      "Open the individual active story video in Instagram and copy its direct story link.",
+      "Paste the complete /stories/username/story-id/ URL above.",
+      "If the video is accessible, check its preview and download the available video file."
+    ],
+    "limits": "This tool handles one story video at a time. Profile links, entire-account story collections and bulk story downloads are unsupported. Login-restricted, private, expired or source-blocked stories cannot be retrieved.",
+    "faqs": [
+      [
+        "Can I download an expired Instagram story?",
+        "No. SaveFrame cannot retrieve a story the source no longer makes available. Use your own original or Instagram archive when you control the account."
+      ],
+      [
+        "Does this work with private stories?",
+        "No. The interface does not bypass account privacy or authentication requirements."
+      ],
+      [
+        "Why does an active story still fail?",
+        "Instagram may require login or limit server access. Confirm the complete story URL, wait if requests are limited, or obtain the original from its creator."
+      ]
+    ],
+    "guides": [
+      "how-to-download-instagram-stories-by-link",
+      "how-to-download-instagram-story-videos",
+      "instagram-downloader-not-working"
+    ]
+  },
+  {
+    "slug": "profile-viewer",
+    "tool": "profile",
+    "title": "Instagram Profile Viewer",
+    "description": "View supported public Instagram profile information and available profile pictures by URL or username. Understand avatar resolution and access limits.",
+    "intro": "Enter a public Instagram profile URL or @username to inspect the profile information and image the source exposes. The tool is for public profile metadata, not private posts, messages, hidden followers or account activity.",
+    "heading": "Inspect the available profile picture",
+    "body": "A profile image is an avatar supplied by the source. Its available resolution may be limited, and enlarging the preview does not add detail. Compare the handle and picture with the intended account before saving anything, especially when several accounts have similar names.",
+    "steps": [
+      "Copy the public account's profile URL or enter its exact @username.",
+      "Paste it above and check the returned handle, profile information and image.",
+      "Save an available image only when permitted, then inspect its actual dimensions rather than assuming it is a full-size portrait."
+    ],
+    "limits": "This page does not reveal private profiles, anonymous story-viewing guarantees or hidden account information. Public metadata may still be unavailable if Instagram requires login or restricts requests. Information can change after the result is returned.",
+    "faqs": [
+      [
+        "Can I view a private Instagram profile?",
+        "No. SaveFrame does not bypass privacy settings or provide access to private account content."
+      ],
+      [
+        "Will the profile picture always be high resolution?",
+        "No. The source determines which avatar is accessible. A larger on-screen preview is not proof of a larger original file."
+      ],
+      [
+        "Should I paste a post link here?",
+        "Use a profile URL or @username for profile information. For an individual photo, Reel or story, use its matching downloader."
+      ]
+    ],
+    "guides": [
+      "view-instagram-profile-picture-by-url",
+      "instagram-photo-sizes-aspect-ratios",
+      "instagram-downloader-not-working"
+    ]
+  }
+]

@@ -1,5 +1,13 @@
 # SaveFrame
 
+## SEO and public pages
+
+Dedicated English tools are available at `/reels-downloader`, `/video-downloader`, `/photo-downloader`, `/carousel-downloader`, `/story-downloader` and `/profile-viewer`. They share the existing downloader and have distinct server-rendered instructions and FAQs. `/about`, `/contact`, `/privacy`, `/terms` and `/copyright` provide crawlable information pages. Existing homepage query links and ten language URLs still work.
+
+`npm run test:seo` crawls the running production preview, checks metadata, headings, canonical URLs, structured data and internal links, and writes `reports/seo-crawl.json`. The sitemap includes 37 canonical URLs; unfiltered blog page two is separately indexable with its own canonical. API responses carry noindex headers and are excluded from the sitemap.
+
+Support and copyright contact addresses are configured with `SAVEFRAME_SUPPORT_EMAIL` and `SAVEFRAME_COPYRIGHT_EMAIL`; the approved public address is `backbencherz@gmail.com`. See `SEO_IMPLEMENTATION_REPORT.md` for the complete audit, changes, tests and deployment requirements. The Nginx TLS file is a deployment example, not a change to a running server.
+
 ## Homepage languages
 
 The shared homepage supports English `/`, Spanish `/es/`, Brazilian Portuguese `/pt-br/`, German `/de/`, French `/fr/`, Japanese `/ja/`, Indonesian `/id/`, Turkish `/tr/`, Hindi `/hi/`, and Arabic `/ar/`. Localized pages render on the server with their own metadata, canonical URLs, language alternatives and sitemap entries. Arabic uses RTL. Blog and legal content stays English.
@@ -25,7 +33,7 @@ The local runtime packages are installed from the [yt-dlp](https://github.com/yt
 
 ## Production
 
-Stop the development server before building, since Next.js uses the same `.next` output directory for both modes.
+Development writes to `.next-dev`; production builds and `npm start` use `.next`. This prevents a development server from overwriting the production CSS and JavaScript assets. Run `npm run build` before `npm start`, and restart the production process after rebuilding. Do not rebuild `.next` while a production process is serving it.
 
 ```powershell
 npm run build
@@ -50,8 +58,19 @@ Published article records live in `src/content/blog/posts.json`; each body is a 
 4. Put optimized WebP covers in `public/images/blog/` at 480, 960, and 1200 pixels wide. Use a unique cover for each article; checks reject repeated cover names and identical files.
 5. Run `npm run test:blog`, then stop the running app and run `npm run build`. Content is generated statically, so publication changes require a new build.
 
-Deploy the content files along with the application. There is no database or CMS dependency.
+Deploy the content files along with the application. Blog articles remain file-based; private administration now uses a persistent SQLite database outside the public directory.
 
 The production origin is configured as `https://saveframe.site` in `.env.production`. Change `NEXT_PUBLIC_SITE_URL` before building if the deployment domain changes. Development without an override uses localhost and disables indexing. With a public origin, published guides are crawlable, `/api/` is excluded from robots, and article metadata, Open Graph/Twitter images, BlogPosting/BreadcrumbList structured data, and sitemap URLs use that origin. Filtered/paginated listing URLs canonicalize to `/blog` and are marked noindex.
 
 The blog has 15 articles dated 24 October 2026. The author is attributed to SaveFrame; no personal qualifications or testimonials are invented. Cover images are generated editorial illustrations in the supplied warm photographic style, not documentary photos or Instagram screenshots. Image prompts and asset notes are in `design-system/insta-save/IMAGE-NOTES.md`.
+## Direct story videos
+
+The Story tool accepts one active story video URL containing `/stories/username/story-id/`. Profile links, whole-account stories and bulk story downloads are rejected. The public extractor uses `--no-playlist`; no paid provider, account token or cookie connection is required or configured. Instagram can still require login for a particular story; that case is reported as an access restriction rather than an expired story.
+
+Run `npm run test:stories` for direct-link validation, single-video extraction, bulk rejection and login-error checks. These checks use offline extraction fixtures; a live download must be tested with an accessible current story video link.
+
+## Private administration
+
+Use Node.js 24+, run `npm run admin:setup` to choose your administrator password privately, then open `/admin/login`. There are no default credentials. The dashboard and its APIs require server-side authentication, and admin URLs are excluded from indexing and the sitemap. Local admin setup email is configured in ignored `.env.local`; it does not change the public support email.
+
+Read [ADMIN_SETUP.md](ADMIN_SETUP.md) for local preview, HTTPS hosting, persistent data, backups, optional two-factor authentication and recovery. [ADMIN_IMPLEMENTATION_REPORT.md](ADMIN_IMPLEMENTATION_REPORT.md) records the implementation, checks and limitations.

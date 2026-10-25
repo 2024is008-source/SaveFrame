@@ -1,3 +1,18 @@
 import type { NextConfig } from 'next';
-const config: NextConfig = { skipTrailingSlashRedirect: true };
-export default config;
+import { PHASE_DEVELOPMENT_SERVER } from 'next/constants';
+const config: NextConfig = {
+  skipTrailingSlashRedirect: true,
+  serverExternalPackages: ['@node-rs/argon2'],
+  images: { deviceSizes: [360, 480, 640, 768, 960, 1200], imageSizes: [48, 96, 160, 240] },
+  async headers() {
+    return [
+      { source: '/admin/:path*', headers: [{key:'X-Robots-Tag',value:'noindex, nofollow, nosnippet'},{key:'Cache-Control',value:'private, no-store, max-age=0'},{key:'X-Frame-Options',value:'DENY'},{key:'Content-Security-Policy',value:"frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"},{key:'Referrer-Policy',value:'no-referrer'},{key:'X-Content-Type-Options',value:'nosniff'}] },
+      { source: '/api/:path*', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow, nosnippet' }] },
+      { source: '/images/blog/:path*', headers: [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }] },
+    ];
+  },
+};
+export default function nextConfig(phase: string): NextConfig {
+  // A dev server must not replace the CSS/chunk files used by next start.
+  return { ...config, distDir: phase === PHASE_DEVELOPMENT_SERVER ? '.next-dev' : '.next' };
+}

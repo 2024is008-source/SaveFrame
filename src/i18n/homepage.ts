@@ -2,6 +2,10 @@ import reference from '../ui/saveframe.json';
 import { homepageBlogMarkup, escapeHtml } from '../lib/blog';
 import { getDictionary, translate, type TranslationKey } from './server';
 import { localeOptions, locales, localePath, languageTag, type Locale } from './config';
+import { crawlableNavigation } from '../lib/navigation';
+import { pageGraph, jsonLd } from '../lib/seo';
+import { publicSettings } from '../admin/db';
+import { publicBrandMarkup } from '../admin/public-seo';
 const decode = (value: string) => value.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 export function localizedHomepage(locale: Locale) {
   const dict = getDictionary(locale);
@@ -25,6 +29,8 @@ export function localizedHomepage(locale: Locale) {
   markup = markup.replace('<section data-home-blog></section>', blog);
   markup = markup.replace('id="info-modal-body"', 'id="info-modal-body" lang="en" dir="ltr"').replace('id="info-modal-title"', 'id="info-modal-title" lang="en" dir="ltr"');
   markup = markup.replace('type="url"', 'type="text" inputmode="url" dir="ltr"');
-  const client = JSON.stringify({ locale, home: localePath(locale), language: languageTag(locale), dictionary: dict }).replace(/</g, '\\u003c');
-  return markup + `<script type="application/json" id="home-i18n">${client}</script>`;
+  const client = JSON.stringify({ locale, home: localePath(locale), language: languageTag(locale), dictionary: dict, publicSettings:publicSettings() }).replace(/</g, '\\u003c');
+  markup = crawlableNavigation(markup, localePath(locale));
+  markup = markup.replace('>About SaveFrame</a>', `>${escapeHtml(dict['About SaveFrame'])}</a>`).replace('>Copyright</a>', `>${escapeHtml(dict.Copyright)}</a>`);
+  return publicBrandMarkup(markup) + `<script type="application/json" id="home-i18n">${client}</script><script type="application/ld+json">${jsonLd(pageGraph(localePath(locale), dict['Instagram Downloader'], dict['Save supported Instagram photos, videos, and Reels with a simple link.'], languageTag(locale), true))}</script>`;
 }

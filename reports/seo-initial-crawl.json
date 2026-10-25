@@ -1,0 +1,335 @@
+[
+  {
+    "path": "/",
+    "status": 200,
+    "title": "SaveFrame — Instagram Downloader for Photos, Reels, Videos &amp; Stories",
+    "description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+    "h1": 1,
+    "schema": 0,
+    "links": 25
+  },
+  {
+    "path": "/es/",
+    "status": 200,
+    "title": "SaveFrame — Descarga fotos, Reels, vídeos e historias de Instagram",
+    "description": "Guarda fotos, vídeos, Reels, carruseles e historias públicas de Instagram compatibles con un enlace. Una herramienta sencilla y adaptada al móvil.",
+    "h1": 1,
+    "schema": 0,
+    "links": 25
+  },
+  {
+    "path": "/pt-br/",
+    "status": 200,
+    "title": "SaveFrame — Baixe fotos, Reels, vídeos e stories do Instagram",
+    "description": "Salve fotos, vídeos, Reels, carrosséis e stories públicos do Instagram compatíveis com um link. Ferramenta simples e adaptada ao celular.",
+    "h1": 1,
+    "schema": 0,
+    "links": 25
+  },
+  {
+    "path": "/de/",
+    "status": 200,
+    "title": "SaveFrame — Instagram-Fotos, Reels, Videos und Storys herunterladen",
+    "description": "Öffentliche Instagram-Fotos, Videos, Reels, Karussells und Storys per Link speichern, sofern unterstützt. Einfach und für Mobilgeräte geeignet.",
+    "h1": 1,
+    "schema": 0,
+    "links": 25
+  },
+  {
+    "path": "/fr/",
+    "status": 200,
+    "title": "SaveFrame — Télécharger photos, Reels, vidéos et stories Instagram",
+    "description": "Enregistrez les photos, vidéos, Reels, carrousels et stories Instagram publics compatibles avec un lien. Un outil simple et adapté au mobile.",
+    "h1": 1,
+    "schema": 0,
+    "links": 25
+  },
+  {
+    "path": "/ja/",
+    "status": 200,
+    "title": "SaveFrame — Instagramの写真・リール・動画・ストーリーを保存",
+    "description": "対応する公開Instagramの写真、動画、リール、カルーセル、ストーリーをリンクで保存。シンプルでスマートフォンにも対応。",
+    "h1": 1,
+    "schema": 0,
+    "links": 25
+  },
+  {
+    "path": "/id/",
+    "status": 200,
+    "title": "SaveFrame — Unduh foto, Reels, video, dan story Instagram",
+    "description": "Simpan foto, video, Reels, carousel, dan story Instagram publik yang didukung dengan tautan. Alat sederhana dan ramah ponsel.",
+    "h1": 1,
+    "schema": 0,
+    "links": 25
+  },
+  {
+    "path": "/tr/",
+    "status": 200,
+    "title": "SaveFrame — Instagram fotoğraf, Reels, video ve hikâye indirme",
+    "description": "Desteklenen herkese açık Instagram fotoğraf, video, Reels, kaydırmalı gönderi ve hikâyelerini bağlantıyla kaydedin. Sade ve mobil uyumlu araç.",
+    "h1": 1,
+    "schema": 0,
+    "links": 25
+  },
+  {
+    "path": "/hi/",
+    "status": 200,
+    "title": "SaveFrame — Instagram फ़ोटो, Reels, वीडियो और स्टोरी डाउनलोड करें",
+    "description": "उपलब्ध सार्वजनिक Instagram फ़ोटो, वीडियो, Reels, कैरोसेल और स्टोरी एक लिंक से सेव करें। सरल और मोबाइल के अनुकूल टूल।",
+    "h1": 1,
+    "schema": 0,
+    "links": 25
+  },
+  {
+    "path": "/ar/",
+    "status": 200,
+    "title": "SaveFrame — تنزيل صور إنستغرام وريلز والفيديو والقصص",
+    "description": "احفظ الصور والفيديوهات وريلز والمنشورات متعددة الصور والقصص العامة المدعومة من إنستغرام برابط واحد. أداة بسيطة ومناسبة للجوال.",
+    "h1": 1,
+    "schema": 0,
+    "links": 25
+  },
+  {
+    "path": "/blog",
+    "status": 200,
+    "title": "Instagram Download Guides &amp; Tutorials | SaveFrame",
+    "description": "Practical guides to downloading supported Instagram photos, Reels, videos, and stories, with clear troubleshooting and backup advice.",
+    "h1": 1,
+    "schema": 0,
+    "links": 81
+  },
+  {
+    "path": "/blog/how-to-download-instagram-stories-by-link",
+    "status": 200,
+    "title": "How to Download Instagram Stories by Link | SaveFrame",
+    "description": "Copy the right story link, check public access, and save an available story without confusing it with a post or Reel.",
+    "h1": 1,
+    "schema": 2,
+    "links": 59
+  },
+  {
+    "path": "/blog/how-to-download-instagram-story-videos",
+    "status": 200,
+    "title": "How to Download Instagram Story Videos | SaveFrame",
+    "description": "Save available story clips, check their sound, and understand why some active stories still cannot be downloaded.",
+    "h1": 1,
+    "schema": 2,
+    "links": 60
+  },
+  {
+    "path": "/blog/how-to-download-instagram-photos-online",
+    "status": 200,
+    "title": "How to Download Instagram Photos Online | SaveFrame",
+    "description": "Use a public post link to preview and save a photo, choose an available image, and keep a useful local copy.",
+    "h1": 1,
+    "schema": 2,
+    "links": 63
+  },
+  {
+    "path": "/blog/how-to-copy-instagram-photo-link",
+    "status": 200,
+    "title": "Instagram Photo Downloader: How to Copy an Instagram Post Link | SaveFrame",
+    "description": "Find a direct photo-post link on mobile or desktop and fix the common copying mistakes that prevent a download.",
+    "h1": 1,
+    "schema": 2,
+    "links": 59
+  },
+  {
+    "path": "/blog/view-instagram-profile-picture-by-url",
+    "status": 200,
+    "title": "How to View Instagram Profile Pictures Using a URL | SaveFrame",
+    "description": "Open an available public profile image from its profile URL and understand the limits of avatar resolution and access.",
+    "h1": 1,
+    "schema": 2,
+    "links": 60
+  },
+  {
+    "path": "/blog/how-to-download-instagram-reels-mp4",
+    "status": 200,
+    "title": "How to Download Instagram Reels in MP4 Format | SaveFrame",
+    "description": "Turn a supported public Reel link into an MP4 file, choose an available format, and check the finished download.",
+    "h1": 1,
+    "schema": 2,
+    "links": 61
+  },
+  {
+    "path": "/blog/download-instagram-reels-on-iphone",
+    "status": 200,
+    "title": "How to Download Instagram Reels on iPhone | SaveFrame",
+    "description": "Download a supported Reel in your browser, find the file on your iPhone, and move it to Photos when compatible.",
+    "h1": 1,
+    "schema": 2,
+    "links": 62
+  },
+  {
+    "path": "/blog/download-instagram-videos-on-pc",
+    "status": 200,
+    "title": "How to Download Instagram Videos on PC | SaveFrame",
+    "description": "Save supported Instagram videos to a Windows computer and verify the file, sound, and download location.",
+    "h1": 1,
+    "schema": 2,
+    "links": 63
+  },
+  {
+    "path": "/blog/download-instagram-carousel-photos",
+    "status": 200,
+    "title": "How to Download Multiple Photos from an Instagram Carousel | SaveFrame",
+    "description": "Inspect every available carousel slide, save the photos you need, and preserve their original post order.",
+    "h1": 1,
+    "schema": 2,
+    "links": 62
+  },
+  {
+    "path": "/blog/download-instagram-reels-with-audio",
+    "status": 200,
+    "title": "How to Download Instagram Reels with Audio | SaveFrame",
+    "description": "Choose a video download with sound, distinguish it from audio-only files, and diagnose a silent Reel.",
+    "h1": 1,
+    "schema": 2,
+    "links": 60
+  },
+  {
+    "path": "/blog/instagram-downloader-not-working",
+    "status": 200,
+    "title": "Instagram Downloader Not Working? Common Problems and Solutions | SaveFrame",
+    "description": "Diagnose link, access, connection, storage, and processing problems without repeated requests or unsafe workarounds.",
+    "h1": 1,
+    "schema": 2,
+    "links": 62
+  },
+  {
+    "path": "/blog/why-instagram-videos-wont-download",
+    "status": 200,
+    "title": "Why Can&#x27;t I Download Instagram Videos? | SaveFrame",
+    "description": "Separate unavailable videos from format, audio-merging, and browser problems so you can choose the right next step.",
+    "h1": 1,
+    "schema": 2,
+    "links": 62
+  },
+  {
+    "path": "/blog/download-instagram-photos-iphone-android",
+    "status": 200,
+    "title": "How to Download Instagram Photos on iPhone and Android | SaveFrame",
+    "description": "Save public Instagram photos on your phone and find them in the correct browser, file, or photo-library location.",
+    "h1": 1,
+    "schema": 2,
+    "links": 64
+  },
+  {
+    "path": "/blog/instagram-photo-sizes-aspect-ratios",
+    "status": 200,
+    "title": "Instagram Photo Sizes and Aspect Ratios Explained | SaveFrame",
+    "description": "Understand pixels, common photo shapes, preview crops, and what a downloaded image&#x27;s dimensions can actually tell you.",
+    "h1": 1,
+    "schema": 2,
+    "links": 60
+  },
+  {
+    "path": "/blog/backup-instagram-photos-videos-reels",
+    "status": 200,
+    "title": "How to Back Up Your Own Instagram Photos, Videos, and Reels | SaveFrame",
+    "description": "Build a practical media archive and distinguish selected public-post downloads from Instagram&#x27;s official account export.",
+    "h1": 1,
+    "schema": 2,
+    "links": 62
+  },
+  {
+    "path": "/photo-downloader",
+    "status": 404,
+    "title": "SaveFrame — Instagram Downloader for Photos, Reels, Videos &amp; Stories",
+    "description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+    "h1": 0,
+    "schema": 0,
+    "links": 2
+  },
+  {
+    "path": "/reels-downloader",
+    "status": 404,
+    "title": "SaveFrame — Instagram Downloader for Photos, Reels, Videos &amp; Stories",
+    "description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+    "h1": 0,
+    "schema": 0,
+    "links": 2
+  },
+  {
+    "path": "/video-downloader",
+    "status": 404,
+    "title": "SaveFrame — Instagram Downloader for Photos, Reels, Videos &amp; Stories",
+    "description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+    "h1": 0,
+    "schema": 0,
+    "links": 2
+  },
+  {
+    "path": "/carousel-downloader",
+    "status": 404,
+    "title": "SaveFrame — Instagram Downloader for Photos, Reels, Videos &amp; Stories",
+    "description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+    "h1": 0,
+    "schema": 0,
+    "links": 2
+  },
+  {
+    "path": "/story-downloader",
+    "status": 404,
+    "title": "SaveFrame — Instagram Downloader for Photos, Reels, Videos &amp; Stories",
+    "description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+    "h1": 0,
+    "schema": 0,
+    "links": 2
+  },
+  {
+    "path": "/profile-viewer",
+    "status": 404,
+    "title": "SaveFrame — Instagram Downloader for Photos, Reels, Videos &amp; Stories",
+    "description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+    "h1": 0,
+    "schema": 0,
+    "links": 2
+  },
+  {
+    "path": "/about",
+    "status": 404,
+    "title": "SaveFrame — Instagram Downloader for Photos, Reels, Videos &amp; Stories",
+    "description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+    "h1": 0,
+    "schema": 0,
+    "links": 2
+  },
+  {
+    "path": "/contact",
+    "status": 404,
+    "title": "SaveFrame — Instagram Downloader for Photos, Reels, Videos &amp; Stories",
+    "description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+    "h1": 0,
+    "schema": 0,
+    "links": 2
+  },
+  {
+    "path": "/privacy",
+    "status": 404,
+    "title": "SaveFrame — Instagram Downloader for Photos, Reels, Videos &amp; Stories",
+    "description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+    "h1": 0,
+    "schema": 0,
+    "links": 2
+  },
+  {
+    "path": "/terms",
+    "status": 404,
+    "title": "SaveFrame — Instagram Downloader for Photos, Reels, Videos &amp; Stories",
+    "description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+    "h1": 0,
+    "schema": 0,
+    "links": 2
+  },
+  {
+    "path": "/copyright",
+    "status": 404,
+    "title": "SaveFrame — Instagram Downloader for Photos, Reels, Videos &amp; Stories",
+    "description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+    "h1": 0,
+    "schema": 0,
+    "links": 2
+  }
+]
