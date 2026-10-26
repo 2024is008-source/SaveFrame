@@ -63,11 +63,17 @@ Deploy the content files along with the application. Blog articles remain file-b
 The production origin is configured as `https://saveframe.site` in `.env.production`. Change `NEXT_PUBLIC_SITE_URL` before building if the deployment domain changes. Development without an override uses localhost and disables indexing. With a public origin, published guides are crawlable, `/api/` is excluded from robots, and article metadata, Open Graph/Twitter images, BlogPosting/BreadcrumbList structured data, and sitemap URLs use that origin. Filtered/paginated listing URLs canonicalize to `/blog` and are marked noindex.
 
 The blog has 15 articles dated 24 October 2026. The author is attributed to SaveFrame; no personal qualifications or testimonials are invented. Cover images are generated editorial illustrations in the supplied warm photographic style, not documentary photos or Instagram screenshots. Image prompts and asset notes are in `design-system/insta-save/IMAGE-NOTES.md`.
-## Direct story videos
+## Direct story images and videos
 
-The Story tool accepts one active story video URL containing `/stories/username/story-id/`. Profile links, whole-account stories and bulk story downloads are rejected. The public extractor uses `--no-playlist`; no paid provider, account token or cookie connection is required or configured. Instagram can still require login for a particular story; that case is reported as an access restriction rather than an expired story.
+The Story tool accepts one active story image or video URL containing `/stories/username/story-id/`. It tries yt-dlp, then a bounded canonical-page HTTP fallback on recoverable errors, then optional gallery-dl when explicitly enabled. Profile links, whole-account stories and bulk story downloads are rejected. Public requests remain anonymous; no paid provider or shared account is configured. Instagram login restrictions remain explicit failures. See [hybrid story architecture and configuration](docs/HYBRID_STORIES.md) for deadlines, security checks, optional operator-only authorization and deployment steps.
 
-Run `npm run test:stories` for direct-link validation, single-video extraction, bulk rejection and login-error checks. These checks use offline extraction fixtures; a live download must be tested with an accessible current story video link.
+Run `npm run test:stories` for offline provider, image/video/audio, transport, cancellation, authorization and error fixtures. Add `-- --live-url=https://www.instagram.com/stories/username/story-id/` for an explicitly requested live test on a disposable local production server after building.
+
+## Media previews and public avatars
+
+Desktop media previews preserve source proportions. Mobile keeps compact 4:3 cards; tap the main photo or video to open an accessible dialog showing the full media. Videos have a centred transparent play control and native playback controls. Preparation is on demand, uses the existing bounded queue, supports byte-range seeking and does not increase download or delivery totals. Closing by button, backdrop or Escape preserves the current result and scroll position. `npm run test:preview` checks partial responses, attachment compatibility and error recognition across route-module reloads.
+
+The profile tool can save an avatar already exposed by Instagram's unauthenticated public response, including an avatar belonging to a private account. It does not access private posts or restricted pictures, infer unavailable dimensions or promise HD. The supplied `@ama_shaa_` profile downloaded a valid 2,579-byte JPEG on 26 October 2026. The supplied `sula_dewmini/4016120619302180887` story returned `403 LOGIN_REQUIRED` on the fresh production preview. See `reports/media-live-2026-10-26.json` for the results.
 
 ## Private administration
 

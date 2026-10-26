@@ -1,11 +1,19 @@
 
     window.initializeSaveFrame = function () {
+      const initializedForm = document.getElementById('downloader-form');
+      if (initializedForm?.getAttribute('data-saveframe-initialized') === 'true') return;
       // The public interface resolves and downloads media through local API routes.
       window.INSTA_DOWNLOADER_API_ENDPOINT = '/api/media/resolve';
       let resolvedMedia = null;
       let resolveController = null;
       // Keep in-flight downloads stable when a different carousel thumbnail is selected.
       const pendingDownloads = new Map();
+      const preparedPreviews = new Map();
+      const previewControllers = new Set();
+      // Aggregate categories only. Never pass a source link, account, caption or job ID.
+      function analytics(name, params) {
+        window.dispatchEvent(new CustomEvent('saveframe:analytics-event', {detail:{name,params}}));
+      }
 
       // Escape API text before inserting it into the reference's HTML templates.
       function escapeHtml(value) {
@@ -63,6 +71,9 @@
       }
 
       function clearLiveResult() {
+        previewControllers.forEach(controller => controller.abort());
+        previewControllers.clear();
+        preparedPreviews.clear();
         resolveController?.abort();
         resolveController = null;
         resolvedMedia = null;
@@ -350,6 +361,8 @@
 
       // Render the Result Section based on state.uiStateMode and state.activeTab
       function renderResultSection() {
+        previewControllers.forEach(controller => controller.abort());
+        previewControllers.clear();
         const cfg = currentConfig();
         const wrapper = document.getElementById('result-section-wrap');
         wrapper.classList.toggle('hidden', !resolvedMedia);
@@ -357,7 +370,6 @@
           resultDynamicContent.replaceChildren();
           return;
         }
-        const primaryImg = previewUrl((resolvedMedia.items[state.activeCarouselIdx] || resolvedMedia.items[0]).thumbnailUrl);
 
         // Carousel preview, compact thumbnail selector, and two download actions.
         if (state.uiStateMode === 'carousel') {
@@ -387,8 +399,8 @@
               <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
                 <!-- Active Slide Thumbnail Preview -->
                 <div class="md:col-span-5">
-                  <div class="relative rounded-xl overflow-hidden border border-line bg-soft aspect-[4/3]">
-                    <img src="${activeSlide.img}" alt="${activeSlide.title}" class="w-full h-full object-cover" />
+                  <div class="media-source-preview relative rounded-xl overflow-hidden border border-line bg-soft">
+                    ${mediaPreviewMarkup(resolvedMedia.items[activeSlide.idx])}
                     <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-ink/80 text-white text-[11px] font-semibold tabular-nums">
                       ${activeSlide.type}
                     </div>
@@ -468,6 +480,7 @@
             });
           });
           translateResult();
+          attachMediaPreviews();
           attachDownloadTriggers();
           return;
         }
@@ -482,12 +495,8 @@
               
               <!-- Left Column: Media Thumbnail Preview + Optical Loupe Toggle -->
               <div class="md:col-span-5">
-                <div id="media-preview-frame" class="relative rounded-xl overflow-hidden border border-line bg-soft aspect-[4/3] ${state.loupeZoom ? 'loupe-active' : ''}">
-                  <img
-                    src="${primaryImg}"
-                    alt="${escapeHtml(t('Preview for {author}', { author: resolvedMedia.uploader.username }))}"
-                    class="w-full h-full object-cover ui-transition"
-                  />
+                <div id="media-preview-frame" class="media-source-preview relative rounded-xl overflow-hidden border border-line bg-soft ${state.loupeZoom ? 'loupe-active' : ''}">
+                  ${mediaPreviewMarkup(resolvedMedia.items[state.activeCarouselIdx] || resolvedMedia.items[0])}
                   <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5">
                     <span class="px-2.5 py-1 rounded-md bg-ink/80 text-white text-[11px] font-semibold">
                       ${cfg.mediaTypeBadge}
@@ -496,7 +505,7 @@
                   <button
                     type="button"
                     id="toggle-loupe-btn"
-                    class="absolute bottom-2.5 right-2.5 min-h-[34px] px-2.5 py-1 rounded-lg bg-white/95 hover:bg-white text-ink border border-line text-[11px] font-semibold flex items-center gap-1.5 cursor-pointer shadow-sm"
+                    class="${(resolvedMedia.items[state.activeCarouselIdx] || resolvedMedia.items[0]).mediaType === 'video' ? 'hidden' : ''} absolute bottom-2.5 right-2.5 min-h-[34px] px-2.5 py-1 rounded-lg bg-white/95 hover:bg-white text-ink border border-line text-[11px] font-semibold flex items-center gap-1.5 cursor-pointer shadow-sm"
                   >
                     <svg class="w-3.5 h-3.5 text-brand-violet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/><line x1="11" x2="11" y1="8" y2="14"/><line x1="8" x2="14" y1="11" y2="11"/></svg>
                     <span>${escapeHtml(t(state.loupeZoom ? 'Reset Crop (1×)' : 'Inspect Detail (1.65×)'))}</span>
@@ -566,6 +575,7 @@
         `;
 
         translateResult();
+        attachMediaPreviews();
         // Attach Loupe toggle
         const loupeBtn = document.getElementById('toggle-loupe-btn');
         if (loupeBtn) {
@@ -584,6 +594,111 @@
         });
 
         attachDownloadTriggers();
+      }
+
+      function mediaPreviewMarkup(item) {
+        const index = resolvedMedia.items.indexOf(item);
+        const video = item.mediaType === 'video';
+        return `<button type="button" class="media-open-btn" data-preview-index="${index}" aria-label="${escapeHtml(t(video ? 'Play video' : 'Preview photo'))}">
+          ${item.thumbnailUrl ? `<img src="${previewUrl(item.thumbnailUrl)}" alt="${escapeHtml(item.title || t('Preview for {author}', { author: resolvedMedia.uploader.username }))}" class="media-source-image" />` : '<span aria-hidden="true" class="media-source-image" style="aspect-ratio:4/3"></span>'}
+          ${video ? `<span class="media-play-label" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="m8 5 11 7-11 7z"/></svg></span>` : ''}
+        </button>`;
+      }
+
+      function attachMediaPreviews() {
+        const media = resolvedMedia;
+        resultDynamicContent.querySelectorAll('[data-preview-index]').forEach(button => {
+          button.addEventListener('click', () => {
+            const item = media.items[Number(button.getAttribute('data-preview-index'))];
+            const selected = item.formats[state.uiStateMode === 'carousel' ? 0 : state.selectedQualityIdx];
+            const format = selected?.hasVideo ? selected : item.formats.find(format => format.hasVideo);
+            if (item.mediaType === 'photo' || window.matchMedia('(max-width: 767px)').matches) openMediaPreview(media, item, format, button);
+            else startVideoPreview(button.closest('.media-source-preview'), media, item, format);
+          });
+        });
+      }
+
+      function openMediaPreview(media, item, format, opener) {
+        const scrollPosition = {left:window.scrollX,top:window.scrollY,behavior:'instant'};
+        const dialog = document.createElement('dialog');
+        dialog.className = 'media-lightbox';
+        dialog.setAttribute('aria-label', t('Media preview'));
+        dialog.innerHTML = `<header class="media-lightbox-header"><strong>${escapeHtml(t(item.mediaType === 'video' ? 'Video' : 'Photo'))}${item.width && item.height ? ' · ' + Number(item.width) + ' × ' + Number(item.height) : ''}</strong><button type="button" class="media-lightbox-close" aria-label="${escapeHtml(t('Close dialog'))}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 12 12M6 18 18 6"/></svg></button></header><div class="media-lightbox-content">${item.thumbnailUrl ? `<img class="media-source-image" src="${previewUrl(item.thumbnailUrl)}" alt="${escapeHtml(item.title)}" />` : ''}</div>`;
+        document.body.appendChild(dialog);
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        let controller;
+        dialog.addEventListener('close', () => {
+          controller?.abort();
+          const video = dialog.querySelector('video');
+          if(video) { video.pause(); video.removeAttribute('src'); video.load(); }
+          dialog.remove();
+          document.body.style.overflow = previousOverflow;
+          if(opener.isConnected) opener.focus({preventScroll:true});
+          window.scrollTo(scrollPosition);
+          requestAnimationFrame(()=>window.scrollTo(scrollPosition));
+        }, {once:true});
+        dialog.querySelector('.media-lightbox-close').addEventListener('click', event => {event.preventDefault();event.stopPropagation();dialog.close();});
+        dialog.addEventListener('cancel', event => {event.preventDefault();dialog.close();});
+        dialog.addEventListener('click', event => {
+          if(event.target !== dialog) return;
+          const rect = dialog.getBoundingClientRect();
+          if(event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
+        });
+        dialog.showModal();
+        if(item.mediaType === 'video') controller = startVideoPreview(dialog.querySelector('.media-lightbox-content'), media, item, format);
+      }
+
+      function startVideoPreview(container, media, item, format) {
+        const controller = new AbortController();
+        previewControllers.add(controller);
+        const key = JSON.stringify([media.canonicalUrl,item.index,format?.formatId]);
+        let jobId, completed = false;
+        container.innerHTML = `${item.thumbnailUrl ? `<img class="media-source-image" src="${previewUrl(item.thumbnailUrl)}" alt="${escapeHtml(item.title)}" />` : ''}<p class="media-preview-status" role="status">${escapeHtml(t('Preparing preview…'))}</p>`;
+        (async () => {
+          try {
+            if(!format?.hasVideo) throw new Error(t('Unable to prepare this preview.'));
+            const cached = preparedPreviews.get(key);
+            if(cached && cached.expires > Date.now()) { jobId=cached.jobId; completed=true; }
+            else {
+              const response = await fetch('/api/media/download', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:media.canonicalUrl,itemIndex:item.index,formatId:format.formatId,preview:true}),signal:controller.signal});
+              const payload = await response.json();
+              if(!response.ok) throw new Error(apiError(payload.error,'Unable to prepare this preview.'));
+              jobId = payload.jobId;
+              const deadline = Date.now()+180000;
+              while(Date.now()<deadline && !controller.signal.aborted && container.isConnected) {
+                const response = await fetch('/api/media/jobs/'+encodeURIComponent(jobId),{signal:controller.signal});
+                const payload = await response.json();
+                if(!response.ok) throw new Error(apiError(payload.error,'Unable to prepare this preview.'));
+                if(payload.job.status==='completed') { completed=true; break; }
+                if(['failed','cancelled'].includes(payload.job.status)) throw new Error(apiError(payload.job.error,'Unable to prepare this preview.'));
+                await new Promise(resolve=>setTimeout(resolve,700));
+              }
+            }
+            if(controller.signal.aborted || !container.isConnected) return;
+            if(!completed) throw new Error(t('Download preparation timed out. Please try again.'));
+            if(preparedPreviews.size>=20) preparedPreviews.delete(preparedPreviews.keys().next().value);
+            preparedPreviews.set(key,{jobId,expires:Date.now()+600000});
+            container.innerHTML = `<video class="media-source-video" controls playsinline preload="metadata" poster="${previewUrl(item.thumbnailUrl)}" src="/api/media/download/${encodeURIComponent(jobId)}?preview=1" aria-label="${escapeHtml(t('Media preview'))}"></video>`;
+            const video = container.querySelector('video');
+            video.addEventListener('error',()=>{
+              preparedPreviews.delete(key);
+              const message=document.createElement('p');message.className='media-preview-status';message.setAttribute('role','status');message.textContent=t('Unable to prepare this preview.');container.appendChild(message);
+            },{once:true});
+            // Some mobile browsers require a second tap on their native play control.
+            video.play().catch(()=>{});
+          } catch(error) {
+            if(!controller.signal.aborted && container.isConnected) {
+              const status=container.querySelector('.media-preview-status');
+              if(status) status.textContent=error.message || t('Unable to prepare this preview.');
+              const retry=document.createElement('button');retry.type='button';retry.className='media-preview-retry';retry.textContent=t('Play video');retry.addEventListener('click',()=>startVideoPreview(container,media,item,format));container.appendChild(retry);
+            }
+          } finally {
+            previewControllers.delete(controller);
+            if(jobId && !completed) fetch('/api/media/jobs/'+encodeURIComponent(jobId),{method:'DELETE'}).catch(()=>{});
+          }
+        })();
+        return controller;
       }
 
       function downloadRequest(btn, media) {
@@ -625,20 +740,21 @@
               const pending = { label: t('Preparing download…') };
               pendingDownloads.set(key, pending);
               syncDownloadButtons();
+              analytics('download_started', {media_type:media.category});
               try {
                 const response = await fetch('/api/media/download', {
                   method: 'POST', headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify(request),
                 });
                 const payload = await response.json();
-                if (!response.ok) throw new Error(apiError(payload.error, 'Unable to start download.'));
+                if (!response.ok) throw Object.assign(new Error(apiError(payload.error, 'Unable to start download.')), {analyticsCode:payload.error?.code});
                 showToast('Preparing your download…');
                 const deadline = Date.now() + (request.zipCarousel ? 900000 : 180000);
                 while (Date.now() < deadline) {
                   await new Promise(resolve => setTimeout(resolve, 1000));
                   const statusResponse = await fetch('/api/media/jobs/' + encodeURIComponent(payload.jobId));
                   const statusPayload = await statusResponse.json();
-                  if (!statusResponse.ok) throw new Error(apiError(statusPayload.error, 'Unable to check download.'));
+                  if (!statusResponse.ok) throw Object.assign(new Error(apiError(statusPayload.error, 'Unable to check download.')), {analyticsCode:statusPayload.error?.code});
                   const job = statusPayload.job;
                   pending.label = t('Preparing download… {progress}%', { progress: Math.round(job.progress || 0) });
                   syncDownloadButtons();
@@ -652,10 +768,11 @@
                     showToast('Your download is ready');
                     return;
                   }
-                  if (job.status === 'failed' || job.status === 'cancelled') throw new Error(apiError(job.error, 'Download cancelled.'));
+                  if (job.status === 'failed' || job.status === 'cancelled') throw Object.assign(new Error(apiError(job.error, 'Download cancelled.')), {analyticsCode:job.error?.code});
                 }
                 throw new Error('Download preparation timed out. Please try again.');
               } catch (error) {
+                analytics('download_failed', {media_type:media.category,failure_stage:'download',error_code:error?.analyticsCode});
                 setValidationBanner('error', localError(error, 'Unable to download media.'));
               } finally {
                 pendingDownloads.delete(key);
@@ -792,10 +909,11 @@
             body: JSON.stringify({ url: parsed.canonicalUrl, tool: state.activeTab }), signal: controller.signal,
           });
           const payload = await response.json();
-          if (!response.ok || payload.status !== 'ok') throw new Error(apiError(payload.error, 'Unable to inspect this link.'));
+          if (!response.ok || payload.status !== 'ok') throw Object.assign(new Error(apiError(payload.error, 'Unable to inspect this link.')), {analyticsCode:payload.error?.code});
           if (controller.signal.aborted) return;
           if (!payload.data?.items?.length || payload.data.items.some(item => !item.formats?.length)) throw new Error('No downloadable media was found for this link.');
           resolvedMedia = payload.data;
+          analytics('media_resolved', {media_type:resolvedMedia.category});
           const category = resolvedMedia.category;
           state.activeTab = category === 'reel' ? 'reels' : category === 'carousel' ? 'photo' : category;
           state.uiStateMode = resolvedMedia.isCarousel ? 'carousel' : 'single';
@@ -803,6 +921,7 @@
           setValidationBanner('success', 'Public media found. Select a format to download.');
         } catch (error) {
           if (controller.signal.aborted) return;
+          analytics('download_failed', {media_type:state.activeTab,failure_stage:'resolve',error_code:error?.analyticsCode});
           resultDynamicContent.innerHTML = '';
           setValidationBanner('error', localError(error, 'Unable to inspect this link.'));
         } finally {
@@ -1023,5 +1142,6 @@
       if (localeData.pageTool) selectTab(localeData.pageTool.tool, true);
       const initialInfo = initialQuery.get('info');
       if (initialInfo && ['privacy', 'terms', 'contact'].includes(initialInfo)) openModal(initialInfo);
+      initializedForm?.setAttribute('data-saveframe-initialized', 'true');
     };
   

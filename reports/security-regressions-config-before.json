@@ -1,0 +1,39 @@
+[
+  {
+    "name": "Aborted upstream image response rejects without hanging or crashing Node",
+    "passed": true
+  },
+  {
+    "name": "Image HTTP wall-clock deadline stops a continuously dripping response",
+    "passed": true
+  },
+  {
+    "name": "Image HTTP cancellation stops the transfer",
+    "passed": true
+  },
+  {
+    "name": "Photo delivery preserves a pre-existing output",
+    "passed": true
+  },
+  {
+    "name": "Downloader cannot place private temporary files under public",
+    "passed": true
+  },
+  {
+    "name": "Cancelled Reel metadata cannot start a later media transfer",
+    "passed": true
+  },
+  {
+    "name": "GA consent withdrawal preserves the Google-patched dataLayer identity",
+    "passed": true
+  },
+  {
+    "name": "Nginx resolution timeout exceeds the complete metadata budget",
+    "passed": true
+  },
+  {
+    "name": "Invalid worker configuration retains finite size and time bounds",
+    "passed": false,
+    "evidence": "The expression evaluated to a falsy value:\n\n  assert.ok(Number.isFinite(service.downloadTimeoutMs)&&service.downloadTimeoutMs>0)\n"
+  }
+]

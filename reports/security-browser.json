@@ -1,0 +1,23 @@
+{
+  "capturedAt": "2026-10-26T12:19:58.427Z",
+  "url": "http://127.0.0.1:3000/",
+  "layouts": [
+    {
+      "width": 1440,
+      "height": 900,
+      "clientWidth": 1425,
+      "font": "Inter, \"Inter Fallback\", Arial, -apple-system, BlinkMacSystemFont, sans-serif",
+      "googleScripts": 0,
+      "scrollWidth": 1425
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "clientWidth": 375,
+      "font": "Inter, \"Inter Fallback\", Arial, -apple-system, BlinkMacSystemFont, sans-serif",
+      "googleScripts": 0,
+      "scrollWidth": 375
+    }
+  ],
+  "consoleIssues": []
+}

@@ -243,5 +243,10 @@
   "No downloadable active stories were returned for this account.": "Bu hesap için indirilebilir aktif hikâye bulunamadı.",
   "Instagram requires login to access this story. This downloader can only retrieve stories that Instagram makes publicly accessible.": "Instagram bu hikâye için giriş gerektiriyor. Yalnızca herkese açık olarak erişilebilen hikâyeler alınabilir.",
   "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.": "/stories/kullanıcı/id/ içeren doğrudan bağlantı yapıştırın. Profil bağlantıları ve toplu hikâye indirmeleri desteklenmez.",
-  "Profile Picture": "Profil fotoğrafı"
+  "Profile Picture": "Profil fotoğrafı",
+  "Play video": "Videoyu oynat",
+  "Preview photo": "Fotoğrafı önizle",
+  "Media preview": "Medya önizlemesi",
+  "Preparing preview…": "Önizleme hazırlanıyor…",
+  "Unable to prepare this preview.": "Bu önizleme hazırlanamadı."
 }

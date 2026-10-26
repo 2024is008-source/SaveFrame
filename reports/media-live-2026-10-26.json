@@ -1,0 +1,21 @@
+[
+  {
+    "test": "supplied profile download",
+    "status": 200,
+    "mime": "image/jpeg",
+    "filename": "attachment; filename=\"ama_shaa_ama_shaa_photo.jpg\"",
+    "bytes": 2579,
+    "jpeg": true,
+    "webp": false
+  },
+  {
+    "test": "supplied active story",
+    "status": 403,
+    "error": {
+      "code": "LOGIN_REQUIRED",
+      "message": "Instagram requires login to access this story. Only publicly accessible story videos can be retrieved.",
+      "retryable": false
+    },
+    "elapsedMs": 6102
+  }
+]

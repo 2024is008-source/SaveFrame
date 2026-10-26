@@ -1,0 +1,15 @@
+{
+  "video": {
+    "decodedWidth": 1080,
+    "decodedHeight": 1920,
+    "readyState": 4,
+    "durationSeconds": 65.783991
+  },
+  "mobileClose": {
+    "inputPreserved": true,
+    "resultPreserved": true,
+    "urlPreserved": true,
+    "scrollPreserved": true,
+    "dialogClosed": true
+  }
+}

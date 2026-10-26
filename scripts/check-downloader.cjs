@@ -74,13 +74,13 @@ async function main() {
     require.cache[singletonPath] = { exports: { getApiContext: () => ({ downloadManager: { getJob: () => routeJob } }) } };
     try {
       const { GET } = require('../src/app/api/media/download/[jobId]/route.ts');
-      const response = await GET({}, { params: Promise.resolve({ jobId: 'audio-cache-test' }) });
+      const response = await GET(new Request('http://localhost/api/media/download/audio-cache-test'), { params: Promise.resolve({ jobId: 'audio-cache-test' }) });
       assert.equal(response.headers.get('Content-Type'), 'audio/mp4');
       assert.equal(response.headers.get('Content-Disposition'), 'attachment; filename="creator_RealTest123_audio.m4a"');
       assert.equal(Buffer.from(await response.arrayBuffer()).toString(), 'audio-track');
       routeJob.mimeType = 'image/jpeg';
       routeJob.safeFilename = 'creator_RealTest123_photo.jpg';
-      const imageResponse = await GET({}, { params: Promise.resolve({ jobId: 'photo-test' }) });
+      const imageResponse = await GET(new Request('http://localhost/api/media/download/photo-test'), { params: Promise.resolve({ jobId: 'photo-test' }) });
       assert.equal(imageResponse.headers.get('Content-Disposition'), 'attachment; filename="creator_RealTest123_photo.jpg"');
     } finally {
       if (originalSingleton) require.cache[singletonPath] = originalSingleton;

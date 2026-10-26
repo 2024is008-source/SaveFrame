@@ -243,5 +243,10 @@
   "No downloadable active stories were returned for this account.": "Tidak ada story aktif yang dapat diunduh untuk akun ini.",
   "Instagram requires login to access this story. This downloader can only retrieve stories that Instagram makes publicly accessible.": "Instagram mewajibkan login untuk story ini. Hanya story yang dapat diakses publik yang bisa diambil.",
   "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.": "Tempel tautan langsung dengan /stories/nama/id/. Tautan profil dan unduhan story massal tidak didukung.",
-  "Profile Picture": "Foto profil"
+  "Profile Picture": "Foto profil",
+  "Play video": "Putar video",
+  "Preview photo": "Pratinjau foto",
+  "Media preview": "Pratinjau media",
+  "Preparing preview…": "Menyiapkan pratinjau…",
+  "Unable to prepare this preview.": "Pratinjau ini tidak dapat disiapkan."
 }

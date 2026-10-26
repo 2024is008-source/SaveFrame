@@ -243,5 +243,10 @@
   "No downloadable active stories were returned for this account.": "इस खाते के लिए डाउनलोड करने योग्य सक्रिय स्टोरी नहीं मिलीं।",
   "Instagram requires login to access this story. This downloader can only retrieve stories that Instagram makes publicly accessible.": "इस स्टोरी के लिए Instagram लॉगिन आवश्यक है। केवल सार्वजनिक रूप से उपलब्ध स्टोरी ही प्राप्त की जा सकती हैं।",
   "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.": "/stories/यूज़रनेम/id/ वाला सीधा लिंक पेस्ट करें। प्रोफ़ाइल लिंक और कई स्टोरी एक साथ डाउनलोड करना समर्थित नहीं है।",
-  "Profile Picture": "प्रोफ़ाइल फ़ोटो"
+  "Profile Picture": "प्रोफ़ाइल फ़ोटो",
+  "Play video": "वीडियो चलाएँ",
+  "Preview photo": "फ़ोटो का पूर्वावलोकन",
+  "Media preview": "मीडिया पूर्वावलोकन",
+  "Preparing preview…": "पूर्वावलोकन तैयार हो रहा है…",
+  "Unable to prepare this preview.": "यह पूर्वावलोकन तैयार नहीं किया जा सका।"
 }

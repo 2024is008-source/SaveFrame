@@ -139,16 +139,16 @@
     "slug": "story-downloader",
     "tool": "story",
     "title": "Instagram Story Downloader",
-    "description": "Download a supported public Instagram story video using its direct story link. Check available formats and understand story access and expiration limits.",
-    "intro": "Paste the direct link to one active public story video. The link must contain /stories/, the account username and the numeric story identifier. Profile links do not identify a single story and are not accepted in this tool.",
+    "description": "Download a supported public Instagram story image or video using its direct link. Check source formats, access requirements and expiration limits.",
+    "intro": "Paste the direct link to one active public story image or video. The link must contain /stories/, the account username and the numeric story identifier. Profile links do not identify a single story and are not accepted in this tool.",
     "heading": "Check story access and expiration",
-    "body": "SaveFrame checks the specified story video and offers available download formats when Instagram permits public access. Some stories require login even when their account is public. Available files depend on what Instagram allows the tool to access. This tool cannot bypass login restrictions or restore expired stories.",
+    "body": "SaveFrame checks the specified story image or video and offers available download formats when Instagram permits public access. Some stories require login even when their account is public. Available files depend on what Instagram allows the tool to access. This tool cannot bypass login restrictions or restore expired stories.",
     "steps": [
-      "Open the individual active story video in Instagram and copy its direct story link.",
+      "Open the individual active story image or video in Instagram and copy its direct story link.",
       "Paste the complete /stories/username/story-id/ URL above.",
-      "If the video is accessible, check its preview and download the available video file."
+      "If the story is accessible, check its preview and download the available image or video."
     ],
-    "limits": "This tool handles one story video at a time. Profile links, entire-account story collections and bulk story downloads are unsupported. Login-restricted, private, expired or source-blocked stories cannot be retrieved.",
+    "limits": "This tool handles one story image or video at a time. Profile links, entire-account story collections and bulk story downloads are unsupported. Login-restricted, private, expired or source-blocked stories cannot be retrieved.",
     "faqs": [
       [
         "Can I download an expired Instagram story?",

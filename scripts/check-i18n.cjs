@@ -40,7 +40,7 @@ for (const locale of locales) {
   // Run the production client in an isolated DOM stub; expose private functions only in this test copy.
   const elements = new Map();
   const element = id => {
-    if (!elements.has(id)) elements.set(id, { style: {}, textContent: '', value: '', innerHTML: '', disabled: false, className: '', classList: { add() {}, remove() {}, toggle() {}, contains() { return true; } }, setAttribute() {}, getAttribute() { return null; }, addEventListener() {}, querySelector() { return null; }, querySelectorAll() { return []; }, replaceChildren() {}, focus() {} });
+    if (!elements.has(id)) elements.set(id, { style: {}, textContent: '', value: '', innerHTML: '', disabled: false, className: '', classList: { add() {}, remove() {}, toggle() {}, contains() { return true; } }, setAttribute(name,value) { (this.attributes ||= new Map()).set(name,value); }, getAttribute(name) { return this.attributes?.get(name) ?? null; }, addEventListener() {}, querySelector() { return null; }, querySelectorAll() { return []; }, replaceChildren() {}, focus() {} });
     return elements.get(id);
   };
   element('home-i18n').textContent = JSON.stringify(client);
@@ -51,7 +51,7 @@ for (const locale of locales) {
   script = script.slice(0, boundary) + '\nwindow.__test = { t, TOOL_CONFIG, parseInstagramInput, apiError, localError, formatLabel, visibleFilesize, downloadButtonLabel, downloadRequest, renderResultSection, state, setMedia: value => { resolvedMedia = value; state.uiStateMode = "carousel"; } };\n' + script.slice(boundary);
   vm.runInNewContext(script, { window, document, URL, URLSearchParams, AbortController, NodeFilter: { SHOW_TEXT: 4 }, setTimeout: () => 0, clearTimeout() {} });
   window.initializeSaveFrame();
-  const hooks = window.__test;
+  const hooks = window.__test; window.initializeSaveFrame(); assert.equal(window.__test,hooks,"Repeated script initialization must preserve live client state");
   assert.equal(hooks.visibleFilesize({ filesizeFormatted: 'Size unavailable' }), '');
   assert.equal(hooks.visibleFilesize({}), '');
   assert.equal(hooks.visibleFilesize({ filesizeFormatted: '1.5 MB' }), '1.5 MB');

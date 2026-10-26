@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "liveGoogleReceiptVerified": false,
+  "rows": [
+    {
+      "route": "/",
+      "country": "US",
+      "automatic": true,
+      "ssrStatus": 200
+    },
+    {
+      "route": "/fr/",
+      "country": "US",
+      "automatic": true,
+      "ssrStatus": 200
+    },
+    {
+      "route": "/photo-downloader",
+      "country": "US",
+      "automatic": true,
+      "ssrStatus": 200
+    },
+    {
+      "route": "/blog",
+      "country": "US",
+      "automatic": true,
+      "ssrStatus": 200
+    },
+    {
+      "route": "/privacy",
+      "country": "US",
+      "automatic": true,
+      "ssrStatus": 200
+    },
+    {
+      "route": "/",
+      "country": "DE",
+      "automatic": false,
+      "ssrStatus": 200
+    },
+    {
+      "route": "/",
+      "country": "GB",
+      "automatic": false,
+      "ssrStatus": 200
+    },
+    {
+      "route": "/",
+      "country": "XX",
+      "automatic": false,
+      "ssrStatus": 200
+    }
+  ]
+}

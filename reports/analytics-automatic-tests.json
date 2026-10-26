@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "googleRequestsSent": false,
+  "verified": [
+    "regional policy",
+    "unknown region denial",
+    "opt-out",
+    "DNT/GPC/bots",
+    "automatic views without fabricated saved consent",
+    "referral origins",
+    "approved campaigns",
+    "pagination/back navigation",
+    "remount deduplication",
+    "public route allowlist",
+    "safe downloader events",
+    "production measurement ID"
+  ]
+}

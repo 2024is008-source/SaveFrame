@@ -1,0 +1,18 @@
+{
+  "capturedAt": "2026-10-26T13:11:01.137Z",
+  "scope": "Fresh isolated local production build",
+  "command": "npm run test:seo",
+  "urlCount": 37,
+  "localizedHomepages": 10,
+  "tools": 6,
+  "informationPages": 5,
+  "blogIndexes": 1,
+  "articles": 15,
+  "lastModifiedArticles": 15,
+  "reciprocalLanguageAnnotations": 110,
+  "priorityAndChangefreqAbsent": true,
+  "indexablePages": 38,
+  "allSitemapPagesHttp200": true,
+  "allSitemapPagesIndexable": true,
+  "robotsSitemap": "https://saveframe.site/sitemap.xml"
+}

@@ -26,6 +26,7 @@ export interface CreateDownloadJobInput {
   itemIndices?: number[];
   zipCarousel?: boolean;
   analyticsId?: string;
+  trackAnalytics?: boolean;
 }
 
 /**
@@ -175,7 +176,17 @@ export class DownloadManagerService {
     if(!Number.isFinite(this.minFreeDiskBytes)||this.minFreeDiskBytes<0)this.minFreeDiskBytes=100*1024*1024;
     if(!Number.isFinite(this.maxFileSizeBytes)||this.maxFileSizeBytes<=0||this.maxFileSizeBytes>1024*1024*1024)this.maxFileSizeBytes=150*1024*1024;
 
+    const overlaps=(left:string,right:string)=>{const relative=path.relative(left,right);return !relative||(!relative.startsWith('..'+path.sep)&&!path.isAbsolute(relative));};
+    const publicDir=fs.realpathSync(path.join(process.cwd(),'public'));
+    const adminDir=path.resolve(process.env.SAVEFRAME_ADMIN_DATA_DIR||path.join(process.cwd(),'.data'));
+    const validateDirectory=(directory:string)=>{
+      if(overlaps(directory,publicDir)||overlaps(publicDir,directory)||overlaps(directory,adminDir)||overlaps(adminDir,directory))throw new DownloaderAppError('INTERNAL_ERROR','Download storage must be private and separate from public assets and administrator data.',500);
+    };
+    validateDirectory(path.resolve(this.tempDir));
     fs.mkdirSync(this.tempDir, { recursive: true, mode: 0o700 });
+    const storage=fs.lstatSync(this.tempDir);
+    if(!storage.isDirectory()||storage.isSymbolicLink()||(process.platform!=='win32'&&(storage.mode&0o077)!==0))throw new DownloaderAppError('INTERNAL_ERROR','Download storage must be a private directory without symbolic links.',500);
+    validateDirectory(fs.realpathSync(this.tempDir));
     recoverInterruptedJobs();
 
     // Start periodic cleanup sweep every 60 seconds
@@ -226,7 +237,7 @@ export class DownloadManagerService {
     if(input.itemIndex!==undefined&&(!Number.isInteger(input.itemIndex)||input.itemIndex<0||input.itemIndex>99))throw new DownloaderAppError('UNSUPPORTED_OPERATION','Choose a valid media item.',400);
     if(input.formatId!==undefined&&(typeof input.formatId!=='string'||input.formatId.length>128))throw new DownloaderAppError('UNSUPPORTED_OPERATION','Choose a valid media format.',400);
     if (validated.category === 'story' && input.zipCarousel) {
-      throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'Bulk story downloads are not supported. Download a single story video.', 400);
+      throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'Bulk story downloads are not supported. Download one story image or video.', 400);
     }
     if (input.itemIndices !== undefined && (!input.zipCarousel || !Array.isArray(input.itemIndices) ||
       input.itemIndices.length === 0 || input.itemIndices.length > 100 ||
@@ -258,7 +269,7 @@ export class DownloadManagerService {
 
     const job: DownloadJob = {
       jobId,
-      analyticsId: input.analyticsId || beginDownload(validated.category),
+      analyticsId: input.trackAnalytics===false?undefined:input.analyticsId || beginDownload(validated.category),
       url: validated.canonicalUrl,
       shortcode: validated.shortcode,
       category: validated.category,

@@ -31,6 +31,16 @@ export type ErrorCode =
   | 'JOB_NOT_READY';
 
 export class DownloaderAppError extends Error {
+  // API route bundles and a retained development worker can hold different
+  // copies of this class. Recognize real Error instances by our stable fields,
+  // so an upstream LOGIN_REQUIRED does not become a false INTERNAL_ERROR.
+  static [Symbol.hasInstance](value: unknown): boolean {
+    if (!(value instanceof Error)) return false;
+    const error = value as Partial<DownloaderAppError>;
+    return error.name === 'DownloaderAppError' && typeof error.code === 'string' &&
+      typeof error.userMessage === 'string' && typeof error.retryable === 'boolean' &&
+      Number.isInteger(error.statusCode) && Number(error.statusCode) >= 400 && Number(error.statusCode) <= 599;
+  }
   public readonly code: ErrorCode;
   public readonly statusCode: number;
   public readonly userMessage: string;
@@ -105,7 +115,7 @@ export interface NormalizedMediaResult {
   isCarousel: boolean;
   supportsZipDownload: boolean;
   items: NormalizedMediaItem[];
-  extractorSource: 'yt-dlp' | 'yt-dlp+image-adapter' | 'profile-adapter';
+  extractorSource: 'yt-dlp' | 'yt-dlp+image-adapter' | 'profile-adapter' | 'story-http' | 'gallery-dl';
   warnings?: string[];
 }
 

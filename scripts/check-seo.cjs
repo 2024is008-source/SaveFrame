@@ -7,6 +7,28 @@ async function main() {
   const sitemap = await (await fetch(base + '/sitemap.xml')).text();
   const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => new URL(decode(match[1])));
   assert.equal(urls.length, 37);
+  const homeAlternates={en:'/',es:'/es/','pt-BR':'/pt-br/',de:'/de/',fr:'/fr/',ja:'/ja/',id:'/id/',tr:'/tr/',hi:'/hi/',ar:'/ar/','x-default':'/'};
+  const expectedLanguages=Object.fromEntries(Object.entries(homeAlternates).map(([language,path])=>[language,origin+path]));
+  const tools=require('../src/content/tools.json'),information=require('../src/content/information.json'),posts=require('../src/content/blog/posts.json').filter(post=>post.published);
+  assert.equal(tools.length,6);assert.equal(information.length,5);assert.equal(posts.length,15);
+  const expectedUrls=[...new Set(Object.values(expectedLanguages)),...tools.map(page=>origin+'/'+page.slug),...information.map(page=>origin+'/'+page.slug),origin+'/blog',...posts.map(post=>origin+'/blog/'+post.slug)];
+  assert.deepEqual(urls.map(url=>url.href).sort(),expectedUrls.sort(),'Preserve the exact canonical URL set');
+  assert.equal(new Set(urls.map(url=>url.href)).size,37,'No duplicate sitemap URLs');
+  assert.equal(/<(?:changefreq|priority)\b/i.test(sitemap),false,'No unused priority/frequency tags');
+  const blocks=[...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(match=>match[1]);assert.equal(blocks.length,37);
+  let datedArticles=0,alternateAnnotations=0;
+  for(const block of blocks){
+    const location=decode(block.match(/<loc>([^<]+)<\/loc>/)[1]),url=new URL(location);
+    assert.equal(url.origin,origin);assert.equal(url.search,'');assert.equal(url.hash,'');assert.equal(url.username,'');assert.equal(url.password,'');
+    assert.ok(!/^\/(?:admin|api|downloads?)(?:\/|$)/.test(url.pathname));
+    const post=posts.find(post=>location===origin+'/blog/'+post.slug),lastmod=block.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1];
+    if(post){assert.match(post.updatedAt,/^\d{4}-\d{2}-\d{2}$/);assert.equal(new Date(post.updatedAt+'T00:00:00Z').toISOString().slice(0,10),post.updatedAt);assert.equal(lastmod,new Date(`${post.updatedAt}T00:00:00+05:30`).toISOString(),'Preserve the editorial date and timezone');assert.ok(Date.parse(lastmod)<=Date.now());datedArticles++;}
+    else assert.equal(lastmod,undefined,'Do not fabricate static-page modification dates');
+    const alternatives=Object.fromEntries([...block.matchAll(/<xhtml:link\b([^>]+)\/?\s*>/g)].map(match=>{const attrs=Object.fromEntries([...match[1].matchAll(/([\w-]+)="([^"]*)"/g)].map(attr=>[attr[1],decode(attr[2])]));assert.equal(attrs.rel,'alternate');return [attrs.hreflang,attrs.href];}));
+    if(Object.values(expectedLanguages).includes(location)){assert.deepEqual(alternatives,expectedLanguages,'Every homepage must repeat the reciprocal, self-inclusive language cluster');alternateAnnotations+=Object.keys(alternatives).length;}
+    else assert.deepEqual(alternatives,{},'Homepage language annotations must not leak to other pages');
+  }
+  assert.equal(datedArticles,15);assert.equal(alternateAnnotations,110);
   const pages = [...urls.map(url => url.pathname), '/blog?page=2'];
   const titles = new Set(), descriptions = new Set(), links = new Set(), rows = [], fragments = [], htmlCache = new Map();
   for (const path of pages) {
@@ -23,6 +45,9 @@ async function main() {
     assert.equal((html.match(/<h1\b/g) || []).length, 1, path + ': H1 count');
     assert.equal(new URL(html.match(/<link rel="canonical" href="([^"]+)"/)[1]).href, origin + path, path + ': canonical');
     assert.match(html, /name="robots" content="index, follow"/, path);
+    assert.ok(!/(?:^|[\s,;])(?:noindex|none)(?:$|[\s,;])/i.test(response.headers.get('x-robots-tag')||''),path+': HTTP indexing restriction');
+    const htmlAlternates=Object.fromEntries([...html.matchAll(/<link\b[^>]*rel="alternate"[^>]*>/g)].filter(match=>/hrefLang=|hreflang=/.test(match[0])).map(match=>[match[0].match(/(?:hrefLang|hreflang)="([^"]+)"/)[1],new URL(decode(match[0].match(/\bhref="([^"]+)"/)[1])).href]));
+    if(Object.values(homeAlternates).includes(path))assert.deepEqual(htmlAlternates,expectedLanguages,path+': HTML and XML reciprocal hreflang must agree');
     assert.match(html, /property="og:image"/, path);
     assert.match(html, /name="twitter:card"/, path);
     assert.match(html, /name="viewport"/, path);
@@ -59,7 +84,7 @@ async function main() {
   const contact = await (await fetch(base + '/contact')).text(); assert.ok(contact.includes('mailto:backbencherz@gmail.com'));
   const robots = await (await fetch(base + '/robots.txt')).text(); assert.match(robots, /Sitemap: https:\/\/saveframe.site\/sitemap.xml/); assert.ok(!robots.includes('Disallow: /_next'));
   fs.mkdirSync('reports', { recursive: true });
-  fs.writeFileSync('reports/seo-crawl.json', JSON.stringify({ scope: 'Local production build; not public production verification', pages: rows, internalDestinationsChecked: [...links].sort() }, null, 2));
-  console.log(`PASS: ${rows.length} indexable pages; unique metadata, H1, canonicals, schema, social tags, ${links.size} internal destinations, API noindex, contact, sitemap and 404.`);
+  fs.writeFileSync('reports/seo-crawl.json', JSON.stringify({ scope: 'HTTP validation at '+base+'; not a Google indexing confirmation', sitemap:{urlCount:urls.length,localizedHomepages:10,tools:tools.length,informationPages:information.length,blogIndexes:1,articles:posts.length,lastModifiedArticles:datedArticles,reciprocalLanguageAnnotations:alternateAnnotations,priorityAndChangefreqAbsent:true}, pages: rows, internalDestinationsChecked: [...links].sort() }, null, 2));
+  console.log(`PASS: 37 canonical sitemap URLs, 15 preserved editorial dates, 110 reciprocal XML/HTML language annotations including x-default; ${rows.length} indexable pages, ${links.size} internal destinations, robots sitemap reference, exclusions and 404.`);
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

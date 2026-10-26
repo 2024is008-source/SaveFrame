@@ -243,5 +243,10 @@
   "No downloadable active stories were returned for this account.": "لم تُرجع الخدمة قصصًا نشطة قابلة للتنزيل لهذا الحساب.",
   "Instagram requires login to access this story. This downloader can only retrieve stories that Instagram makes publicly accessible.": "يتطلب Instagram تسجيل الدخول للوصول إلى هذه القصة. يمكن جلب القصص المتاحة للعامة فقط.",
   "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.": "ألصق رابطًا مباشرًا يتضمن /stories/username/id/. روابط الملفات والتنزيل الجماعي للقصص غير مدعومين.",
-  "Profile Picture": "صورة الملف الشخصي"
+  "Profile Picture": "صورة الملف الشخصي",
+  "Play video": "تشغيل الفيديو",
+  "Preview photo": "معاينة الصورة",
+  "Media preview": "معاينة الوسائط",
+  "Preparing preview…": "جارٍ تحضير المعاينة…",
+  "Unable to prepare this preview.": "تعذر تحضير هذه المعاينة."
 }

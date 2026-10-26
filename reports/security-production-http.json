@@ -1,0 +1,16 @@
+{
+  "capturedAt": "2026-10-26T12:17:51.733Z",
+  "base": "http://127.0.0.1:3113",
+  "productionBuild": true,
+  "isolatedAdminData": true,
+  "noExternalMediaOrEmail": true,
+  "privateRoutesAndNoStore": true,
+  "privateFilesystemRoutes404": true,
+  "checks": [
+    "styles",
+    "SEO 38 pages",
+    "localization",
+    "blog",
+    "performance assets"
+  ]
+}

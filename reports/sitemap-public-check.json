@@ -1,0 +1,235 @@
+{
+  "capturedAt": "2026-10-26T13:11:15.470Z",
+  "scope": "Existing public deployment; local sitemap changes not deployed",
+  "urlCount": 37,
+  "allHttp200": true,
+  "allIndexableCanonical": true,
+  "robotsReferencesSitemap": true,
+  "rows": [
+    {
+      "url": "https://saveframe.site/",
+      "status": 200,
+      "canonical": "https://saveframe.site",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/pt-br/",
+      "status": 200,
+      "canonical": "https://saveframe.site/pt-br/",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/es/",
+      "status": 200,
+      "canonical": "https://saveframe.site/es/",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/de/",
+      "status": 200,
+      "canonical": "https://saveframe.site/de/",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/ja/",
+      "status": 200,
+      "canonical": "https://saveframe.site/ja/",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/fr/",
+      "status": 200,
+      "canonical": "https://saveframe.site/fr/",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/id/",
+      "status": 200,
+      "canonical": "https://saveframe.site/id/",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/tr/",
+      "status": 200,
+      "canonical": "https://saveframe.site/tr/",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/hi/",
+      "status": 200,
+      "canonical": "https://saveframe.site/hi/",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/ar/",
+      "status": 200,
+      "canonical": "https://saveframe.site/ar/",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/reels-downloader",
+      "status": 200,
+      "canonical": "https://saveframe.site/reels-downloader",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/video-downloader",
+      "status": 200,
+      "canonical": "https://saveframe.site/video-downloader",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/photo-downloader",
+      "status": 200,
+      "canonical": "https://saveframe.site/photo-downloader",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/carousel-downloader",
+      "status": 200,
+      "canonical": "https://saveframe.site/carousel-downloader",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/story-downloader",
+      "status": 200,
+      "canonical": "https://saveframe.site/story-downloader",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/profile-viewer",
+      "status": 200,
+      "canonical": "https://saveframe.site/profile-viewer",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/contact",
+      "status": 200,
+      "canonical": "https://saveframe.site/contact",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/about",
+      "status": 200,
+      "canonical": "https://saveframe.site/about",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/privacy",
+      "status": 200,
+      "canonical": "https://saveframe.site/privacy",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/terms",
+      "status": 200,
+      "canonical": "https://saveframe.site/terms",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/copyright",
+      "status": 200,
+      "canonical": "https://saveframe.site/copyright",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/how-to-download-instagram-stories-by-link",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/how-to-download-instagram-stories-by-link",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/how-to-download-instagram-photos-online",
+      "initialError": "fetch failed",
+      "retryStatus": 200,
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/how-to-download-instagram-photos-online",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/how-to-download-instagram-story-videos",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/how-to-download-instagram-story-videos",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/view-instagram-profile-picture-by-url",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/view-instagram-profile-picture-by-url",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/how-to-download-instagram-reels-mp4",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/how-to-download-instagram-reels-mp4",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/download-instagram-reels-on-iphone",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/download-instagram-reels-on-iphone",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/download-instagram-videos-on-pc",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/download-instagram-videos-on-pc",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/download-instagram-carousel-photos",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/download-instagram-carousel-photos",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/download-instagram-reels-with-audio",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/download-instagram-reels-with-audio",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/instagram-downloader-not-working",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/instagram-downloader-not-working",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/why-instagram-videos-wont-download",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/why-instagram-videos-wont-download",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/download-instagram-photos-iphone-android",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/download-instagram-photos-iphone-android",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/instagram-photo-sizes-aspect-ratios",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/instagram-photo-sizes-aspect-ratios",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/backup-instagram-photos-videos-reels",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/backup-instagram-photos-videos-reels",
+      "indexable": true
+    },
+    {
+      "url": "https://saveframe.site/blog/how-to-copy-instagram-photo-link",
+      "status": 200,
+      "canonical": "https://saveframe.site/blog/how-to-copy-instagram-photo-link",
+      "indexable": true
+    }
+  ],
+  "retryCompletedAt": "2026-10-26T13:13:58.874Z"
+}

@@ -1,0 +1,9 @@
+{
+  "capturedAt": "2026-10-26T12:06:33.362Z",
+  "commits": 5,
+  "scannedTextBlobs": 306,
+  "configuredSecretMatches": [],
+  "privateFiles": [],
+  "patternLeads": [],
+  "limitation": "Pattern and configured-value scan of reachable Git text blobs <=2 MiB; not gitleaks, not provider validation, and cannot prove absence of all secrets."
+}

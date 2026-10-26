@@ -17,7 +17,9 @@ for(const value of ['@creator','https://www.instagram.com/creator/','https://www
  assert.throws(()=>validation.validateMediaInput(value,'story'),error=>error.code==='INVALID_STORY_LINK');
 }
 async function main() {
- const service = new YtDlpService();
+ const {InstagramHttpClient}=require('../src/services/instagram-http.service.ts');
+ const storyHttp=new InstagramHttpClient();storyHttp.probe=async()=>({mime:'video/mp4',bytes:1024});
+ const service = new YtDlpService({storyHttp});
  const raw = {id:'123456789',channel:'creator',thumbnail:'https://scontent.cdninstagram.com/story.jpg',formats:[{format_id:'video',url:'https://video.cdninstagram.com/story.mp4',width:720,height:1280,vcodec:'h264',acodec:'aac'}]};
  let extractions = 0;
  service.runSubprocess = async (_binary,args) => {

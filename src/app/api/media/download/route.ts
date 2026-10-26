@@ -13,8 +13,10 @@ export async function POST(req: NextRequest) {
     if (!rl.allowed) {
       throw new DownloaderAppError('RATE_LIMITED', 'Download rate limit exceeded.', 429, true);
     }
-    analyticsId=beginDownload();
     const body = await readMediaJson(req);
+    // Explicit, user-started playback uses the same bounded preparation queue.
+    // It must not inflate download totals.
+    if(body.preview !== true) analyticsId=beginDownload();
     const job = await ctx.downloadManager.createJob({
       url: body.url || '',
       formatId: body.formatId,
@@ -22,6 +24,7 @@ export async function POST(req: NextRequest) {
       itemIndices: body.itemIndices,
       zipCarousel: Boolean(body.zipCarousel),
       analyticsId,
+      trackAnalytics: body.preview !== true,
     });
     return NextResponse.json(
       {

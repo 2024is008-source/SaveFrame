@@ -60,7 +60,11 @@
       ],
       [
         "External requests",
-        "Media previews can load from Instagram or its content-delivery network. The current interface also loads fonts from Google Fonts. Those services receive the technical data needed to deliver their resources and apply their own policies. Your browser stores downloaded files according to its settings."
+        "Media previews can load from Instagram or its content-delivery network. Fonts are hosted locally. Where regional policy permits automatic analytics, or after valid consent where required, Google Analytics may receive public page paths, referring website domains, approved campaign labels, aggregate downloader categories and standard technical connection data under Google's policies. SaveFrame excludes submitted Instagram links, usernames, captions, tokens and raw error messages from analytics events. Your browser stores downloaded files according to its settings."
+      ],
+      [
+        "Analytics preferences",
+        "Optional analytics can run automatically where the configured regional policy permits it. In consent-required or unknown regions it stays disabled until valid consent is provided. SaveFrame respects previous opt-outs, Do Not Track and Global Privacy Control. Google Analytics may use first-party cookies for visitor and session statistics. Use the analytics opt-out link below to disable further tracking in this browser and remove accessible Google Analytics cookies. Your choice is stored locally. Advertising storage and personalization remain disabled."
       ],
       [
         "Clipboard and account access",

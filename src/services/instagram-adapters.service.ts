@@ -34,17 +34,24 @@ export class InstagramAuthorizedAdapters {
   constructor(options?: ImageAdapterFetchOptions) {
     this.timeoutMs = options?.timeoutMs ?? 15000;
     this.maxBytes = options?.maxBytes ?? 25 * 1024 * 1024; // 25 MB max image size
+    if(!Number.isSafeInteger(this.timeoutMs)||this.timeoutMs<=0||this.timeoutMs>120000)this.timeoutMs=15000;
+    if(!Number.isSafeInteger(this.maxBytes)||this.maxBytes<=0||this.maxBytes>25*1024*1024)this.maxBytes=25*1024*1024;
   }
 
   /**
    * Performs a safe, size-bounded HTTP/HTTPS GET request without shell execution.
    */
-  private fetchBuffer(targetUrl: string, timeoutMs = this.timeoutMs): Promise<{
+  private fetchBuffer(targetUrl: string, timeoutMs = this.timeoutMs, callerSignal?: AbortSignal): Promise<{
     statusCode: number;
     headers: http.IncomingHttpHeaders;
     body: Buffer;
   }> {
     return new Promise((resolve, reject) => {
+      const deadline=AbortSignal.timeout(timeoutMs);
+      const signal=callerSignal?AbortSignal.any([callerSignal,deadline]):deadline;
+      const failure=(error:Error)=>signal.aborted
+        ? new DownloaderAppError(signal.reason?.name==='TimeoutError'?'DOWNLOAD_TIMEOUT':'JOB_CANCELLED',signal.reason?.name==='TimeoutError'?'Timed out while fetching public Instagram media.':'Media transfer was cancelled.',signal.reason?.name==='TimeoutError'?504:499,true)
+        : error instanceof DownloaderAppError?error:new DownloaderAppError('EXTRACTOR_FAILURE','Unable to reach Instagram public media endpoint.',502,true);
       let parsed:URL;
       try{parsed=new URL(targetUrl);}catch{return reject(new DownloaderAppError('SSRF_BLOCKED','Invalid media URL.',403));}
       const fixture=process.env.NODE_ENV==='test'&&process.env.SAVEFRAME_FIXTURE_ORIGIN===parsed.origin;
@@ -57,7 +64,7 @@ export class InstagramAuthorizedAdapters {
         parsed,
         {
           method: 'GET',
-          timeout: timeoutMs,
+          signal,
           // Check the actual connection's DNS result, avoiding a lookup/connect race.
           ...(!fixture?{lookup:((hostname:string,options:any,callback:any)=>{dns.lookup(hostname,{all:true},(error,records)=>{if(error)return callback(error);if(!records.length||records.some(record=>isPrivateOrReservedIp(record.address)))return callback(new DownloaderAppError('SSRF_BLOCKED','Media host resolved to a restricted address.',403));if(options?.all)callback(null,records);else callback(null,records[0].address,records[0].family);});}) as any}:{}),
           headers: {
@@ -70,6 +77,9 @@ export class InstagramAuthorizedAdapters {
           const statusCode = res.statusCode || 500;
           const chunks: Buffer[] = [];
           let received = 0;
+          res.on('error',error=>reject(failure(error)));
+          res.on('aborted',()=>reject(failure(new Error('Incomplete upstream response'))));
+          if(Number(res.headers['content-length'])>this.maxBytes){req.destroy();reject(new DownloaderAppError('FILE_TOO_LARGE','Media response exceeds the maximum allowed size.',413));return;}
 
           res.on('data', (chunk: Buffer) => {
             received += chunk.length;
@@ -99,29 +109,8 @@ export class InstagramAuthorizedAdapters {
         }
       );
 
-      req.on('timeout', () => {
-        req.destroy();
-        reject(
-          new DownloaderAppError(
-            'DOWNLOAD_TIMEOUT',
-            'Timed out while fetching public Instagram metadata.',
-            504,
-            true
-          )
-        );
-      });
-
       req.on('error', (err) => {
-        if(err instanceof DownloaderAppError){reject(err);return;}
-        reject(
-          new DownloaderAppError(
-            'EXTRACTOR_FAILURE',
-            'Unable to reach Instagram public media endpoint.',
-            502,
-            true,
-            err.message
-          )
-        );
+        reject(failure(err));
       });
 
       req.end();
@@ -134,7 +123,8 @@ export class InstagramAuthorizedAdapters {
    */
   public async extractPublicPhotoPost(
     validated: ValidatedInstagramUrl,
-    overrideEmbedUrl?: string
+    overrideEmbedUrl?: string,
+    signal?: AbortSignal
   ): Promise<NormalizedMediaResult> {
     const targetUrl =
       overrideEmbedUrl ||
@@ -142,7 +132,7 @@ export class InstagramAuthorizedAdapters {
         process.env.INSTAGRAM_PUBLIC_EMBED_BASE || 'https://www.instagram.com'
       }/p/${validated.shortcode}/embed/captioned/`;
 
-    const response = await this.fetchBuffer(targetUrl);
+    const response = await this.fetchBuffer(targetUrl,this.timeoutMs,signal);
 
     if (response.statusCode === 404) {
       throw new DownloaderAppError(
@@ -301,7 +291,8 @@ export class InstagramAuthorizedAdapters {
    */
   public async extractPublicProfileMetadata(
     validated: ValidatedInstagramUrl,
-    overrideProfileEndpoint?: string
+    overrideProfileEndpoint?: string,
+    signal?: AbortSignal
   ): Promise<NormalizedMediaResult> {
     const username = validated.username || validated.shortcode;
     const targetUrl =
@@ -310,7 +301,7 @@ export class InstagramAuthorizedAdapters {
         process.env.INSTAGRAM_PUBLIC_EMBED_BASE || 'https://www.instagram.com'
       }/${encodeURIComponent(username)}/`;
 
-    const response = await this.fetchBuffer(targetUrl);
+    const response = await this.fetchBuffer(targetUrl,this.timeoutMs,signal);
 
     if (response.statusCode === 404) {
       throw new DownloaderAppError(
@@ -353,7 +344,8 @@ export class InstagramAuthorizedAdapters {
       if (ogTitle?.[1]) fullName = ogTitle[1].split('(@')[0].trim() || username;
     }
 
-    if(isPrivate)throw new DownloaderAppError('PRIVATE_CONTENT','Private Instagram profiles are not supported.',403);
+    // Account privacy protects posts/stories, not an avatar already exposed by
+    // this unauthenticated public response. Never query private media here.
 
     if (!avatarUrl) {
       throw new DownloaderAppError(
@@ -384,7 +376,7 @@ export class InstagramAuthorizedAdapters {
       canonicalUrl: validated.canonicalUrl,
       category: 'profile',
       title: `${fullName} (@${username})`,
-      caption: isPrivate ? `[Private Account] ${bio}` : bio,
+      caption: isPrivate ? `Public profile picture · Private account. ${bio}` : bio,
       uploader: {
         username,
         fullName,
@@ -417,9 +409,10 @@ export class InstagramAuthorizedAdapters {
    */
   public async downloadImageToFile(
     imageUrl: string,
-    destinationPath: string
+    destinationPath: string,
+    signal?: AbortSignal
   ): Promise<{ bytesWritten: number; mimeType: string }> {
-    const res = await this.fetchBuffer(imageUrl);
+    const res = await this.fetchBuffer(imageUrl,this.timeoutMs,signal);
     if (res.statusCode < 200 || res.statusCode >= 300) {
       throw new DownloaderAppError(
         'EXTRACTOR_FAILURE',
@@ -433,7 +426,11 @@ export class InstagramAuthorizedAdapters {
     const jpeg=res.body.length>=3&&res.body[0]===0xff&&res.body[1]===0xd8&&res.body[2]===0xff;
     const webp=res.body.length>=12&&res.body.toString('ascii',0,4)==='RIFF'&&res.body.toString('ascii',8,12)==='WEBP';
     if(!(contentType.includes('webp')?webp:jpeg))throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE','The image source did not return a valid JPEG or WebP file.',422);
-    await fs.promises.writeFile(destinationPath, res.body, { mode: 0o600 });
+    if(signal?.aborted)throw new DownloaderAppError('JOB_CANCELLED','Media transfer was cancelled.',499);
+    const file=await fs.promises.open(destinationPath,'wx',0o600);
+    try {await file.writeFile(res.body,{signal});}
+    catch(error){await file.close();await fs.promises.unlink(destinationPath).catch(()=>{});throw error;}
+    finally {await file.close().catch(()=>{});}
     return {
       bytesWritten: res.body.length,
       mimeType: contentType.includes('webp') ? 'image/webp' : 'image/jpeg',

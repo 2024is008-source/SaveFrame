@@ -243,5 +243,10 @@
   "No downloadable active stories were returned for this account.": "Aucune story active téléchargeable pour ce compte.",
   "Instagram requires login to access this story. This downloader can only retrieve stories that Instagram makes publicly accessible.": "Instagram exige une connexion pour cette story. Seules les stories accessibles publiquement peuvent être récupérées.",
   "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.": "Collez un lien direct contenant /stories/utilisateur/id/. Les profils et téléchargements groupés de stories ne sont pas pris en charge.",
-  "Profile Picture": "Photo de profil"
+  "Profile Picture": "Photo de profil",
+  "Play video": "Lire la vidéo",
+  "Preview photo": "Aperçu de la photo",
+  "Media preview": "Aperçu du média",
+  "Preparing preview…": "Préparation de l’aperçu…",
+  "Unable to prepare this preview.": "Impossible de préparer cet aperçu."
 }

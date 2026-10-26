@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Aborted upstream image response rejects without crashing Node",
+    "passed": false,
+    "evidence": "isolated fixture process exit=null, signal=SIGTERM\n\nnull !== 0\n"
+  },
+  {
+    "name": "Image HTTP wall-clock deadline stops a continuously dripping response",
+    "passed": false,
+    "evidence": "Missing expected rejection."
+  },
+  {
+    "name": "Image HTTP cancellation stops the transfer",
+    "passed": false,
+    "evidence": "Missing expected rejection."
+  },
+  {
+    "name": "Photo delivery preserves a pre-existing output",
+    "passed": false,
+    "evidence": "Missing expected rejection."
+  },
+  {
+    "name": "Downloader cannot place private temporary files under public",
+    "passed": false,
+    "evidence": "Missing expected exception."
+  },
+  {
+    "name": "Cancelled Reel metadata cannot start a later media transfer",
+    "passed": false,
+    "evidence": "Missing expected rejection."
+  },
+  {
+    "name": "GA consent withdrawal preserves the Google-patched dataLayer identity",
+    "passed": false,
+    "evidence": "Expected \"actual\" to be reference-equal to \"expected\":\n+ actual - expected\n\n+ []\n- [\n-   [Arguments] {\n-     '0': 'consent',\n-     '1': 'default',\n-     '2': {\n-       ad_personalization: 'denied',\n-       ad_storage: 'd"
+  },
+  {
+    "name": "Nginx resolution timeout exceeds the complete metadata budget",
+    "passed": false,
+    "evidence": "nginx/saveframe.conf"
+  }
+]
