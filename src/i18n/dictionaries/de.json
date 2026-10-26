@@ -242,5 +242,6 @@
   "Tick the images you want to download. Click a thumbnail to preview it, or download all slides as a ZIP.": "Markiere die gewünschten Bilder. Klicke zur Vorschau auf eine Miniaturansicht oder lade alle Folien als ZIP herunter.",
   "No downloadable active stories were returned for this account.": "Für dieses Konto wurden keine herunterladbaren aktiven Storys zurückgegeben.",
   "Instagram requires login to access this story. This downloader can only retrieve stories that Instagram makes publicly accessible.": "Instagram verlangt eine Anmeldung für diese Story. Nur öffentlich zugängliche Storys können abgerufen werden.",
-  "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.": "Füge einen Direktlink mit /stories/benutzer/id/ ein. Profillinks und Story-Sammeldownloads werden nicht unterstützt."
+  "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.": "Füge einen Direktlink mit /stories/benutzer/id/ ein. Profillinks und Story-Sammeldownloads werden nicht unterstützt.",
+  "Profile Picture": "Profilbild"
 }

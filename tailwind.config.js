@@ -4,8 +4,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+        sans: ['var(--font-inter)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['var(--font-jakarta)', 'var(--font-inter)', 'sans-serif'],
       },
       colors: {
         canvas: '#FFFFFF', soft: '#F8F9FD', panel: '#FAF9FE',

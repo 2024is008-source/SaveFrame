@@ -242,5 +242,6 @@
   "Tick the images you want to download. Click a thumbnail to preview it, or download all slides as a ZIP.": "Tick the images you want to download. Click a thumbnail to preview it, or download all slides as a ZIP.",
   "No downloadable active stories were returned for this account.": "No downloadable active stories were returned for this account.",
   "Instagram requires login to access this story. This downloader can only retrieve stories that Instagram makes publicly accessible.": "Instagram requires login to access this story. This downloader can only retrieve stories that Instagram makes publicly accessible.",
-  "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.": "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported."
+  "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.": "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.",
+  "Profile Picture": "Profile Picture"
 }

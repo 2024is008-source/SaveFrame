@@ -72,6 +72,12 @@ export class YtDlpService {
   private readonly cancelledJobIds = new Set<string>();
   private readonly adapters: InstagramAuthorizedAdapters;
   private readonly metadataCache = new Map<string, { data: NormalizedMediaResult; raw: any; expiresAt: number }>();
+  private readonly pendingMetadata = new Map<string, Promise<NormalizedMediaResult>>();
+  private rememberMetadata(url:string,data:NormalizedMediaResult,raw:any=null){
+    for(const [key,value]of this.metadataCache)if(value.expiresAt<=Date.now())this.metadataCache.delete(key);
+    if(this.metadataCache.size>=8)this.metadataCache.delete(this.metadataCache.keys().next().value!);
+    this.metadataCache.set(url,{data,raw,expiresAt:Date.now()+120000});return data;
+  }
 
   constructor(config?: YtDlpServiceConfig, adapters?: InstagramAuthorizedAdapters) {
     const localYtDlp = path.join(process.cwd(), '.runtime', process.platform === 'win32' ? 'Scripts/yt-dlp.exe' : 'bin/yt-dlp');
@@ -289,6 +295,17 @@ export class YtDlpService {
    * handles single-photo and profile fallback adapters, and normalizes the output.
    */
   public async extractMetadata(rawUrl: string, tool?: string): Promise<NormalizedMediaResult> {
+    const validated=validateMediaInput(rawUrl,tool);
+    const cached=this.metadataCache.get(validated.canonicalUrl);
+    if(cached&&cached.expiresAt>Date.now())return cached.data;
+    const key=validated.canonicalUrl+':'+(tool||'');
+    const pending=this.pendingMetadata.get(key);if(pending)return pending;
+    if(this.pendingMetadata.size>=3)throw new DownloaderAppError('RATE_LIMITED','Media inspection is busy. Try again shortly.',429,true);
+    const operation=this.extractMetadataInternal(rawUrl,tool).finally(()=>this.pendingMetadata.delete(key));
+    this.pendingMetadata.set(key,operation);return operation;
+  }
+
+  private async extractMetadataInternal(rawUrl: string, tool?: string): Promise<NormalizedMediaResult> {
     const validated = validateMediaInput(rawUrl, tool);
     const cached = this.metadataCache.get(validated.canonicalUrl);
     if (cached && cached.expiresAt > Date.now()) return cached.data;
@@ -298,7 +315,7 @@ export class YtDlpService {
     // Profile URLs are handled by our dedicated Profile Metadata Adapter
     // because yt-dlp's InstagramUserIE is marked _WORKING = False and bulk profile downloads are prohibited.
     if (validated.category === 'profile') {
-      return this.adapters.extractPublicProfileMetadata(validated);
+      return this.rememberMetadata(validated.canonicalUrl,await this.adapters.extractPublicProfileMetadata(validated));
     }
 
     const args = [
@@ -328,7 +345,7 @@ export class YtDlpService {
         stderr.includes('There is no video in this post') &&
         validated.category === 'photo'
       ) {
-        return this.adapters.extractPublicPhotoPost(validated);
+        return this.rememberMetadata(validated.canonicalUrl,await this.adapters.extractPublicPhotoPost(validated));
       }
       throw this.mapYtDlpStderrToAppError(stderr, validated.category);
     }
@@ -347,9 +364,7 @@ export class YtDlpService {
     }
 
     const data = this.normalizeYtDlpOutput(rawJson, validated);
-    if (this.metadataCache.size >= 32) this.metadataCache.delete(this.metadataCache.keys().next().value!);
-    this.metadataCache.set(validated.canonicalUrl, { data, raw: rawJson, expiresAt: Date.now() + 120000 });
-    return data;
+    return this.rememberMetadata(validated.canonicalUrl,data,rawJson);
   }
 
   /**
@@ -385,7 +400,7 @@ export class YtDlpService {
     // Resolve metadata first so we know exact item type and format specs
     const metadata = await this.extractMetadata(validated.canonicalUrl);
     const itemIndex = options.itemIndex ?? 0;
-    const item = metadata.items[itemIndex] || metadata.items[0];
+    const item = metadata.items[itemIndex];
     if (!item) {
       throw new DownloaderAppError(
         'EXTRACTOR_FAILURE',
@@ -394,8 +409,8 @@ export class YtDlpService {
       );
     }
 
-    const selectedFormat =
-      item.formats.find((f) => f.formatId === options.formatId) || item.formats[0];
+    const selectedFormat = options.formatId && options.formatId!=='best'
+      ? item.formats.find((f) => f.formatId === options.formatId) : item.formats[0];
 
     if (!selectedFormat) {
       throw new DownloaderAppError(

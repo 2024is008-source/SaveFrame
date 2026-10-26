@@ -2,6 +2,9 @@ import crypto from 'node:crypto';
 import { db, transaction, cleanup } from './db';
 import { AdminError } from './auth';
 export const mediaKinds = ['reel','video','photo','carousel','story','profile','unknown'];
+// Expected access restrictions, input rejections and visitor cancellations are not system faults.
+export const systemFailureCodes=['INTERNAL_ERROR','YTDLP_NOT_INSTALLED','FFMPEG_ERROR','INSUFFICIENT_DISK_SPACE','PROCESS_RESTARTED','DELIVERY_STREAM_ERROR'];
+const systemFailureCondition="error_code IN ('"+systemFailureCodes.join("','")+"')";
 const events = new Set(['request_received','media_resolution_started','media_resolution_succeeded','media_resolution_failed','download_requested','download_started','media_prepared','download_failed','delivery_started','delivery_completed','delivery_failed']);
 declare global { var __saveframeAnalyticsRuntime: string | undefined; }
 const runtime = () => global.__saveframeAnalyticsRuntime ||= crypto.randomUUID();
@@ -69,7 +72,7 @@ export function reports(input: ReportFilter={}) {
   const totals=connection.prepare(`SELECT COALESCE(SUM(requests),0) requests,COALESCE(SUM(prepared),0) prepared,COALESCE(SUM(failed),0) failed,COALESCE(SUM(delivered),0) delivered,COALESCE(SUM(processing_ms),0) processing_ms,COALESCE(SUM(processing_samples),0) samples FROM daily_statistics WHERE day>=? AND day<=?${filter}`).get(...values) as any;
   const daily=connection.prepare(`SELECT day,SUM(requests) requests,SUM(prepared) prepared,SUM(failed) failed FROM daily_statistics WHERE day>=? AND day<=?${filter} GROUP BY day ORDER BY day`).all(...values) as any[];
   const distribution=connection.prepare(`SELECT media_type,SUM(requests) count FROM daily_statistics WHERE day>=? AND day<=?${filter} GROUP BY media_type ORDER BY count DESC`).all(...values);
-  const errors=connection.prepare(`SELECT error_code,COUNT(*) count FROM download_events WHERE created_at>=? AND created_at<? AND error_code IS NOT NULL${filter} GROUP BY error_code ORDER BY count DESC LIMIT 30`).all(range.start,range.end,...(range.type?[range.type]:[]));
+  const errors=connection.prepare(`SELECT error_code,COUNT(*) count FROM download_events WHERE created_at>=? AND created_at<? AND ${systemFailureCondition}${filter} GROUP BY error_code ORDER BY count DESC LIMIT 30`).all(range.start,range.end,...(range.type?[range.type]:[]));
   const errorCount=Number((connection.prepare(`SELECT COUNT(*) count FROM download_events WHERE created_at>=? AND created_at<? AND error_code IS NOT NULL${filter}`).get(range.start,range.end,...(range.type?[range.type]:[])) as any).count);
   const errorPages=Math.max(1,Math.ceil(errorCount/25)),errorPage=Math.min(range.page,errorPages);
   const recentErrors=connection.prepare(`SELECT event_type,media_type,error_code,created_at,job_id FROM download_events WHERE created_at>=? AND created_at<? AND error_code IS NOT NULL${filter} ORDER BY id DESC LIMIT 25 OFFSET ?`).all(range.start,range.end,...(range.type?[range.type]:[]),(errorPage-1)*25);
@@ -80,7 +83,7 @@ export function reports(input: ReportFilter={}) {
   const recent=connection.prepare(`SELECT id,job_id,media_type,status,requested_at,prepared_at,delivered_at,error_code,duration_ms FROM download_requests WHERE ${where} ORDER BY requested_at DESC LIMIT 25 OFFSET ?`).all(...recentValues,(page-1)*25);
   const active=Number((connection.prepare("SELECT COUNT(*) count FROM download_requests WHERE status IN ('queued','processing')").get() as any).count);
   const periods=Object.fromEntries([['today',0],['week',6],['month',29]].map(([label,days])=>[label,Number((connection.prepare('SELECT COALESCE(SUM(requests),0) count FROM daily_statistics WHERE day>=? AND day<=?').get(dayOf(Date.now()-Number(days)*86400000),dayOf(Date.now())) as any).count)]));
-  return {range:{...range,page},totals:{...totals,success:totals.prepared+totals.failed ? totals.prepared/(totals.prepared+totals.failed)*100 : null,average:totals.samples ? totals.processing_ms/totals.samples : null,active},daily,distribution,errors,recentErrors,errorCount,errorPages,errorPage,recent,count,pages:Math.max(1,Math.ceil(count/25)),periods};
+  return {range:{...range,page},totals:{...totals,systemFailures:errors.reduce<number>((sum,row)=>sum+Number(row.count),0),success:totals.prepared+totals.failed ? totals.prepared/(totals.prepared+totals.failed)*100 : null,average:totals.samples ? totals.processing_ms/totals.samples : null,active},daily,distribution,errors,recentErrors,errorCount,errorPages,errorPage,recent,count,pages:Math.max(1,Math.ceil(count/25)),periods};
 }
 export function reportCsv(input: ReportFilter={}) {
   const {from,to,type}=reportRange(input);

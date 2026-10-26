@@ -64,18 +64,19 @@ export function isPrivateOrReservedIp(ip: string): boolean {
     if (a === 172 && b >= 16 && b <= 31) return true;
     if (a === 192 && b === 168) return true;
     if (a === 100 && b >= 64 && b <= 127) return true; // CGNAT
+    if((a===192&&b===0&&(parts[2]===0||parts[2]===2))||(a===198&&(b===18||b===19||(b===51&&parts[2]===100)))||(a===203&&b===0&&parts[2]===113))return true;
     if (a >= 224) return true; // Multicast & reserved
     return false;
   }
   if (net.isIPv6(clean)) {
-    if (clean === '::1' || clean === '::') return true;
-    if (clean.startsWith('fe80:') || clean.startsWith('fc') || clean.startsWith('fd')) {
-      return true;
-    }
-    if (clean.startsWith('::ffff:')) {
-      const mapped = clean.slice('::ffff:'.length);
-      if (net.isIPv4(mapped)) return isPrivateOrReservedIp(mapped);
-    }
+    let hex=clean;
+    if(hex.includes('.')){const split=hex.lastIndexOf(':');const v4=hex.slice(split+1).split('.').map(Number);hex=hex.slice(0,split+1)+((v4[0]<<8)|v4[1]).toString(16)+':'+((v4[2]<<8)|v4[3]).toString(16);}
+    const [head,tail]=hex.split('::'),left=head?head.split(':'):[],right=tail?tail.split(':'):[];
+    const words=(hex.includes('::')?[...left,...Array(8-left.length-right.length).fill('0'),...right]:left).map(part=>parseInt(part,16));
+    if(words.slice(0,5).every(word=>word===0)&&words[5]===0xffff)return isPrivateOrReservedIp([words[6]>>8,words[6]&255,words[7]>>8,words[7]&255].join('.'));
+    if(words[0]===0 || (words[0]&0xfe00)===0xfc00 || (words[0]&0xffc0)===0xfe80 || (words[0]&0xffc0)===0xfec0 || (words[0]&0xff00)===0xff00)return true;
+    if(words[0]===0x2001&&words[1]===0xdb8)return true;
+    if(words[0]===0x64&&words[1]===0xff9b&&words.slice(2,6).every(word=>word===0))return isPrivateOrReservedIp([words[6]>>8,words[6]&255,words[7]>>8,words[7]&255].join('.'));
     return false;
   }
   return true;
@@ -266,7 +267,7 @@ export function validateInstagramUrl(rawInput: string): ValidatedInstagramUrl {
  * Optional DNS resolution SSRF verification before outbound network calls.
  */
 export async function assertSafeHostResolution(hostname: string): Promise<void> {
-  if (process.env.SKIP_DNS_SSRF_CHECK === 'true') return;
+  if (process.env.NODE_ENV==='test' && process.env.SKIP_DNS_SSRF_CHECK === 'true') return;
   try {
     const records = await dns.promises.lookup(hostname, { all: true });
     for (const rec of records) {

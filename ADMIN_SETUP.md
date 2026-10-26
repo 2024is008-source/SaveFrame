@@ -16,7 +16,7 @@ For this workspace, `SAVEFRAME_ADMIN_EMAIL` is set to `backbencherz2027@gmail.co
 
 Only `SAVEFRAME_ADMIN_EMAIL` can log in. Other account emails and their existing sessions are rejected on the server. Every new sign-in requires the owner password followed by a six-digit email code; optional authenticator-app TOTP is an additional check. There is no password-only fallback when email delivery is unavailable.
 
-The workspace already has the owner and Gmail SMTP address configured in ignored `.env.local`. Real delivery is **not yet enabled** because the Gmail App Password has not been supplied. Configure it privately:
+The workspace has the owner, Gmail SMTP address and SMTP credential configured in ignored `.env.local`. The audit verified configuration presence and TLS connectivity without sending email or testing Gmail authentication. Actual inbox delivery still needs an owner sign-in test. For a new installation or credential replacement, configure it privately:
 
 1. Sign into the Google account for `backbencherz2027@gmail.com`, enable Google 2-Step Verification, and create an App Password named SaveFrame. [Google's official instructions](https://support.google.com/accounts/answer/185833) explain requirements and account restrictions.
 2. In `.env.local`, set `ADMIN_SMTP_PASSWORD` to that App Password, without display spaces. Do not use your normal Gmail password and do not send it in chat. On production use the host's private secret store instead.

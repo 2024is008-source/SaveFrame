@@ -242,5 +242,6 @@
   "Tick the images you want to download. Click a thumbnail to preview it, or download all slides as a ZIP.": "ダウンロードする画像にチェックを入れてください。サムネイルでプレビューするか、すべてをZIPで保存できます。",
   "No downloadable active stories were returned for this account.": "このアカウントにはダウンロード可能な公開中のストーリーが見つかりませんでした。",
   "Instagram requires login to access this story. This downloader can only retrieve stories that Instagram makes publicly accessible.": "このストーリーへのアクセスにはInstagramへのログインが必要です。一般公開で取得可能なストーリーのみ対応しています。",
-  "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.": "/stories/ユーザー名/ID/ を含む直接リンクを貼り付けてください。プロフィールやストーリーの一括ダウンロードには対応していません。"
+  "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.": "/stories/ユーザー名/ID/ を含む直接リンクを貼り付けてください。プロフィールやストーリーの一括ダウンロードには対応していません。",
+  "Profile Picture": "プロフィール写真"
 }

@@ -78,7 +78,7 @@ export const settingDefaults: Record<string, string> = {
 };
 export function settings(): Record<string, string> {
   const result = { ...settingDefaults };
-  for (const row of db().prepare('SELECT key,value FROM public_settings').all() as any[]) if (row.key in result) result[row.key] = row.value;
+  for (const row of db().prepare('SELECT key,value FROM public_settings').all() as any[]) if (Object.hasOwn(result,row.key)) result[row.key] = row.value;
   return result;
 }
 export function publicSettings() {

@@ -1,0 +1,16 @@
+{
+  "node": "v24.18.0",
+  "ytDlp": "2026.10.21",
+  "ffmpeg": "ffmpeg version 7.1-essentials_build-www.gyan.dev Copyright (c) 2000-2024 the FFmpeg developers",
+  "tests": [
+    "real binary readiness",
+    "local video encoding",
+    "local AAC/video mux",
+    "M4A extraction",
+    "non-silent decoded audio"
+  ],
+  "combinedBytes": 11728,
+  "audioBytes": 9969,
+  "meanVolumeDb": -21.2,
+  "instagramNetworkExtractionTested": false
+}

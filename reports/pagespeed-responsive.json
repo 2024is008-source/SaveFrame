@@ -1,0 +1,170 @@
+[
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/",
+    "width": 320
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/blog",
+    "width": 320
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/admin/login",
+    "width": 320
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/",
+    "width": 375
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/blog",
+    "width": 375
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/admin/login",
+    "width": 375
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/",
+    "width": 390
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/blog",
+    "width": 390
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/admin/login",
+    "width": 390
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/",
+    "width": 430
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/blog",
+    "width": 430
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/admin/login",
+    "width": 430
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/",
+    "width": 768
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/blog",
+    "width": 768
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/admin/login",
+    "width": 768
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/",
+    "width": 1024
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/blog",
+    "width": 1024
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/admin/login",
+    "width": 1024
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/",
+    "width": 1440
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/blog",
+    "width": 1440
+  },
+  {
+    "brokenImages": 0,
+    "h1": 1,
+    "icon": "/favicon.svg",
+    "overflow": false,
+    "path": "/admin/login",
+    "width": 1440
+  }
+]

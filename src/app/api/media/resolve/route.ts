@@ -6,13 +6,14 @@ import { readMediaJson } from '../../../../api/request';
 
 export async function POST(req: NextRequest) {
   const ctx = getApiContext();
-  const analyticsId=beginResolution(), started=Date.now();
+  let analyticsId:string|undefined;const started=Date.now();
   try {
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
     const rl = await ctx.redisStore.checkRateLimit(ip, 'resolve', 30, 60);
     if (!rl.allowed) {
       throw new DownloaderAppError('RATE_LIMITED', 'Rate limit exceeded.', 429, true);
     }
+    analyticsId=beginResolution();
     const body = await readMediaJson(req);
     const metadata = await ctx.ytDlpService.extractMetadata(body.url || '', body.tool);
     resolveEvent(analyticsId,true,metadata.category,undefined,Date.now()-started);
@@ -27,8 +28,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ status: 'ok', cached: false, data: publicMetadata });
   } catch (err: any) {
     const known=err instanceof DownloaderAppError;
-    const code = known ? err.code : 'EXTRACTOR_FAILURE';
-    resolveEvent(analyticsId,false,'unknown',code,Date.now()-started);
+    const code = known ? err.code : 'INTERNAL_ERROR';
+    if(analyticsId)resolveEvent(analyticsId,false,'unknown',code,Date.now()-started);
     const status = known ? err.statusCode : 500;
     return NextResponse.json(
       { status: 'error', error: { code, message: known ? err.userMessage : 'Unable to inspect this media. Please try again.', retryable: known && err.retryable } },

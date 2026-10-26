@@ -242,5 +242,6 @@
   "Tick the images you want to download. Click a thumbnail to preview it, or download all slides as a ZIP.": "İndirmek istediğiniz görselleri işaretleyin. Önizleme için küçük resme tıklayın veya tüm slaytları ZIP olarak indirin.",
   "No downloadable active stories were returned for this account.": "Bu hesap için indirilebilir aktif hikâye bulunamadı.",
   "Instagram requires login to access this story. This downloader can only retrieve stories that Instagram makes publicly accessible.": "Instagram bu hikâye için giriş gerektiriyor. Yalnızca herkese açık olarak erişilebilen hikâyeler alınabilir.",
-  "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.": "/stories/kullanıcı/id/ içeren doğrudan bağlantı yapıştırın. Profil bağlantıları ve toplu hikâye indirmeleri desteklenmez."
+  "Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.": "/stories/kullanıcı/id/ içeren doğrudan bağlantı yapıştırın. Profil bağlantıları ve toplu hikâye indirmeleri desteklenmez.",
+  "Profile Picture": "Profil fotoğrafı"
 }

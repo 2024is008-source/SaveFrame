@@ -2,13 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Preserve the feature rows while keeping dt/dd as direct children of each group. */
+.feature-definition { position: relative; padding-inline-start: 38px; }
+.feature-definition dt > span { position: absolute; inset-inline-start: 0; top: 0; }
+.step-label.bg-brand-pinkSoft { color: #a51658; }
+.step-label.bg-brand-orangeSoft { color: #9a3412; }
+@media (max-width: 767px) {
+  .saveframe-home footer li > a { display: inline-flex; align-items: center; min-height: 44px; }
+}
+
 /* Locale-specific direction follows the existing layout without changing LTR pages. */
-html[lang="ar"] { font-family: 'Inter', 'Noto Sans Arabic', Tahoma, Arial, sans-serif; }
-html[lang="ar"] .font-display { font-family: 'Plus Jakarta Sans', 'Noto Sans Arabic', Tahoma, Arial, sans-serif; }
-html[lang="ja"] { font-family: 'Inter', 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif; }
-html[lang="hi"] { font-family: 'Inter', 'Noto Sans Devanagari', Mangal, sans-serif; }
-html[lang="ja"] .font-display { font-family: 'Plus Jakarta Sans', 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif; }
-html[lang="hi"] .font-display { font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', Mangal, sans-serif; }
+html[lang="ar"] { font-family: var(--font-inter), 'Noto Sans Arabic', Tahoma, Arial, sans-serif; }
+html[lang="ar"] .font-display { font-family: var(--font-jakarta), 'Noto Sans Arabic', Tahoma, Arial, sans-serif; }
+html[lang="ja"] { font-family: var(--font-inter), 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif; }
+html[lang="hi"] { font-family: var(--font-inter), 'Noto Sans Devanagari', Mangal, sans-serif; }
+html[lang="ja"] .font-display { font-family: var(--font-jakarta), 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif; }
+html[lang="hi"] .font-display { font-family: var(--font-jakarta), 'Noto Sans Devanagari', Mangal, sans-serif; }
 html[dir="rtl"] .text-left { text-align: start; }
 html[dir="rtl"] #nav-downloader-menu, html[dir="rtl"] #nav-viewer-menu { left: auto; right: 0; }
 html[dir="rtl"] #instagram-url-input { direction: ltr; text-align: left; }
@@ -111,7 +120,7 @@ button:disabled { cursor: wait; opacity: .65; }
 
 /* Compiled Tailwind CSS Utilities for Zero-FOUC & Offline Verification */
 *, ::before, ::after { box-sizing: border-box; border-width: 0; border-style: solid; border-color: #E9EAF0; }
-html { line-height: 1.5; -webkit-text-size-adjust: 100%; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; scroll-behavior: smooth; }
+html { line-height: 1.5; -webkit-text-size-adjust: 100%; font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif; scroll-behavior: smooth; }
 body { margin: 0; line-height: inherit; background-color: #FFFFFF; color: #171827; }
 h1, h2, h3, h4, p, ul, ol, dl, dd, pre { margin: 0; }
 ul, ol { list-style: none; padding: 0; }
@@ -479,13 +488,13 @@ img { max-width: 100%; height: auto; }
       padding: 0;
       background-color: var(--bg-canvas);
       color: var(--text-main);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
 
     h1, h2, h3, h4, .font-display {
-      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+      font-family: var(--font-jakarta), var(--font-inter), sans-serif;
       letter-spacing: -0.025em;
     }
 

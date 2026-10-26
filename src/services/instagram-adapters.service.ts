@@ -1,13 +1,14 @@
 import * as https from 'https';
 import * as http from 'http';
 import * as fs from 'fs';
+import * as dns from 'node:dns';
 import {
   DownloaderAppError,
   NormalizedFormat,
   NormalizedMediaItem,
   NormalizedMediaResult,
 } from '../types/media.types';
-import { ValidatedInstagramUrl } from '../security/url-validator';
+import { ValidatedInstagramUrl, isPrivateOrReservedIp } from '../security/url-validator';
 
 export interface ImageAdapterFetchOptions {
   timeoutMs?: number;
@@ -44,7 +45,12 @@ export class InstagramAuthorizedAdapters {
     body: Buffer;
   }> {
     return new Promise((resolve, reject) => {
-      const parsed = new URL(targetUrl);
+      let parsed:URL;
+      try{parsed=new URL(targetUrl);}catch{return reject(new DownloaderAppError('SSRF_BLOCKED','Invalid media URL.',403));}
+      const fixture=process.env.NODE_ENV==='test'&&process.env.SAVEFRAME_FIXTURE_ORIGIN===parsed.origin;
+      const host=parsed.hostname.toLowerCase();
+      const allowed=['instagram.com','cdninstagram.com','fbcdn.net'].some(domain=>host===domain||host.endsWith('.'+domain));
+      if(!fixture&&(!allowed||parsed.protocol!=='https:'||parsed.username||parsed.password||(parsed.port&&parsed.port!=='443')))return reject(new DownloaderAppError('SSRF_BLOCKED','Media URL is outside the approved Instagram hosts.',403));
       const client = parsed.protocol === 'https:' ? https : http;
 
       const req = client.request(
@@ -52,9 +58,11 @@ export class InstagramAuthorizedAdapters {
         {
           method: 'GET',
           timeout: timeoutMs,
+          // Check the actual connection's DNS result, avoiding a lookup/connect race.
+          ...(!fixture?{lookup:((hostname:string,options:any,callback:any)=>{dns.lookup(hostname,{all:true},(error,records)=>{if(error)return callback(error);if(!records.length||records.some(record=>isPrivateOrReservedIp(record.address)))return callback(new DownloaderAppError('SSRF_BLOCKED','Media host resolved to a restricted address.',403));if(options?.all)callback(null,records);else callback(null,records[0].address,records[0].family);});}) as any}:{}),
           headers: {
             'User-Agent':
-              'Mozilla/5.0 (compatible; SaveFrameMediaUtility/1.0; +https://saveframe.app)',
+              'Mozilla/5.0 (compatible; SaveFrameMediaUtility/1.0; +https://saveframe.site)',
             Accept: 'text/html,application/json,image/jpeg,image/webp,*/*;q=0.8',
           },
         },
@@ -104,6 +112,7 @@ export class InstagramAuthorizedAdapters {
       });
 
       req.on('error', (err) => {
+        if(err instanceof DownloaderAppError){reject(err);return;}
         reject(
           new DownloaderAppError(
             'EXTRACTOR_FAILURE',
@@ -167,7 +176,7 @@ export class InstagramAuthorizedAdapters {
     }
 
     // Check if JSON candidate payload or OpenGraph image is present
-    let candidates: Array<{ url: string; width: number; height: number }> = [];
+    let candidates: Array<{ url: string; width?: number; height?: number }> = [];
     let username = validated.username || 'instagram_creator';
     let fullName = username;
     let caption = `Public photo post (${validated.shortcode})`;
@@ -217,7 +226,7 @@ export class InstagramAuthorizedAdapters {
         '&'
       );
       if (rawUrl) {
-        candidates.push({ url: rawUrl, width: 1080, height: 1350 });
+        candidates.push({ url: rawUrl });
       }
     }
 
@@ -231,20 +240,20 @@ export class InstagramAuthorizedAdapters {
 
     // Sort highest resolution first
     const sorted = [...candidates].sort(
-      (a, b) => (b.width || 1080) * (b.height || 1080) - (a.width || 1080) * (a.height || 1080)
+      (a, b) => (b.width || 0) * (b.height || 0) - (a.width || 0) * (a.height || 0)
     );
 
     const formats: NormalizedFormat[] = sorted.map((c, idx) => {
-      const w = c.width || 1080;
-      const h = c.height || 1350;
+      const w = c.width || undefined;
+      const h = c.height || undefined;
       return {
-        formatId: idx === 0 ? 'photo-original' : `photo-${w}w`,
-        label: idx === 0 ? `Original (${w}×${h})` : `${w}×${h} JPEG`,
+        formatId: idx === 0 ? 'photo-original' : `photo-${idx}`,
+        label: w&&h ? (idx === 0 ? `Original (${w}×${h})` : `${w}×${h} JPEG`) : (idx===0?'Original image':`Image variant ${idx+1}`),
         ext: 'jpg',
         Container: 'JPEG sRGB',
         width: w,
         height: h,
-        resolution: `${w}x${h}`,
+        resolution: w&&h?`${w}x${h}`:'Source resolution',
         hasVideo: false,
         hasAudio: false,
         needsMerge: false,
@@ -261,9 +270,9 @@ export class InstagramAuthorizedAdapters {
       mediaType: 'photo',
       title: `Photo by @${username}`,
       thumbnailUrl: primary.url,
-      width: primary.width || 1080,
-      height: primary.height || 1350,
-      aspectRatio: `${primary.width || 1080}:${primary.height || 1350}`,
+      width: primary.width || undefined,
+      height: primary.height || undefined,
+      aspectRatio: primary.width&&primary.height?`${primary.width}:${primary.height}`:'Source image',
       formats,
     };
 
@@ -344,6 +353,8 @@ export class InstagramAuthorizedAdapters {
       if (ogTitle?.[1]) fullName = ogTitle[1].split('(@')[0].trim() || username;
     }
 
+    if(isPrivate)throw new DownloaderAppError('PRIVATE_CONTENT','Private Instagram profiles are not supported.',403);
+
     if (!avatarUrl) {
       throw new DownloaderAppError(
         'LOGIN_REQUIRED',
@@ -355,12 +366,10 @@ export class InstagramAuthorizedAdapters {
     const formats: NormalizedFormat[] = [
       {
         formatId: 'profile-avatar-hd',
-        label: 'Profile Picture (HD)',
+        label: 'Profile Picture',
         ext: 'jpg',
         Container: 'JPEG sRGB',
-        width: 1080,
-        height: 1080,
-        resolution: '1080x1080',
+        resolution: 'Source resolution',
         hasVideo: false,
         hasAudio: false,
         needsMerge: false,
@@ -392,9 +401,7 @@ export class InstagramAuthorizedAdapters {
           mediaType: 'photo',
           title: `@${username} Profile Picture`,
           thumbnailUrl: avatarUrl,
-          width: 1080,
-          height: 1080,
-          aspectRatio: '1:1',
+          aspectRatio: 'Source image',
           formats,
         },
       ],
@@ -421,8 +428,12 @@ export class InstagramAuthorizedAdapters {
         true
       );
     }
+    const contentType = String(res.headers['content-type'] || '');
+    if(!/^image\/(jpeg|webp)(?:;|$)/i.test(contentType))throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE','The image source did not return a supported photo.',422);
+    const jpeg=res.body.length>=3&&res.body[0]===0xff&&res.body[1]===0xd8&&res.body[2]===0xff;
+    const webp=res.body.length>=12&&res.body.toString('ascii',0,4)==='RIFF'&&res.body.toString('ascii',8,12)==='WEBP';
+    if(!(contentType.includes('webp')?webp:jpeg))throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE','The image source did not return a valid JPEG or WebP file.',422);
     await fs.promises.writeFile(destinationPath, res.body, { mode: 0o600 });
-    const contentType = String(res.headers['content-type'] || 'image/jpeg');
     return {
       bytesWritten: res.body.length,
       mimeType: contentType.includes('webp') ? 'image/webp' : 'image/jpeg',

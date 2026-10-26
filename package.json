@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/prepare-performance-assets.cjs",
+    "prebuild": "node scripts/prepare-performance-assets.cjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint src next.config.ts",
-    "test": "npm run test:admin && npm run test:downloader && npm run test:stories && npm run test:i18n && npm run test:blog",
+    "test": "npm run test:admin && npm run test:security && npm run test:downloader && npm run test:stories && npm run test:i18n && npm run test:blog",
+    "test:security": "node scripts/check-security.cjs",
+    "test:runtime": "node scripts/check-runtime.cjs",
     "test:styles": "node scripts/check-styles.cjs",
+    "test:performance": "node scripts/check-performance.cjs",
     "test:downloader": "node scripts/check-downloader.cjs",
     "test:stories": "node scripts/check-stories.cjs",
     "test:blog": "node scripts/check-blog.cjs",
@@ -26,6 +31,7 @@
     "lucide-react": "^0.454.0",
     "next": "^15.0.0",
     "nodemailer": "^10.2.1",
+    "typescript": "^5.6.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -37,8 +43,7 @@
     "eslint": "^9.39.5",
     "eslint-config-next": "^15.5.28",
     "postcss": "^8.5.31",
-    "tailwindcss": "^3.4.17",
-    "typescript": "^5.6.3"
+    "tailwindcss": "^3.4.17"
   },
   "overrides": { "next": { "postcss": "$postcss" } },
   "engines": {

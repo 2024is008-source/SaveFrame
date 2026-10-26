@@ -9,7 +9,7 @@ export function validateSeo(route: string, values: SeoValues): SeoValues {
   const limits:Record<string,number>={title:120,description:320,targetKeyword:200,ogTitle:160,ogDescription:500,image:250,contentDescription:1000};
   const result:SeoValues={};
   for(const [key,value] of Object.entries(values)) {
-    if(!(key in limits) || typeof value!=='string' || value.length>limits[key] || /[<>\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(value)) throw new AdminError(400,'Invalid '+key+' field. Use plain text within the displayed limits.');
+    if(!Object.hasOwn(limits,key) || typeof value!=='string' || value.length>limits[key] || /[<>\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(value)) throw new AdminError(400,'Invalid '+key+' field. Use plain text within the displayed limits.');
     if(key==='contentDescription' && value && !page.contentEditable) throw new AdminError(400,'This page description is not editable.');
     if(key==='image' && value && !approvedImages().includes(value)) throw new AdminError(400,'Choose an approved social image.');
     result[key]=value.trim();
@@ -49,7 +49,7 @@ export function restoreSeo(route: string, revision: number, actor: string, versi
 export function saveSettings(input: Record<string,string>, actor: string) {
   if(!input || typeof input!=='object' || Array.isArray(input)) throw new AdminError(400,'Invalid settings.');
   for(const [key,value] of Object.entries(input)) {
-    if(!(key in settingDefaults) || typeof value!=='string' || value.length>500 || /[<>\x00-\x1f]/.test(value)) throw new AdminError(400,'Unsupported setting.');
+    if(!Object.hasOwn(settingDefaults,key) || typeof value!=='string' || value.length>500 || /[<>\x00-\x1f]/.test(value)) throw new AdminError(400,'Unsupported setting.');
     if(key==='site_name' && (!value.trim() || value.length>60)) throw new AdminError(400,'Use a site name of 1–60 characters.');
     if(key==='contact_email' && (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || value.length>200)) throw new AdminError(400,'Enter a valid contact email.');
     if(key==='analytics_retention_days' && (!/^\d+$/.test(value) || Number(value)<7 || Number(value)>180)) throw new AdminError(400,'Analytics retention must be 7–180 days.');

@@ -74,3 +74,13 @@ Run `npm run test:stories` for direct-link validation, single-video extraction, 
 Use Node.js 24+, run `npm run admin:setup` to choose your administrator password privately, then open `/admin/login`. There are no default credentials. The dashboard and its APIs require server-side authentication, and admin URLs are excluded from indexing and the sitemap. Local admin setup email is configured in ignored `.env.local`; it does not change the public support email.
 
 Read [ADMIN_SETUP.md](ADMIN_SETUP.md) for local preview, HTTPS hosting, persistent data, backups, optional two-factor authentication and recovery. [ADMIN_IMPLEMENTATION_REPORT.md](ADMIN_IMPLEMENTATION_REPORT.md) records the implementation, checks and limitations.
+
+## Final audit and hosting
+
+Read `FINAL_AUDIT_REPORT.md` and `DEPLOYMENT_CHECKLIST.md` before deployment. The final audit supersedes earlier readiness statements; historical reports are preserved.
+
+`npm run lint` runs ESLint without interactive setup. `npm test` includes security, queue/cleanup, local photo/profile fixtures and CLI recovery checks. `npm run test:runtime` verifies the installed binaries and creates only disposable local media for real FFmpeg mux/audio checks. Instagram network access is a separate test: a valid story URL can still return `LOGIN_REQUIRED`. No authenticated Instagram connection or paid provider is configured.
+
+The system-failure score and chart count confirmed internal errors only: INTERNAL_ERROR, YTDLP_NOT_INSTALLED, FFMPEG_ERROR, INSUFFICIENT_DISK_SPACE, PROCESS_RESTARTED and DELIVERY_STREAM_ERROR. Instagram access restrictions, ambiguous upstream extraction failures/timeouts, invalid input, configured size/rate limits and visitor cancellations remain in recent issue history and are excluded from that score. Preparation totals remain separate lifecycle metrics. Requests rejected by the rate limiter are not written as individual analytics events.
+
+Metadata work is coalesced per link with at most three simultaneous inspections. Successful metadata, including public photos and profile pictures, is retained for two minutes in an eight-entry memory cache. Downloads default to three active jobs, with a maximum of twenty waiting jobs; use `MAX_CONCURRENT_DOWNLOADS=1` or `2` for a small VPS and measure actual load. ZIPs stream in bounded chunks and are size checked before packaging. No external cleanup cron is required, and active jobs are not removed by the retention sweep.

@@ -145,6 +145,7 @@ export class DownloadManagerService {
   private readonly ytDlpService: YtDlpService;
   private readonly jobs = new Map<string, DownloadJob>();
   private readonly queue: string[] = [];
+  private readonly activeDeliveries=new Map<string,number>();
   private activeCount = 0;
   private readonly maxQueuedJobs: number;
   private cleanupTimer?: NodeJS.Timeout;
@@ -170,6 +171,9 @@ export class DownloadManagerService {
     this.maxFileSizeBytes =
       config?.maxFileSizeBytes ||
       parseInt(process.env.MAX_FILE_SIZE_BYTES || String(150 * 1024 * 1024), 10);
+    if(!Number.isFinite(this.retentionMs)||this.retentionMs<=0)this.retentionMs=15*60*1000;
+    if(!Number.isFinite(this.minFreeDiskBytes)||this.minFreeDiskBytes<0)this.minFreeDiskBytes=100*1024*1024;
+    if(!Number.isFinite(this.maxFileSizeBytes)||this.maxFileSizeBytes<=0||this.maxFileSizeBytes>1024*1024*1024)this.maxFileSizeBytes=150*1024*1024;
 
     fs.mkdirSync(this.tempDir, { recursive: true, mode: 0o700 });
     recoverInterruptedJobs();
@@ -290,6 +294,12 @@ export class DownloadManagerService {
     return job;
   }
 
+  public retainJobFile(jobId:string):()=>void {
+    const job=this.getJob(jobId);this.activeDeliveries.set(jobId,(this.activeDeliveries.get(jobId)||0)+1);
+    let released=false;
+    return ()=>{if(released)return;released=true;const count=(this.activeDeliveries.get(jobId)||1)-1;if(count)this.activeDeliveries.set(jobId,count);else this.activeDeliveries.delete(jobId);job.expiresAt=Math.max(job.expiresAt,Date.now()+this.retentionMs);};
+  }
+
   public cancelJob(jobId: string): DownloadJob {
     const job = this.getJob(jobId);
     if (job.status === 'completed' || job.status === 'failed' || job.status === 'cancelled') {
@@ -367,6 +377,7 @@ export class DownloadManagerService {
           throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'A selected slide is no longer available. Inspect the post again.', 400);
         }
         const totalItems = indices.length;
+        let downloadedPartBytes=0;
 
         for (let i = 0; i < totalItems; i++) {
           if ((job.status as string) === 'cancelled') {
@@ -395,7 +406,8 @@ export class DownloadManagerService {
           });
           partialFiles.push(artifact.filePath);
           if((job.status as string)==='cancelled')throw new DownloaderAppError('JOB_CANCELLED','Cancelled',499);
-          if(downloadedEntries.reduce((sum,entry)=>sum+fs.statSync(entry.filePath).size,0)>this.maxFileSizeBytes)throw new DownloaderAppError('FILE_TOO_LARGE','Carousel archive exceeds the allowed size.',413);
+          downloadedPartBytes+=artifact.filesizeBytes ?? (await fs.promises.stat(artifact.filePath)).size;
+          if(downloadedPartBytes>this.maxFileSizeBytes)throw new DownloaderAppError('FILE_TOO_LARGE','Carousel archive exceeds the allowed size.',413);
         }
 
         job.status = 'packaging_zip';
@@ -485,7 +497,7 @@ export class DownloadManagerService {
         err instanceof DownloaderAppError
           ? err
           : new DownloaderAppError(
-              'EXTRACTOR_FAILURE',
+              'INTERNAL_ERROR',
               'Download failed unexpectedly.',
               500,
               true
@@ -501,6 +513,11 @@ export class DownloadManagerService {
       jobEvent(job.analyticsId,'download_failed',job.jobId,job.category,appErr.code,Date.now()-processingStarted);
     } finally {
       for(const filename of partialFiles)await fs.promises.unlink(filename).catch(()=>{});
+      if(['failed','cancelled'].includes(job.status)){
+        // Only this finished job's generated files; never a global age-based sweep.
+        const leftovers=await fs.promises.readdir(this.tempDir,{withFileTypes:true}).catch(()=>[]);
+        for(const entry of leftovers)if(entry.isFile()&&entry.name.startsWith(job.jobId+'_'))await fs.promises.unlink(path.join(this.tempDir,entry.name)).catch(()=>{});
+      }
     }
   }
 
@@ -511,7 +528,7 @@ export class DownloadManagerService {
     const now = Date.now();
     let cleaned = 0;
     for (const [jobId, job] of this.jobs.entries()) {
-      if (now > job.expiresAt && ['completed','failed','cancelled'].includes(job.status)) {
+      if (now > job.expiresAt && ['completed','failed','cancelled'].includes(job.status) && !this.activeDeliveries.has(jobId)) {
         if (job.outputFilePath) {
           await fs.promises.unlink(job.outputFilePath).catch(() => {});
         }

@@ -1,0 +1,499 @@
+PageSpeed Insights
+Copy Link
+Docs
+This site uses cookies from Google to deliver its services and to analyze traffic.
+Learn More.
+Ok, Got it.
+Report from Oct 26, 2026, 9:07:45 AM
+
+Enter a valid URL
+
+Analyze
+smartphone
+Mobile
+computer
+Desktop
+Discover what your real users are experiencing
+No Data
+Diagnose performance issues
+98
+Performance
+91
+Accessibility
+100
+Best Practices
+100
+SEO
+1/2
+Agentic Browsing
+98
+FCP
++10
+LCP
++25
+TBT
++30
+CLS
++25
+SI
++9
+Performance
+Values are estimated and may vary. The performance score is calculated directly from these metrics.See calculator.
+0–49
+50–89
+90–100
+METRICS
+Expand view
+First Contentful Paint
+0.7 s
+Largest Contentful Paint
+0.7 s
+Total Blocking Time
+0 ms
+Cumulative Layout Shift
+0.006
+Speed Index
+1.4 s
+Captured at Oct 26, 2026, 9:07 AM GMT+5:30
+Emulated Desktop with Lighthouse 13.5.0
+Single page session
+Initial page load
+Custom throttling
+Using HeadlessChromium 153.0.8010.36 with lr
+View Treemap
+Show audits relevant to:
+All
+FCP
+LCP
+TBT
+CLS
+INSIGHTS
+Render-blocking requests Est savings of 260 ms
+Requests are blocking the page's initial render, which may delay LCP. Deferring or inlining can move these network requests out of the critical path.LCPFCPUnscored
+ Show 3rd-party resources (1)
+URL
+	
+Transfer Size
+	
+Duration
+
+
+saveframe.site 1st Party
+8.9 KiB	0 ms
+
+…css/4d76df24a9044408.css(saveframe.site)
+	
+8.9 KiB
+	
+
+Google Fonts Cdn 
+1.5 KiB	200 ms
+
+/css2?family=…(fonts.googleapis.com)
+	
+1.5 KiB
+	
+200 ms
+Forced reflow
+A forced reflow occurs when JavaScript queries geometric properties (such as offsetWidth) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about forced reflows and possible mitigations.Unscored
+Source
+	
+Total reflow time
+
+
+[unattributed]
+	
+51 ms
+Network dependency tree
+Use efficient cache lifetimes Est savings of 45 KiB
+A long cache lifetime can speed up repeat visits to your page. Learn more about caching.LCPFCPUnscored
+ Show 3rd-party resources (1)
+Request
+	
+Cache TTL
+	
+Transfer Size
+
+
+saveframe.site 1st Party
+	93 KiB
+
+…blog/photos-480.webp(saveframe.site)
+	
+1d
+	
+43 KiB
+
+
+/saveframe.js(saveframe.site)
+	
+4h
+	
+14 KiB
+
+
+…blog/reels-480.webp(saveframe.site)
+	
+1d
+	
+20 KiB
+
+
+…blog/stories-480.webp(saveframe.site)
+	
+1d
+	
+17 KiB
+
+
+Cloudflare Utility 
+	10 KiB
+
+/beacon.min.js/vce70182…(static.cloudflareinsights.com)
+	
+1d
+	
+10 KiB
+Improve image delivery Est savings of 27 KiB
+Reducing the download time of images can improve the perceived load time of the page and LCP. Learn more about optimizing image sizeLCPFCPUnscored
+	
+URL
+	
+Resource Size
+	
+Est Savings
+
+
+saveframe.site 1st Party
+	42.4 KiB	26.9 KiB
+
+A rangefinder camera and smartphone beside printed travel photographs on traver…
+<img src="https://saveframe.site/images/blog/photos-480.webp" srcset="/images/blog/photos-480.webp 480w, /images/blog/photos-960.webp 960w" sizes="(min-width:1168px) 357px, (min-width:768px) 33vw, 100vw" alt="A rangefinder camera and smartphone beside printed travel photographs on t…" width="960" height="720" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-[1.02] ui-transition">
+	
+…blog/photos-480.webp(saveframe.site)
+	
+42.4 KiB
+	
+26.9 KiB
+
+
+Increasing the image compression factor could improve this image's download size.
+		
+14.2 KiB
+
+
+This image file is larger than it needs to be (480x360) for its displayed dimensions (355x266). Use responsive images to reduce the image download size.
+		
+19.1 KiB
+Legacy JavaScript Est savings of 22 KiB
+Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren't necessary for modern browsers. Consider modifying your JavaScript build process to not transpile Baseline features, unless you know you must support older browsers. Learn why most sites can deploy ES6+ code without transpilingLCPFCPUnscored
+ Show 3rd-party resources (1)
+URL
+	
+	
+Wasted bytes
+
+
+saveframe.site 1st Party
+	11.6 KiB
+
+…chunks/255-04dea02e72e68301.js(saveframe.site)
+		
+11.6 KiB
+
+
+…chunks/255-04dea02e72e68301.js:1:4382(saveframe.site)
+Array.prototype.at
+	
+
+…chunks/255-04dea02e72e68301.js:1:3770(saveframe.site)
+Array.prototype.flat
+	
+
+…chunks/255-04dea02e72e68301.js:1:3883(saveframe.site)
+Array.prototype.flatMap
+	
+
+…chunks/255-04dea02e72e68301.js:1:4259(saveframe.site)
+Object.fromEntries
+	
+
+…chunks/255-04dea02e72e68301.js:1:4517(saveframe.site)
+Object.hasOwn
+	
+
+…chunks/255-04dea02e72e68301.js:1:3512(saveframe.site)
+String.prototype.trimEnd
+	
+
+…chunks/255-04dea02e72e68301.js:1:3427(saveframe.site)
+String.prototype.trimStart
+	
+
+Cloudflare Utility 
+	10.5 KiB
+
+/beacon.min.js/vce70182…(static.cloudflareinsights.com)
+		
+10.5 KiB
+
+
+/beacon.min.js/vce70182…:1:1118(static.cloudflareinsights.com)
+Array.prototype.at
+	
+
+/beacon.min.js/vce70182…:1:888(static.cloudflareinsights.com)
+Array.prototype.findLast
+	
+
+/beacon.min.js/vce70182…:1:1359(static.cloudflareinsights.com)
+Array.prototype.includes
+	
+Layout shift culprits
+Layout shifts occur when elements move absent any user interaction. Investigate the causes of layout shifts, such as elements being added, removed, or their fonts changing as the page loads.CLSUnscored
+Element
+	
+Layout shift score
+
+
+Total
+	
+0.006
+
+	
+0.006
+
+
+…v20/UcC73FwrK….woff2(fonts.gstatic.com)
+	
+Web font
+
+
+…v12/LDIoaomQN….woff2(fonts.gstatic.com)
+	
+Web font
+Optimize DOM size
+A large DOM can increase the duration of style calculations and layout reflows, impacting page responsiveness. A large DOM will also increase memory usage. Learn how to avoid an excessive DOM size.Unscored
+Statistic
+	
+Element
+	
+Value
+
+
+Total elements
+		
+529
+
+
+DOM depth
+	
+div.absolute > button#clear-url-btn > svg.w-3.5 > path
+<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12">
+	
+14
+
+
+Most children
+	
+body.min-h-screen
+<body class="min-h-screen flex flex-col bg-canvas text-ink selection:bg-brand-violetSof…">
+	
+16
+LCP breakdown
+3rd parties
+These insights are also available in the Chrome DevTools Performance Panel - record a trace to view more detailed information.
+DIAGNOSTICS
+Minify JavaScript Est savings of 3 KiB
+Minifying JavaScript files can reduce payload sizes and script parse time. Learn how to minify JavaScript.LCPFCPUnscored
+URL
+	
+Transfer Size
+	
+Est Savings
+
+
+saveframe.site 1st Party
+12.8 KiB	2.7 KiB
+
+/saveframe.js(saveframe.site)
+	
+12.8 KiB
+	
+2.7 KiB
+Reduce unused JavaScript Est savings of 43 KiB
+Reduce unused JavaScript and defer loading scripts until they are required to decrease bytes consumed by network activity. Learn how to reduce unused JavaScript.LCPFCPUnscored
+URL
+	
+Transfer Size
+	
+Est Savings
+
+
+saveframe.site 1st Party
+98.5 KiB	42.7 KiB
+
+…chunks/4bd1b696-c023c6e3521b1417.js(saveframe.site)
+	
+53.0 KiB
+	
+21.4 KiB
+
+
+…chunks/255-04dea02e72e68301.js(saveframe.site)
+	
+45.5 KiB
+	
+21.2 KiB
+Avoid long main-thread tasks 2 long tasks found
+More information about the performance of your application. These numbers don't directly affect the Performance score.
+PASSED AUDITS (14)
+Show
+91
+Accessibility
+These checks highlight opportunities to improve the accessibility of your web app. Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so manual testing is also encouraged.
+CONTRAST
+Background and foreground colors do not have a sufficient contrast ratio.
+Low-contrast text is difficult or impossible for many users to read. Learn how to provide sufficient color contrast.
+Failing Elements
+
+
+Second Step
+<span class="inline-flex items-center px-2.5 py-1 rounded-md bg-brand-pinkSoft text-bra…">
+
+
+Third Step
+<span class="inline-flex items-center px-2.5 py-1 rounded-md bg-brand-orangeSoft text-b…">
+These are opportunities to improve the legibility of your content.
+TABLES AND LISTS
+<dl>'s do not contain only properly-ordered <dt> and <dd> groups, <script>, <template> or <div> elements.
+When definition lists are not properly marked up, screen readers may produce confusing or inaccurate output. Learn how to structure definition lists correctly.
+Failing Elements
+
+
+Simple interface One clear URL input with instant paste, clear, and category sw…
+<dl class="mt-6 space-y-4 border-t border-line pt-5">
+
+
+div.lg:col-span-5 > dl.mt-6 > div.flex > span.w-6
+<span class="w-6 h-6 rounded-md bg-brand-violetSoft text-brand-violet flex items-center…">
+
+
+Simple interface One clear URL input with instant paste, clear, and category sw…
+<div>
+
+
+div.lg:col-span-5 > dl.mt-6 > div.flex > span.w-6
+<span class="w-6 h-6 rounded-md bg-brand-pinkSoft text-brand-pink flex items-center jus…">
+Definition list items are not wrapped in <dl> elements
+Definition list items (<dt> and <dd>) must be wrapped in a parent <dl> element to ensure that screen readers can properly announce them. Learn how to structure definition lists correctly.
+Failing Elements
+
+
+Simple interface
+<dt class="text-sm font-semibold text-ink">
+
+
+One clear URL input with instant paste, clear, and category switching—no clutte…
+<dd class="text-xs sm:text-sm text-ink-muted mt-0.5">
+
+
+Mobile friendly
+<dt class="text-sm font-semibold text-ink">
+
+
+Comfortably tappable controls and responsive layouts tested across 360px, 390px…
+<dd class="text-xs sm:text-sm text-ink-muted mt-0.5">
+
+
+No mandatory account registration
+<dt class="text-sm font-semibold text-ink">
+
+
+Use the interface directly in your browser without signing in with personal Ins…
+<dd class="text-xs sm:text-sm text-ink-muted mt-0.5">
+
+
+Media preview & easy link input
+<dt class="text-sm font-semibold text-ink">
+
+
+Preview thumbnails, carousel slides, and available stream resolutions where sup…
+<dd class="text-xs sm:text-sm text-ink-muted mt-0.5">
+These are opportunities to improve the experience of reading tabular or list data using assistive technology, like a screen reader.
+BEST PRACTICES
+Identical links have the same purpose.
+Links with the same destination should have the same description, to help users understand the link's purpose and decide whether to follow it. Learn more about identical links.Unscored
+Failing Elements
+
+
+Read guide →
+<a href="/blog/how-to-download-instagram-stories-by-link" class="min-h-[44px] inline-flex items-center gap-2 text-brand-violet font-semibol…">
+
+
+Read guide →
+<a href="/blog/how-to-download-instagram-photos-online" class="min-h-[44px] inline-flex items-center gap-2 text-brand-violet font-semibol…">
+
+
+Read guide →
+<a href="/blog/how-to-download-instagram-reels-mp4" class="min-h-[44px] inline-flex items-center gap-2 text-brand-violet font-semibol…">
+These items highlight common accessibility best practices.
+ADDITIONAL ITEMS TO MANUALLY CHECK (10)
+Show
+These items address areas which an automated testing tool cannot cover. Learn more in our guide on conducting an accessibility review.
+PASSED AUDITS (30)
+Show
+NOT APPLICABLE (29)
+Show
+100
+Best Practices
+TRUST AND SAFETY
+Ensure CSP is effective against XSS attacks
+Use a strong HSTS policy
+Ensure proper origin isolation with COOP
+Mitigate clickjacking with XFO or CSP
+Mitigate DOM-based XSS with Trusted Types
+BROWSER COMPATIBILITY
+Baseline Features
+PASSED AUDITS (13)
+Show
+NOT APPLICABLE (2)
+Show
+100
+SEO
+These checks ensure that your page is following basic search engine optimization advice. There are many additional factors Lighthouse does not score here that may affect your search ranking, including performance on Core Web Vitals. Learn more about Google Search Essentials.
+ADDITIONAL ITEMS TO MANUALLY CHECK (1)
+Hide
+Structured data is valid
+Run these additional validators on your site to check additional SEO best practices.
+PASSED AUDITS (10)
+Show
+1/2
+Agentic Browsing
+These checks ensure high-quality, browsable websites for AI agents and validate the correctness of WebMCP integrations. This category is still under development and subject to change.
+AGENT ACCESSIBILITY
+Accessibility tree is not well-formed
+These audits highlight best practices for improving the accessibility of the website for AI agents.
+PASSED AUDITS (1)
+Show
+NOT APPLICABLE (5)
+Show
+More on PageSpeed Insights
+What's new
+Documentation
+Learn about Web Performance
+Ask questions on Stack Overflow
+Mailing list
+Related Content
+Updates
+Web Fundamentals
+Case Studies
+Podcasts
+Connect
+Twitter
+Youtube
+Chrome
+Firebase
+All products
+Terms and Privacy Policy
+For details, see the Google Developers Site Policies.

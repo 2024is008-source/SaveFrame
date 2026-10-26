@@ -7,6 +7,7 @@ export type InstagramMediaCategory =
   | 'profile';
 
 export type ErrorCode =
+  | 'INTERNAL_ERROR'
   | 'INVALID_URL'
   | 'UNSUPPORTED_DOMAIN'
   | 'SSRF_BLOCKED'

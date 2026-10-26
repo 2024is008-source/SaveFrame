@@ -6,13 +6,14 @@ import { readMediaJson } from '../../../../api/request';
 
 export async function POST(req: NextRequest) {
   const ctx = getApiContext();
-  const analyticsId=beginDownload();
+  let analyticsId:string|undefined;
   try {
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
     const rl = await ctx.redisStore.checkRateLimit(ip, 'download', 15, 60);
     if (!rl.allowed) {
       throw new DownloaderAppError('RATE_LIMITED', 'Download rate limit exceeded.', 429, true);
     }
+    analyticsId=beginDownload();
     const body = await readMediaJson(req);
     const job = await ctx.downloadManager.createJob({
       url: body.url || '',
@@ -34,9 +35,9 @@ export async function POST(req: NextRequest) {
     );
   } catch (err: any) {
     const known=err instanceof DownloaderAppError;
-    jobEvent(analyticsId,'download_failed',null,'unknown',err?.code || 'EXTRACTOR_FAILURE');
+    jobEvent(analyticsId,'download_failed',null,'unknown',known ? err.code : 'INTERNAL_ERROR');
     return NextResponse.json(
-      { status: 'error', error: { code: known ? err.code : 'EXTRACTOR_FAILURE', message: known ? err.userMessage : 'Unable to prepare this download. Please try again.' } },
+      { status: 'error', error: { code: known ? err.code : 'INTERNAL_ERROR', message: known ? err.userMessage : 'Unable to prepare this download. Please try again.' } },
       { status: known ? err.statusCode : 500 }
     );
   }

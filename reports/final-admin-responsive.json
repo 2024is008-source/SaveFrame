@@ -1,0 +1,396 @@
+{
+  "rows": [
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 305,
+      "page": "Overview",
+      "sidebar": "sticky",
+      "width": 320,
+      "path": "/admin"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 305,
+      "page": "Download Analytics",
+      "sidebar": "sticky",
+      "width": 320,
+      "path": "/admin/analytics"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 305,
+      "page": "Error Reports",
+      "sidebar": "sticky",
+      "width": 320,
+      "path": "/admin/errors"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 305,
+      "page": "SEO Manager",
+      "sidebar": "sticky",
+      "width": 320,
+      "path": "/admin/seo"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 305,
+      "page": "Verification Files",
+      "sidebar": "sticky",
+      "width": 320,
+      "path": "/admin/verification"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 305,
+      "page": "Settings",
+      "sidebar": "sticky",
+      "width": 320,
+      "path": "/admin/settings"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 305,
+      "page": "Audit Logs",
+      "sidebar": "sticky",
+      "width": 320,
+      "path": "/admin/audit"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 360,
+      "page": "Overview",
+      "sidebar": "sticky",
+      "width": 375,
+      "path": "/admin"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 360,
+      "page": "Download Analytics",
+      "sidebar": "sticky",
+      "width": 375,
+      "path": "/admin/analytics"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 360,
+      "page": "Error Reports",
+      "sidebar": "sticky",
+      "width": 375,
+      "path": "/admin/errors"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 360,
+      "page": "SEO Manager",
+      "sidebar": "sticky",
+      "width": 375,
+      "path": "/admin/seo"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 360,
+      "page": "Verification Files",
+      "sidebar": "sticky",
+      "width": 375,
+      "path": "/admin/verification"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 360,
+      "page": "Settings",
+      "sidebar": "sticky",
+      "width": 375,
+      "path": "/admin/settings"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 360,
+      "page": "Audit Logs",
+      "sidebar": "sticky",
+      "width": 375,
+      "path": "/admin/audit"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 375,
+      "page": "Overview",
+      "sidebar": "sticky",
+      "width": 390,
+      "path": "/admin"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 375,
+      "page": "Download Analytics",
+      "sidebar": "sticky",
+      "width": 390,
+      "path": "/admin/analytics"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 375,
+      "page": "Error Reports",
+      "sidebar": "sticky",
+      "width": 390,
+      "path": "/admin/errors"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 375,
+      "page": "SEO Manager",
+      "sidebar": "sticky",
+      "width": 390,
+      "path": "/admin/seo"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 375,
+      "page": "Verification Files",
+      "sidebar": "sticky",
+      "width": 390,
+      "path": "/admin/verification"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 375,
+      "page": "Settings",
+      "sidebar": "sticky",
+      "width": 390,
+      "path": "/admin/settings"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 375,
+      "page": "Audit Logs",
+      "sidebar": "sticky",
+      "width": 390,
+      "path": "/admin/audit"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 415,
+      "page": "Overview",
+      "sidebar": "sticky",
+      "width": 430,
+      "path": "/admin"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 415,
+      "page": "Download Analytics",
+      "sidebar": "sticky",
+      "width": 430,
+      "path": "/admin/analytics"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 415,
+      "page": "Error Reports",
+      "sidebar": "sticky",
+      "width": 430,
+      "path": "/admin/errors"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 415,
+      "page": "SEO Manager",
+      "sidebar": "sticky",
+      "width": 430,
+      "path": "/admin/seo"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 415,
+      "page": "Verification Files",
+      "sidebar": "sticky",
+      "width": 430,
+      "path": "/admin/verification"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 415,
+      "page": "Settings",
+      "sidebar": "sticky",
+      "width": 430,
+      "path": "/admin/settings"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 415,
+      "page": "Audit Logs",
+      "sidebar": "sticky",
+      "width": 430,
+      "path": "/admin/audit"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 753,
+      "page": "Overview",
+      "sidebar": "sticky",
+      "width": 768,
+      "path": "/admin"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 753,
+      "page": "Download Analytics",
+      "sidebar": "sticky",
+      "width": 768,
+      "path": "/admin/analytics"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 768,
+      "page": "Error Reports",
+      "sidebar": "sticky",
+      "width": 768,
+      "path": "/admin/errors"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 753,
+      "page": "SEO Manager",
+      "sidebar": "sticky",
+      "width": 768,
+      "path": "/admin/seo"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 753,
+      "page": "Verification Files",
+      "sidebar": "sticky",
+      "width": 768,
+      "path": "/admin/verification"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 753,
+      "page": "Settings",
+      "sidebar": "sticky",
+      "width": 768,
+      "path": "/admin/settings"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 753,
+      "page": "Audit Logs",
+      "sidebar": "sticky",
+      "width": 768,
+      "path": "/admin/audit"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 1009,
+      "page": "Overview",
+      "sidebar": "fixed",
+      "width": 1024,
+      "path": "/admin"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 1009,
+      "page": "Download Analytics",
+      "sidebar": "fixed",
+      "width": 1024,
+      "path": "/admin/analytics"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 1024,
+      "page": "Error Reports",
+      "sidebar": "fixed",
+      "width": 1024,
+      "path": "/admin/errors"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 1009,
+      "page": "SEO Manager",
+      "sidebar": "fixed",
+      "width": 1024,
+      "path": "/admin/seo"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 1009,
+      "page": "Verification Files",
+      "sidebar": "fixed",
+      "width": 1024,
+      "path": "/admin/verification"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 1009,
+      "page": "Settings",
+      "sidebar": "fixed",
+      "width": 1024,
+      "path": "/admin/settings"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 1009,
+      "page": "Audit Logs",
+      "sidebar": "fixed",
+      "width": 1024,
+      "path": "/admin/audit"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 1425,
+      "page": "Overview",
+      "sidebar": "fixed",
+      "width": 1440,
+      "path": "/admin"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 1425,
+      "page": "Download Analytics",
+      "sidebar": "fixed",
+      "width": 1440,
+      "path": "/admin/analytics"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 1440,
+      "page": "Error Reports",
+      "sidebar": "fixed",
+      "width": 1440,
+      "path": "/admin/errors"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 1425,
+      "page": "SEO Manager",
+      "sidebar": "fixed",
+      "width": 1440,
+      "path": "/admin/seo"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 1425,
+      "page": "Verification Files",
+      "sidebar": "fixed",
+      "width": 1440,
+      "path": "/admin/verification"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 1425,
+      "page": "Settings",
+      "sidebar": "fixed",
+      "width": 1440,
+      "path": "/admin/settings"
+    },
+    {
+      "background": "rgb(255, 255, 255)",
+      "content": 1425,
+      "page": "Audit Logs",
+      "sidebar": "fixed",
+      "width": 1440,
+      "path": "/admin/audit"
+    }
+  ]
+}
