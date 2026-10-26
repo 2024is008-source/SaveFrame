@@ -10,3 +10,6 @@ dist/
 !.env.production
 *.tsbuildinfo
 .data/
+**/instagram-sessions/
+**/*.instagrapi-session.json
+python/__pycache__/

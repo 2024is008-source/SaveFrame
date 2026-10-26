@@ -1,0 +1,28 @@
+{
+  "syntheticFixture": true,
+  "resolutions": 3,
+  "requests": [],
+  "metadata": [
+    {
+      "mediaType": "photo",
+      "title": "Photo by fixture_creator",
+      "thumbnailUrl": "http://127.0.0.1:3119/fixture-media/0/preview.webp",
+      "thumbnailSmallUrl": "http://127.0.0.1:3119/fixture-media/0/thumb.webp",
+      "imagePreviewUrl": "http://127.0.0.1:3119/fixture-media/0/original.webp"
+    },
+    {
+      "mediaType": "photo",
+      "title": "Photo by fixture_creator",
+      "thumbnailUrl": "http://127.0.0.1:3119/fixture-media/1/preview.webp",
+      "thumbnailSmallUrl": "http://127.0.0.1:3119/fixture-media/1/thumb.webp",
+      "imagePreviewUrl": "http://127.0.0.1:3119/fixture-media/1/original.webp"
+    },
+    {
+      "mediaType": "photo",
+      "title": "Photo by fixture_creator",
+      "thumbnailUrl": "http://127.0.0.1:3119/fixture-media/2/preview.webp",
+      "thumbnailSmallUrl": "http://127.0.0.1:3119/fixture-media/2/thumb.webp",
+      "imagePreviewUrl": "http://127.0.0.1:3119/fixture-media/2/original.webp"
+    }
+  ]
+}

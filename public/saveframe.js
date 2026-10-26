@@ -6,6 +6,8 @@
       window.INSTA_DOWNLOADER_API_ENDPOINT = '/api/media/resolve';
       let resolvedMedia = null;
       let resolveController = null;
+      let pendingResolveUrl = null;
+      let pasteFetchTimer = null;
       // Keep in-flight downloads stable when a different carousel thumbnail is selected.
       const pendingDownloads = new Map();
       const preparedPreviews = new Map();
@@ -63,11 +65,16 @@
           ...config,
           shortcode: escapeHtml(resolvedMedia.shortcode),
           author: escapeHtml('@' + resolvedMedia.uploader.username),
-          caption: escapeHtml(resolvedMedia.caption || resolvedMedia.title),
+          caption: escapeHtml(mediaTitle(item, resolvedMedia.caption || resolvedMedia.title)),
           mediaTypeBadge: escapeHtml(t(resolvedMedia.category) + ' · ' + t(item.mediaType)),
           aspectRatio: escapeHtml(item.aspectRatio),
           qualities: liveQualities(item),
         };
+      }
+
+      function mediaTitle(item, title = item.title || '') {
+        return item.mediaType === 'photo' && /^Video(?: \d+)? by @?[A-Za-z0-9._]+\s*$/i.test(title)
+          ? title.replace(/^Video/i, t('Photo')) : title;
       }
 
       function clearLiveResult() {
@@ -76,6 +83,7 @@
         preparedPreviews.clear();
         resolveController?.abort();
         resolveController = null;
+        pendingResolveUrl = null;
         resolvedMedia = null;
         state.activeCarouselIdx = 0;
         state.selectedCarouselIndices.clear();
@@ -380,7 +388,7 @@
             dim: escapeHtml(t(item.formats[0]?.resolution || 'Source resolution')),
             format: escapeHtml(item.formats[0]?.Container || item.formats[0]?.ext || item.mediaType),
             size: escapeHtml(visibleFilesize(item.formats[0])),
-            img: previewUrl(item.thumbnailUrl), title: escapeHtml(item.title || t('Slide {index}', { index: idx + 1 })),
+            img: previewUrl(item.thumbnailSmallUrl || item.thumbnailUrl), title: escapeHtml(mediaTitle(item) || t('Slide {index}', { index: idx + 1 })),
           }));
           const activeSlide = slides[state.activeCarouselIdx] || slides[0];
 
@@ -393,7 +401,7 @@
                   </span>
                   <span class="text-xs text-ink-muted font-medium tabular-nums">${cfg.author}</span>
                 </div>
-                <span class="text-xs text-ink-muted tabular-nums">Shortcode: <strong class="text-ink">${cfg.shortcode}</strong></span>
+                <span class="media-shortcode text-xs text-ink-muted tabular-nums">Shortcode: <strong class="text-ink">${cfg.shortcode}</strong></span>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
@@ -447,7 +455,7 @@
                         aria-label="${escapeHtml(itemName(s.idx))}"
                         class="carousel-slide-btn flex-1 min-w-0 p-1 sm:p-1.5 rounded-lg hover:bg-soft text-left cursor-pointer ui-transition flex items-center gap-1"
                       >
-                        <img src="${s.img}" alt="${escapeHtml(itemName(s.idx))}" class="w-8 h-8 sm:w-9 sm:h-9 rounded object-cover shrink-0" />
+                        <img src="${s.img}" alt="${escapeHtml(itemName(s.idx))}" width="36" height="36" loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer" class="w-8 h-8 sm:w-9 sm:h-9 rounded object-cover shrink-0" />
                         <div class="min-w-0">
                           <span class="block text-[11px] leading-tight font-semibold text-ink">${escapeHtml(itemName(s.idx))}</span>
                           <span class="block text-[10px] text-ink-muted tabular-nums">${s.format.split(' ')[0]}</span>
@@ -514,7 +522,7 @@
 
                 <div class="mt-2.5 flex items-center justify-between text-xs text-ink-muted px-0.5 tabular-nums">
                   <span>Aspect: <strong class="text-ink">${cfg.aspectRatio}</strong></span>
-                  <span>Shortcode: <strong class="text-ink">${cfg.shortcode}</strong></span>
+                  <span class="media-shortcode">Shortcode: <strong class="text-ink">${cfg.shortcode}</strong></span>
                 </div>
               </div>
 
@@ -600,7 +608,7 @@
         const index = resolvedMedia.items.indexOf(item);
         const video = item.mediaType === 'video';
         return `<button type="button" class="media-open-btn" data-preview-index="${index}" aria-label="${escapeHtml(t(video ? 'Play video' : 'Preview photo'))}">
-          ${item.thumbnailUrl ? `<img src="${previewUrl(item.thumbnailUrl)}" alt="${escapeHtml(item.title || t('Preview for {author}', { author: resolvedMedia.uploader.username }))}" class="media-source-image" />` : '<span aria-hidden="true" class="media-source-image" style="aspect-ratio:4/3"></span>'}
+          ${item.thumbnailUrl ? `<img src="${previewUrl(state.loupeZoom && !video ? item.imagePreviewUrl || item.thumbnailUrl : item.thumbnailUrl)}" alt="${escapeHtml(mediaTitle(item) || t('Preview for {author}', { author: resolvedMedia.uploader.username }))}" ${item.width && item.height ? `width="${Number(item.width)}" height="${Number(item.height)}"` : ''} loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" class="media-source-image" />` : '<span aria-hidden="true" class="media-source-image" style="aspect-ratio:4/3"></span>'}
           ${video ? `<span class="media-play-label" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="m8 5 11 7-11 7z"/></svg></span>` : ''}
         </button>`;
       }
@@ -623,7 +631,7 @@
         const dialog = document.createElement('dialog');
         dialog.className = 'media-lightbox';
         dialog.setAttribute('aria-label', t('Media preview'));
-        dialog.innerHTML = `<header class="media-lightbox-header"><strong>${escapeHtml(t(item.mediaType === 'video' ? 'Video' : 'Photo'))}${item.width && item.height ? ' · ' + Number(item.width) + ' × ' + Number(item.height) : ''}</strong><button type="button" class="media-lightbox-close" aria-label="${escapeHtml(t('Close dialog'))}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 12 12M6 18 18 6"/></svg></button></header><div class="media-lightbox-content">${item.thumbnailUrl ? `<img class="media-source-image" src="${previewUrl(item.thumbnailUrl)}" alt="${escapeHtml(item.title)}" />` : ''}</div>`;
+        dialog.innerHTML = `<header class="media-lightbox-header"><strong>${escapeHtml(t(item.mediaType === 'video' ? 'Video' : 'Photo'))}${item.width && item.height ? ' · ' + Number(item.width) + ' × ' + Number(item.height) : ''}</strong><button type="button" class="media-lightbox-close" aria-label="${escapeHtml(t('Close dialog'))}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 12 12M6 18 18 6"/></svg></button></header><div class="media-lightbox-content">${item.thumbnailUrl ? `<img class="media-source-image" src="${previewUrl(item.mediaType === 'photo' ? item.imagePreviewUrl || item.thumbnailUrl : item.thumbnailUrl)}" alt="${escapeHtml(mediaTitle(item))}" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" />` : ''}</div>`;
         document.body.appendChild(dialog);
         const previousOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
@@ -836,12 +844,40 @@
       });
 
       // Input typing listener
-      urlInput.addEventListener('input', () => {
-        clearLiveResult();
-        renderResultSection();
+      urlInput.addEventListener('input', event => {
+        const samePending = resolveController && parseInstagramInput(urlInput.value).canonicalUrl === pendingResolveUrl;
+        if (!samePending) { clearLiveResult(); renderResultSection(); }
         syncInputControls();
         setValidationBanner(null);
+        if (event?.inputType === 'insertFromPaste') schedulePastedFetch();
       });
+
+      // Wait until the native paste has updated the field. Coalesce paste and
+      // insertFromPaste events so they submit once, without fetching while typing.
+      function schedulePastedFetch() {
+        if (pasteFetchTimer !== null) clearTimeout(pasteFetchTimer);
+        pasteFetchTimer = setTimeout(() => {
+          pasteFetchTimer = null;
+          syncInputControls();
+          if (!urlInput.value.trim()) return;
+          urlInput.blur();
+          document.getElementById('downloader-form').requestSubmit();
+        }, 0);
+      }
+      urlInput.addEventListener('paste', schedulePastedFetch);
+
+      function focusMobileResult(media) {
+        if (!window.matchMedia('(max-width: 767px)').matches) return;
+        requestAnimationFrame(() => {
+          if (resolvedMedia !== media || !resultDynamicContent.isConnected) return;
+          urlInput.blur();
+          resultDynamicContent.setAttribute('tabindex', '-1');
+          resultDynamicContent.setAttribute('role', 'region');
+          resultDynamicContent.setAttribute('aria-label', t('Media preview'));
+          resultDynamicContent.focus({ preventScroll: true });
+          resultDynamicContent.scrollIntoView({block:'start',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+        });
+      }
 
       // Clear Button
       clearBtn.addEventListener('click', () => {
@@ -859,11 +895,10 @@
           if (navigator.clipboard && navigator.clipboard.readText) {
             const clip = await navigator.clipboard.readText();
             if (clip && clip.trim()) {
-              clearLiveResult();
-              renderResultSection();
               urlInput.value = clip.trim();
               syncInputControls();
               showToast('Pasted link from clipboard');
+              schedulePastedFetch();
               return;
             }
           }
@@ -881,6 +916,7 @@
           urlInput.focus();
           return;
         }
+        if (resolveController && pendingResolveUrl === parsed.canonicalUrl) return;
 
         // Check if detected tab differs from active tab
         if (parsed.detectedTab && parsed.detectedTab !== state.activeTab) {
@@ -898,6 +934,7 @@
         clearLiveResult();
         const controller = new AbortController();
         resolveController = controller;
+        pendingResolveUrl = parsed.canonicalUrl;
         renderToolState();
         resultDynamicContent.innerHTML = '';
         loadingPanel.classList.remove('hidden');
@@ -919,6 +956,7 @@
           state.uiStateMode = resolvedMedia.isCarousel ? 'carousel' : 'single';
           renderToolState();
           setValidationBanner('success', 'Public media found. Select a format to download.');
+          focusMobileResult(resolvedMedia);
         } catch (error) {
           if (controller.signal.aborted) return;
           analytics('download_failed', {media_type:state.activeTab,failure_stage:'resolve',error_code:error?.analyticsCode});
@@ -928,6 +966,7 @@
           if (resolveController === controller) {
             loadingPanel.classList.add('hidden');
             resolveController = null;
+            pendingResolveUrl = null;
             document.getElementById('submit-download-btn').disabled = false;
           }
         }

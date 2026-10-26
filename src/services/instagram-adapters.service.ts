@@ -2,6 +2,7 @@ import * as https from 'https';
 import * as http from 'http';
 import * as fs from 'fs';
 import * as dns from 'node:dns';
+import { imagePreviews } from './image-previews';
 import {
   DownloaderAppError,
   NormalizedFormat,
@@ -260,6 +261,7 @@ export class InstagramAuthorizedAdapters {
       mediaType: 'photo',
       title: `Photo by @${username}`,
       thumbnailUrl: primary.url,
+      ...imagePreviews(sorted),
       width: primary.width || undefined,
       height: primary.height || undefined,
       aspectRatio: primary.width&&primary.height?`${primary.width}:${primary.height}`:'Source image',

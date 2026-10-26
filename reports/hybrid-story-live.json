@@ -1,11 +1,11 @@
 {
-  "capturedAt": "2026-10-26T11:20:13.984Z",
-  "url": "https://www.instagram.com/stories/sula_dewmini/4016120619302180887/",
+  "capturedAt": "2026-10-26T15:44:58.725Z",
+  "url": "https://www.instagram.com/stories/dadgrapher/4015861202110466269/",
   "authenticated": false,
   "paidProvider": false,
   "liveDownloadSucceeded": false,
   "status": 403,
-  "elapsedMs": 3225,
+  "elapsedMs": 2900,
   "errorCode": "LOGIN_REQUIRED",
   "errorMessage": "Instagram requires login to access this story. Only accessible story media can be retrieved."
 }

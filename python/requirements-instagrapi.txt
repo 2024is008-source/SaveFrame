@@ -1,0 +1,2 @@
+# Tested with CPython 3.14.6; upstream requires Python >=3.11.
+instagrapi==3.2.1

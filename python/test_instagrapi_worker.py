@@ -1,0 +1,151 @@
+"""Offline contract/security checks. Never contacts Instagram."""
+import importlib.util
+import json
+import os
+from pathlib import Path
+import socket
+import tempfile
+from types import SimpleNamespace as Obj
+import unittest
+from unittest.mock import patch
+
+spec = importlib.util.spec_from_file_location('worker', Path(__file__).with_name('instagrapi_worker.py'))
+worker = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(worker)
+CDN = 'https://scontent.cdninstagram.com/'
+
+
+def photo(pk='1', **extra):
+    return Obj(pk=pk, media_type=1, thumbnail_url=CDN + pk + '.jpg', width=1080, height=1350, **extra)
+
+
+class WorkerTests(unittest.TestCase):
+    def setUp(self):
+        self.user = Obj(username='owner', pk='123', is_private=False, profile_pic_url=CDN+'avatar.jpg')
+        self.media = photo(user=self.user, code='Example1')
+        self.client = Obj(media_pk_from_code=lambda code: '1', media_info_gql=lambda pk: self.media,
+                          user_info_by_username_gql=lambda name: self.user)
+
+    def request(self, category='photo', url='https://www.instagram.com/p/Example1/'):
+        return {'version': 1, 'url': url, 'category': category}
+
+    def test_photo_video_carousel_order(self):
+        self.assertEqual(worker.extract(self.request(), self.client)['items'][0]['type'], 'photo')
+        self.media.media_type = 2
+        self.media.video_url = CDN+'1.mp4'
+        self.media.has_audio = True
+        self.assertTrue(worker.extract(self.request(), self.client)['items'][0]['hasAudio'])
+        self.media.media_type = 8
+        self.media.resources = [photo('9'), photo('7')]
+        self.assertEqual([i['id'] for i in worker.extract(self.request(), self.client)['items']], ['9', '7'])
+
+    def test_story_exact_id_and_profile(self):
+        story = photo('4016120619302180887', user=self.user)
+        self.client.user_stories_gql = lambda *args, **kwargs: [photo('8'), story]
+        result = worker.extract(self.request('story', 'https://www.instagram.com/stories/owner/4016120619302180887/'), self.client)
+        self.assertEqual(result['items'][0]['id'], '4016120619302180887')
+        result = worker.extract(self.request('profile', 'https://www.instagram.com/owner/'), self.client)
+        self.assertEqual(result['items'][0]['url'], CDN+'avatar.jpg')
+        with self.assertRaises(worker.Failure) as error:
+            worker.extract(self.request('story', 'https://www.instagram.com/stories/owner/99/'), self.client)
+        self.assertEqual(error.exception.code, 'EXPIRED_STORY')
+
+    def test_private_and_owner_scope(self):
+        self.user.is_private = True
+        with self.assertRaises(worker.Failure):
+            worker.extract(self.request(), self.client)
+        self.user.is_private = False
+        request = self.request()
+        request['access'] = {'ownerUsername': 'other', 'ownerUserId': '123'}
+        with self.assertRaises(worker.Failure):
+            worker.extract(request, self.client)
+
+    def test_input_and_cdn_restrictions(self):
+        for url in ('http://www.instagram.com/p/a/', 'https://www.instagram.com/p/a/?x=1', 'https://evil.com/p/a/', 'https://www.instagram.com@evil.com/p/a/'):
+            with self.assertRaises(worker.Failure):
+                worker.validate_input(self.request(url=url))
+        for url in ('file:///etc/passwd', 'https://127.0.0.1/x', 'https://fbcdn.net.evil.com/x', 'https://user:pass@fbcdn.net/x'):
+            with self.assertRaises(worker.Failure):
+                worker.cdn_url(url)
+        request = self.request()
+        request['access'] = {'sessionKey': '../session'}
+        with self.assertRaises(worker.Failure):
+            worker.secure_session(request)
+
+    def test_redirects_no_private_transport_and_pinned_dns(self):
+        class Response:
+            status_code = 200
+            def iter_content(self, size):
+                return iter([b'{}'])
+            def close(self):
+                pass
+        sent = []
+        public = Obj(trust_env=True, proxies={'https': 'proxy'}, verify=False,
+                     send=lambda request, **kwargs: (sent.append(kwargs) or Response()))
+        client = Obj(public=public, public_graphql_request=lambda: {}, public_doc_id_graphql_request=lambda: {})
+        public_answer = [(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('8.8.8.8', 443))]
+        with patch.object(socket, 'getaddrinfo', return_value=public_answer) as resolver:
+            # protect_transport replaces the patched lookup, restored by patch context.
+            worker.protect_transport(client)
+            socket.getaddrinfo('www.instagram.com', 443)
+            socket.getaddrinfo('www.instagram.com', 443)
+            self.assertEqual(resolver.call_count, 1)
+            with self.assertRaises(worker.Failure):
+                socket.getaddrinfo('127.0.0.1', 443)
+            public.send(Obj(url='https://www.instagram.com/graphql/query/'))
+            self.assertFalse(sent[0]['allow_redirects'])
+            self.assertTrue(sent[0]['verify'])
+            self.assertEqual(public.proxies, {})
+            with self.assertRaises(worker.Failure):
+                client.private_request('feed/')
+            with self.assertRaises(worker.Failure):
+                client.login('user', 'password')
+        with patch.object(socket, 'getaddrinfo', return_value=[(socket.AF_INET, socket.SOCK_STREAM, 6, '', ('127.0.0.1', 443))]):
+            worker.protect_transport(Obj(public=public, public_graphql_request=lambda: {}, public_doc_id_graphql_request=lambda: {}))
+            with self.assertRaises(worker.Failure):
+                socket.getaddrinfo('www.instagram.com', 443)
+
+    def test_unknown_error_does_not_leak_details(self):
+        self.assertEqual(worker.error_code(Exception('cookie=session-secret')), 'EXTRACTOR_FAILURE')
+        self.assertEqual(worker.error_code(type('ChallengeRequired', (Exception,), {})()), 'LOGIN_REQUIRED')
+
+    def test_persisted_session_scope_and_permissions(self):
+        with tempfile.TemporaryDirectory(prefix='saveframe-python-session-fixture-') as directory:
+            root = Path(directory).resolve()
+            root.chmod(0o700)
+            target = root / 'owner.json'
+            settings = {'authorization_data': {'ds_user_id': '123', 'sessionid': 'synthetic-not-a-real-session'}}
+            target.write_text(json.dumps(settings), encoding='utf-8')
+            target.chmod(0o600)
+            request = self.request()
+            request['access'] = {'sessionKey': 'owner', 'ownerUsername': 'owner', 'ownerUserId': '123'}
+            # A controlled test-only exclusion replaces the actual OS temp root.
+            with patch.dict(os.environ, {'INSTAGRAPI_SESSION_DIR': str(root)}), patch.object(worker.tempfile, 'gettempdir', return_value=str(root / 'unrelated')):
+                self.assertEqual(worker.secure_session(request), settings)
+                self.assertEqual(json.loads(target.read_text(encoding='utf-8')), settings, 'Never rewrites a saved session')
+                request['access']['ownerUserId'] = '999'
+                with self.assertRaises(worker.Failure):
+                    worker.secure_session(request)
+                request['access']['ownerUserId'] = '123'
+                if os.name != 'nt':
+                    target.chmod(0o644)
+                    with self.assertRaises(worker.Failure):
+                        worker.secure_session(request)
+                    target.chmod(0o600)
+
+    def test_real_sdk_contract_without_network(self):
+        from instagrapi import Client
+        from instagrapi.types import Resource
+        client = Client(public_transport='requests', public_request_retries_count=1, session_retry_total=0)
+        with patch.object(socket, 'getaddrinfo'):
+            worker.protect_transport(client)
+            resource = Resource(pk='55', media_type=1, thumbnail_url=CDN+'55.jpg')
+            result = worker.item(resource)
+            self.assertEqual(result['id'], '55')
+            self.assertIsNone(result['width'])
+            with self.assertRaises(worker.Failure):
+                client.private_request('feed/')
+
+
+if __name__ == '__main__':
+    unittest.main()

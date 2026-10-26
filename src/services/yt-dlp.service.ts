@@ -1,5 +1,6 @@
 import { spawn, ChildProcess } from 'child_process';
 import * as fs from 'fs';
+import { imagePreviews } from './image-previews';
 import * as os from 'os';
 import * as path from 'path';
 import {
@@ -18,6 +19,7 @@ import {
 import { InstagramAuthorizedAdapters } from './instagram-adapters.service';
 import { InstagramHttpClient } from './instagram-http.service';
 import { AuthorizedStoryAccess, StoryExtractionPipeline, parseStoryJson, ytDlpStoryCandidates } from './story-extraction.service';
+import { AuthorizedInstagrapiAccess, InstagrapiService, instagrapiEligible } from './instagrapi.service';
 
 export interface YtDlpServiceConfig {
   ytDlpBinaryPath?: string;
@@ -78,6 +80,7 @@ export class YtDlpService {
   private readonly cancelledJobIds = new Set<string>();
   private readonly adapters: InstagramAuthorizedAdapters;
   private readonly stories: StoryExtractionPipeline;
+  private readonly instagrapi: InstagrapiService;
   private readonly activeTransfers = new Map<string, AbortController>();
   private readonly metadataWaiters = new Map<string, { controller: AbortController; count: number; done: boolean }>();
   private readonly metadataCache = new Map<string, { data: NormalizedMediaResult; raw: any; expiresAt: number }>();
@@ -154,6 +157,7 @@ export class YtDlpService {
         return ytDlpStoryCandidates(raw, validated);
       },
     });
+    this.instagrapi = new InstagrapiService(this.stories.http);
   }
 
   /**
@@ -377,7 +381,27 @@ export class YtDlpService {
     });
   }
 
-  private async extractMetadataInternal(rawUrl: string, tool?: string, signal?: AbortSignal): Promise<NormalizedMediaResult> {
+  private async extractMetadataInternal(rawUrl: string, tool?: string, signal?: AbortSignal, access?: AuthorizedInstagrapiAccess): Promise<NormalizedMediaResult> {
+    const validated = validateMediaInput(rawUrl, tool);
+    try { return await this.extractPrimaryMetadata(rawUrl, tool, signal); }
+    catch (primaryError) {
+      let error = primaryError;
+      if (validated.category === 'photo' && instagrapiEligible(error)) {
+        try { return this.rememberMetadata(validated.canonicalUrl, await this.adapters.extractPublicPhotoPost(validated, undefined, signal)); }
+        catch (adapterError) { error = adapterError; }
+      }
+      const data = await this.instagrapi.afterPrimaryFailure(validated, error, signal, access);
+      return access ? data : this.rememberMetadata(validated.canonicalUrl, data);
+    }
+  }
+
+  /** No HTTP route calls this. Session-backed results never enter public caches. */
+  public async extractOperatorMetadata(rawUrl: string, access: AuthorizedInstagrapiAccess, signal?: AbortSignal): Promise<NormalizedMediaResult> {
+    validateMediaInput(rawUrl);
+    return this.extractMetadataInternal(rawUrl, undefined, signal, access);
+  }
+
+  private async extractPrimaryMetadata(rawUrl: string, tool?: string, signal?: AbortSignal): Promise<NormalizedMediaResult> {
     const validated = validateMediaInput(rawUrl, tool);
     const cached = this.metadataCache.get(validated.canonicalUrl);
     if (cached && cached.expiresAt > Date.now()) return cached.data;
@@ -417,7 +441,7 @@ export class YtDlpService {
         stderr.includes('There is no video in this post') &&
         validated.category === 'photo'
       ) {
-        return this.rememberMetadata(validated.canonicalUrl,await this.adapters.extractPublicPhotoPost(validated,undefined,signal));
+        throw new DownloaderAppError('EXTRACTOR_FAILURE', 'The post requires image extraction.', 502, true);
       }
       throw this.mapYtDlpStderrToAppError(stderr, validated.category);
     }
@@ -559,6 +583,14 @@ export class YtDlpService {
       selectedFormat.ext
     );
     const finalFilePath = path.join(options.outputDir, `${options.jobId}_${safeFilename}`);
+
+    // Fallback URLs use the same pinned-DNS, signature-checked, size-bounded
+    // transport as stories. Never resolve them again through yt-dlp.
+    if (metadata.extractorSource === 'instagrapi') {
+      return await this.downloadStoryFile({ ...metadata, items: [item] }, {
+        ...options, itemIndex: 0, filenamePrefix: prefix + itemSuffix,
+      }, controller);
+    }
 
     // Case A: Photo item (either single photo, carousel image slide, or profile HD avatar)
     if (item.mediaType === 'photo' && selectedFormat.directUrl) {
@@ -830,7 +862,7 @@ export class YtDlpService {
       const rawThumbnails: any[] = Array.isArray(entry.thumbnails)
         ? entry.thumbnails
         : entry.thumbnail
-        ? [{ url: entry.thumbnail, width: entry.width || 1080, height: entry.height || 1350 }]
+        ? [{ url: entry.thumbnail, width: entry.width, height: entry.height }]
         : [];
 
       // Determine if this entry is a video or an image slide inside a carousel
@@ -900,8 +932,9 @@ export class YtDlpService {
         itemId: itemShortcode,
         shortcode: itemShortcode,
         mediaType: 'photo',
-        title: entry.title || `Photo ${idx + 1} by @${uploaderUsername}`,
+        title: typeof entry.title==='string'&&/^Video(?: \d+)? by @?[A-Za-z0-9._]+\s*$/i.test(entry.title) ? entry.title.replace(/^Video/i,'Photo') : entry.title || `Photo ${idx + 1} by @${uploaderUsername}`,
         thumbnailUrl: primaryThumb.url,
+        ...imagePreviews(sortedThumbs),
         width: primaryThumb.width || undefined,
         height: primaryThumb.height || undefined,
         aspectRatio: primaryThumb.width && primaryThumb.height
@@ -924,15 +957,16 @@ export class YtDlpService {
       resolvedCategory = 'video';
     }
 
+    const photoText=(text:string|undefined)=>items.every(item=>item.mediaType==='photo')&&text&&/^Video(?: \d+)? by @?[A-Za-z0-9._]+\s*$/i.test(text)?text.replace(/^Video/i,'Photo'):text;
     return {
       id: raw.id || validated.shortcode,
       shortcode: validated.shortcode,
       canonicalUrl: validated.canonicalUrl,
       category: resolvedCategory,
       title:
-        raw.title ||
+        photoText(raw.title) ||
         `${resolvedCategory.charAt(0).toUpperCase() + resolvedCategory.slice(1)} by @${uploaderUsername}`,
-      caption: raw.description || undefined,
+      caption: photoText(raw.description) || undefined,
       uploader: {
         username: String(uploaderUsername).replace(/^@/, ''),
         fullName: String(uploaderFullName),

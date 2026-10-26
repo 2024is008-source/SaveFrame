@@ -1,5 +1,5 @@
 {
-  "scope": "HTTP validation at http://127.0.0.1:3118; not a Google indexing confirmation",
+  "scope": "HTTP validation at http://127.0.0.1:3125; not a Google indexing confirmation",
   "sitemap": {
     "urlCount": 37,
     "localizedHomepages": 10,
@@ -24,7 +24,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 125
+      "responseAndBodyMs": 85
     },
     {
       "path": "/es/",
@@ -38,7 +38,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 106
+      "responseAndBodyMs": 90
     },
     {
       "path": "/pt-br/",
@@ -52,7 +52,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 131
+      "responseAndBodyMs": 93
     },
     {
       "path": "/de/",
@@ -66,7 +66,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 111
+      "responseAndBodyMs": 86
     },
     {
       "path": "/fr/",
@@ -80,7 +80,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 119
+      "responseAndBodyMs": 75
     },
     {
       "path": "/ja/",
@@ -94,7 +94,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 126
+      "responseAndBodyMs": 93
     },
     {
       "path": "/id/",
@@ -108,7 +108,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 137
+      "responseAndBodyMs": 80
     },
     {
       "path": "/tr/",
@@ -122,7 +122,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 108
+      "responseAndBodyMs": 69
     },
     {
       "path": "/hi/",
@@ -136,7 +136,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 93
+      "responseAndBodyMs": 75
     },
     {
       "path": "/ar/",
@@ -150,7 +150,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 80
+      "responseAndBodyMs": 70
     },
     {
       "path": "/reels-downloader",
@@ -165,7 +165,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 154
+      "responseAndBodyMs": 122
     },
     {
       "path": "/video-downloader",
@@ -180,7 +180,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 152
+      "responseAndBodyMs": 130
     },
     {
       "path": "/photo-downloader",
@@ -195,7 +195,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 128
+      "responseAndBodyMs": 122
     },
     {
       "path": "/carousel-downloader",
@@ -210,7 +210,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 129
+      "responseAndBodyMs": 124
     },
     {
       "path": "/story-downloader",
@@ -225,7 +225,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 132
+      "responseAndBodyMs": 120
     },
     {
       "path": "/profile-viewer",
@@ -240,7 +240,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 133
+      "responseAndBodyMs": 113
     },
     {
       "path": "/about",
@@ -268,7 +268,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 16
+      "responseAndBodyMs": 15
     },
     {
       "path": "/privacy",
@@ -296,7 +296,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 32
+      "responseAndBodyMs": 16
     },
     {
       "path": "/copyright",
@@ -310,7 +310,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 17
+      "responseAndBodyMs": 30
     },
     {
       "path": "/blog",
@@ -324,7 +324,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 79
+      "responseAndBodyMs": 57
     },
     {
       "path": "/blog/how-to-download-instagram-stories-by-link",
@@ -336,7 +336,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 91
+      "responseAndBodyMs": 74
     },
     {
       "path": "/blog/how-to-download-instagram-story-videos",
@@ -348,7 +348,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 101
+      "responseAndBodyMs": 77
     },
     {
       "path": "/blog/how-to-download-instagram-photos-online",
@@ -360,7 +360,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 89
+      "responseAndBodyMs": 72
     },
     {
       "path": "/blog/how-to-copy-instagram-photo-link",
@@ -372,7 +372,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 101
+      "responseAndBodyMs": 63
     },
     {
       "path": "/blog/view-instagram-profile-picture-by-url",
@@ -384,7 +384,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 79
+      "responseAndBodyMs": 68
     },
     {
       "path": "/blog/how-to-download-instagram-reels-mp4",
@@ -396,7 +396,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 74
+      "responseAndBodyMs": 77
     },
     {
       "path": "/blog/download-instagram-reels-on-iphone",
@@ -408,7 +408,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 81
+      "responseAndBodyMs": 73
     },
     {
       "path": "/blog/download-instagram-videos-on-pc",
@@ -420,7 +420,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 77
+      "responseAndBodyMs": 61
     },
     {
       "path": "/blog/download-instagram-carousel-photos",
@@ -432,7 +432,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 72
+      "responseAndBodyMs": 66
     },
     {
       "path": "/blog/download-instagram-reels-with-audio",
@@ -444,7 +444,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 81
+      "responseAndBodyMs": 76
     },
     {
       "path": "/blog/instagram-downloader-not-working",
@@ -456,7 +456,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 71
+      "responseAndBodyMs": 63
     },
     {
       "path": "/blog/why-instagram-videos-wont-download",
@@ -468,7 +468,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 60
+      "responseAndBodyMs": 65
     },
     {
       "path": "/blog/download-instagram-photos-iphone-android",
@@ -480,7 +480,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 67
+      "responseAndBodyMs": 72
     },
     {
       "path": "/blog/instagram-photo-sizes-aspect-ratios",
@@ -492,7 +492,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 74
+      "responseAndBodyMs": 60
     },
     {
       "path": "/blog/backup-instagram-photos-videos-reels",
@@ -504,7 +504,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 86
+      "responseAndBodyMs": 64
     },
     {
       "path": "/blog?page=2",
@@ -518,7 +518,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 62
+      "responseAndBodyMs": 50
     }
   ],
   "internalDestinationsChecked": [

@@ -107,10 +107,13 @@ async function main() {
       assert.equal(args.includes('--ignore-no-formats-error'), true);
       return {
         stdout: JSON.stringify({
-          _type: 'playlist', id: 'ImagePost123', channel: 'photographer',
+          _type: 'playlist', id: 'ImagePost123', channel: 'photographer', title:'Video by photographer', description:'Video by photographer',
           entries: [0, 1].map(index => ({
-            id: `image${index}`, formats: [], thumbnails: [
+            id: `image${index}`, title:'Video by photographer', formats: [], thumbnails: [
+              { url: `https://scontent.cdninstagram.com/icon${index}.jpg`, width: 96, height: 120 },
+              { url: `https://scontent.cdninstagram.com/cropped${index}.jpg`, width: 150, height: 150 },
               { url: `https://scontent.cdninstagram.com/small${index}.jpg`, width: 320, height: 400 },
+              { url: `https://scontent.cdninstagram.com/preview${index}.jpg`, width: 640, height: 800 },
               { url: `https://scontent.cdninstagram.com/original${index}.jpg`, width: 1080, height: 1350 },
             ],
           })),
@@ -122,6 +125,10 @@ async function main() {
     assert.equal(photos.itemCount, 2);
     assert.equal(photos.items[0].mediaType, 'photo');
     assert.equal(photos.items[0].formats[0].directUrl, 'https://scontent.cdninstagram.com/original0.jpg');
+    assert.equal(photos.items[0].thumbnailUrl,'https://scontent.cdninstagram.com/preview0.jpg');
+    assert.equal(photos.items[0].thumbnailSmallUrl,'https://scontent.cdninstagram.com/icon0.jpg');
+    assert.equal(photos.items[0].imagePreviewUrl,'https://scontent.cdninstagram.com/original0.jpg');
+    assert.equal(photos.items[0].title,'Photo by photographer');assert.equal(photos.title,'Photo by photographer');assert.equal(photos.caption,'Photo by photographer');
     assert.equal(photos.items[1].index, 1);
     const unknownDimensions = photoService.normalizeYtDlpOutput({
       id: 'ImagePost456', thumbnails: [
@@ -132,6 +139,10 @@ async function main() {
     assert.equal(unknownDimensions.items[0].formats[0].directUrl, 'https://scontent.cdninstagram.com/large.jpg');
     assert.equal(unknownDimensions.items[0].formats[0].resolution, 'Source resolution');
     assert.equal(unknownDimensions.items[0].width, undefined);
+    const {imagePreviews}=require('../src/services/image-previews.ts');
+    const hinted=['1080','160','640'].map(size=>({url:`https://scontent.cdninstagram.com/photo.jpg?stp=dst-jpg_e35_s${size}x${size}&token=unchanged`}));
+    assert.equal(imagePreviews(hinted).thumbnailUrl,hinted[2].url);assert.equal(imagePreviews(hinted).thumbnailSmallUrl,hinted[1].url);assert.equal(imagePreviews(hinted).imagePreviewUrl,hinted[0].url);
+    assert.deepEqual(imagePreviews([{url:'https://scontent.cdninstagram.com/only.jpg'}]),{thumbnailUrl:'https://scontent.cdninstagram.com/only.jpg',thumbnailSmallUrl:'https://scontent.cdninstagram.com/only.jpg',imagePreviewUrl:'https://scontent.cdninstagram.com/only.jpg'});
     // Exercise the same ZIP job used by the bulk action, including mixed slide order.
     const { DownloadManagerService } = require('../src/services/download-manager.service.ts');
     const downloadedIndices = [];
@@ -188,6 +199,11 @@ async function main() {
       assert.equal(markup.includes(removed), false, removed + ' must be removed');
     }
     const clientSource=fs.readFileSync(path.join(process.cwd(),'public/saveframe.js'),'utf8');
+    const titleFunction=clientSource.slice(clientSource.indexOf('function mediaTitle('),clientSource.indexOf('\n      function clearLiveResult('));
+    const displayTitle=require('node:vm').runInNewContext('('+titleFunction+')',{t:String});
+    assert.equal(displayTitle({mediaType:'photo',title:'Video by creator'}),'Photo by creator');
+    assert.equal(displayTitle({mediaType:'video',title:'Video by creator'}),'Video by creator');
+    assert.equal(displayTitle({mediaType:'photo',title:'Video by a great artist inspired this photo'}),'Video by a great artist inspired this photo');
     const qualityFunction=clientSource.slice(clientSource.indexOf('function liveQualities('),clientSource.indexOf('\n      function formatLabel('));
     const visibleQualities=require('node:vm').runInNewContext('('+qualityFunction+')',{escapeHtml:String,formatLabel:String,t:String,visibleFilesize:()=>''});
     const renditions=Array.from({length:13},(_,index)=>({formatId:index?'photo-'+index:'photo-original',label:index?'Image variant '+(index+1):'Original image',resolution:'Source resolution',Container:'JPEG sRGB'}));
