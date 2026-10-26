@@ -33,7 +33,7 @@ for (const locale of locales) {
   assert.ok(metadata.alternates.canonical.endsWith(localePath(locale)));
   assert.equal(Object.keys(metadata.alternates.languages).length, 11);
   assert.equal(metadata.alternates.languages['pt-BR'].endsWith('/pt-br/'), true);
-  assert.ok(metadata.title === dictionary['SaveFrame — Instagram Downloader for Photos, Reels, Videos & Stories']);
+  assert.equal(metadata.title, require('../src/content/search-titles.json')[localePath(locale)]);
   assert.ok(!translate(dictionary, 'Preparing download… {progress}%', { progress: 42 }).includes('{progress}'));
   const ids = value => [...value.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]).filter(id => id !== 'home-i18n' && !id.startsWith('blog-'));
   for (const id of ids(original)) assert.ok(ids(markup).includes(id), 'Lost interaction element: ' + id);

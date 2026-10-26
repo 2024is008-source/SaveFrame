@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { unstable_noStore as noStore } from 'next/cache';
 import { db, publicSettings } from './db';
 import { absoluteUrl } from '../lib/site';
+import { searchTitle } from '../lib/search-title';
 export function publishedSeo(route: string): any {
   noStore();
   if(process.env.SAVEFRAME_DISABLE_SEO_OVERRIDES==='1') return null;
@@ -11,8 +12,8 @@ export function publishedSeo(route: string): any {
 export function pageDescription(route: string, original: string) { return publishedSeo(route)?.contentDescription || original; }
 export function applySeo(route: string, base: Metadata): Metadata {
   const value=publishedSeo(route) || {}, site=publicSettings();
-  const originalTitle=typeof base.title==='string' ? base.title : '';
-  const title=value.title || (originalTitle && site.siteName!=='SaveFrame' ? originalTitle.replace(/SaveFrame/g,site.siteName) : base.title);
+  const originalTitle=typeof base.title==='string' ? searchTitle(route,base.title) : '';
+  const title=value.title || (originalTitle ? site.siteName!=='SaveFrame' ? originalTitle.replace(/SaveFrame/g,site.siteName) : originalTitle : base.title);
   const description=value.description || base.description || site.defaultDescription;
   const graph:any=base.openGraph || {}, twitter:any=base.twitter || {};
   const chosen=value.image || (site.defaultSocialImage!=='/social/saveframe.png' && (!graph.images || JSON.stringify(graph.images).includes('/social/saveframe.png')) ? site.defaultSocialImage : null);

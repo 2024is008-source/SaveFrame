@@ -66,6 +66,9 @@ def secure_session(data):
     auth = data.get('access')
     if auth is None:
         return None
+    keys = os.environ.get('INSTAGRAPI_SESSION_KEYS', 'owner').split(',')
+    if auth.get('sessionKey') not in keys:
+        raise Failure('PRIVATE_CONTENT')
     if not isinstance(auth, dict) or not re.fullmatch(r'[A-Za-z0-9_-]{1,64}', str(auth.get('sessionKey', ''))):
         raise Failure('PRIVATE_CONTENT')
     if not re.fullmatch(r'[A-Za-z0-9._]{1,30}', str(auth.get('ownerUsername', ''))) or not re.fullmatch(r'\d{1,30}', str(auth.get('ownerUserId', ''))):
@@ -103,13 +106,59 @@ def secure_session(data):
     return settings
 
 
-def protect_transport(client):
+def bounded_response(original_send, request, kwargs, hosts, budget):
+    parsed = urlsplit(request.url)
+    if parsed.scheme != 'https' or parsed.netloc not in hosts or budget[0] <= 0:
+        raise Failure('SSRF_BLOCKED')
+    budget[0] -= 1
+    kwargs.update(allow_redirects=False, stream=True, timeout=5, verify=True, proxies={})
+    response = original_send(request, **kwargs)
+    try:
+        content = bytearray()
+        for chunk in response.iter_content(32768):
+            content.extend(chunk)
+            if len(content) > MAX_RESPONSE:
+                raise Failure('FILE_TOO_LARGE')
+        status = response.status_code
+        try:
+            payload = json.loads(content)
+        except (ValueError, UnicodeError):
+            payload = {}
+        marker = str(payload.get('message', '')) if isinstance(payload, dict) else ''
+        if isinstance(payload, dict) and (payload.get('challenge') or marker in ('challenge_required', 'checkpoint_required', 'two_factor_required')):
+            raise Failure('CHALLENGE_REQUIRED')
+        if 300 <= status < 400 or status == 401 or marker in ('login_required', 'user_has_logged_out'):
+            raise Failure('LOGIN_REQUIRED')
+        if status == 403:
+            raise Failure('PRIVATE_CONTENT')
+        if status in (404, 410):
+            raise Failure('DELETED_CONTENT')
+        if status == 429:
+            raise Failure('RATE_LIMITED')
+        if status < 200 or status >= 300:
+            raise Failure('EXTRACTOR_FAILURE')
+        response._content = bytes(content)
+        response._content_consumed = True
+        return response
+    finally:
+        response.close()
+
+
+def authenticated_error(error):
+    code = error_code(error)
+    if 'Challenge' in type(error).__name__ or 'TwoFactor' in type(error).__name__:
+        return 'CHALLENGE_REQUIRED'
+    return 'SESSION_EXPIRED' if code == 'LOGIN_REQUIRED' else code
+
+
+def protect_transport(client, owner_id=None):
     """Pin approved DNS answers; deny redirects, proxies and mobile/curl calls."""
     original_lookup = socket.getaddrinfo
+    hosts = {'www.instagram.com', 'i.instagram.com'} if owner_id else {'www.instagram.com'}
     pinned = {}
 
     def lookup(host, port, *args, **kwargs):
-        if host != 'www.instagram.com' or int(port) != 443:
+        if host not in hosts or int(port) != 443:
             raise Failure('SSRF_BLOCKED')
         key = (host, port, args, tuple(sorted(kwargs.items())))
         if key not in pinned:
@@ -120,49 +169,33 @@ def protect_transport(client):
         return pinned[key]
 
     socket.getaddrinfo = lookup
-    client.public.trust_env = False
-    client.public.proxies.clear()
-    client.public.verify = True
-    original_send = client.public.send
-    requests_left = 6
-
-    def send(request, **kwargs):
-        nonlocal requests_left
-        parsed = urlsplit(request.url)
-        if parsed.scheme != 'https' or parsed.netloc != 'www.instagram.com' or requests_left <= 0:
-            raise Failure('SSRF_BLOCKED')
-        requests_left -= 1
-        kwargs.update(allow_redirects=False, stream=True, timeout=5, verify=True, proxies={})
-        response = original_send(request, **kwargs)
-        try:
-            status = response.status_code
-            if 300 <= status < 400 or status == 401:
-                raise Failure('LOGIN_REQUIRED')
-            if status == 403:
-                raise Failure('PRIVATE_CONTENT')
-            if status in (404, 410):
-                raise Failure('DELETED_CONTENT')
-            if status == 429:
-                raise Failure('RATE_LIMITED')
-            if status < 200 or status >= 300:
-                raise Failure('EXTRACTOR_FAILURE')
-            content = bytearray()
-            for chunk in response.iter_content(32768):
-                content.extend(chunk)
-                if len(content) > MAX_RESPONSE:
-                    raise Failure('FILE_TOO_LARGE')
-            response._content = bytes(content)
-            response._content_consumed = True
-            return response
-        finally:
-            response.close()
-
-    client.public.send = send
+    budget = [3 if owner_id else 6]
+    for session in ([client.public, client.private] if owner_id else [client.public]):
+        session.trust_env = False
+        session.proxies.clear()
+        session.verify = True
+        original = session.send
+        session.send = lambda request, _send=original, **kwargs: bounded_response(_send, request, kwargs, hosts, budget)
 
     def denied(*args, **kwargs):
         raise Failure('LOGIN_REQUIRED')
 
-    client.private_request = denied
+    if owner_id:
+        # Avoid the SDK wrapper's timeout retries and automatic challenge paths.
+        allowed = {'accounts/current_user/?edit=true', f'feed/user/{owner_id}/story/'}
+
+        def private_request(endpoint, data=None, params=None, **kwargs):
+            if endpoint not in allowed or data is not None or kwargs:
+                raise Failure('PRIVATE_CONTENT')
+            try:
+                client._send_private_request(endpoint, params=params)
+                return client.last_json
+            except Exception as error:
+                raise Failure(authenticated_error(error)) from None
+
+        client.private_request = private_request
+    else:
+        client.private_request = denied
     client.login = denied
     client.challenge_resolve = denied
     client.challenge_code_handler = denied
@@ -251,6 +284,68 @@ def extract(data, client):
     return {'version': 1, 'status': 'ok', 'username': user.username, 'items': items}
 
 
+def extract_owner_story(data, client):
+    parts = validate_input(data)
+    access = data.get('access')
+    if data.get('category') != 'story' or not access or parts[0].lower() != access['ownerUsername'].lower():
+        raise Failure('PRIVATE_CONTENT')
+    try:
+        account = client.account_info()
+        if str(account.pk) != access['ownerUserId'] or account.username.lower() != access['ownerUsername'].lower():
+            raise Failure('PRIVATE_CONTENT')
+        # Installed SDK requires one bounded owner story-list request. Return only exact ID.
+        stories = client.user_stories_v1(access['ownerUserId'], amount=100)
+        story = next((entry for entry in stories if str(entry.pk) == parts[1]), None)
+        if not story:
+            raise Failure('EXPIRED_STORY')
+        if str(story.user.pk) != access['ownerUserId'] or story.user.username.lower() != access['ownerUsername'].lower():
+            raise Failure('PRIVATE_CONTENT')
+        taken = getattr(story, 'taken_at', None)
+        expires = getattr(story, 'expiring_at', None)
+        expiry = expires.timestamp() if expires else taken.timestamp() + 86400 if taken else None
+        if expiry is None or expiry <= time.time():
+            raise Failure('EXPIRED_STORY')
+        return {'version': 1, 'status': 'ok', 'username': account.username, 'items': [item(story)]}
+    except Exception as error:
+        raise Failure(authenticated_error(error)) from None
+
+
+def load_owner_session(client, data, settings):
+    access = data.get('access')
+    if not access or data.get('operation') != 'owner-story' or data.get('category') != 'story' or os.environ.get('INSTAGRAPI_AUTH_ENABLED') != '1':
+        raise Failure('PRIVATE_CONTENT')
+    if not settings:
+        raise Failure('SESSION_EXPIRED')
+    target = Path(os.environ.get('INSTAGRAPI_SESSION_DIR', '/var/lib/saveframe/instagram-sessions')) / (access['sessionKey'] + '.json')
+    client.load_settings(target)
+    # Session content cannot choose a different transport, proxy, retry or account.
+    client.set_retry_config(public_transport='requests', private_transport='requests', public_request_retries_count=1, session_retry_total=0)
+    client.with_challenge_flow = False
+    client.handle_exception = None
+    client.set_tls_verify(True)
+    if str(client.user_id or '') != access['ownerUserId']:
+        raise Failure('PRIVATE_CONTENT')
+
+
+@contextlib.contextmanager
+def owner_session_lock(data):
+    """Linux inter-process concurrency lock without writing the session file."""
+    if os.name != 'posix' or data.get('operation') != 'owner-story':
+        yield
+        return
+    import fcntl
+    target = Path(os.environ.get('INSTAGRAPI_SESSION_DIR', '/var/lib/saveframe/instagram-sessions')) / (data['access']['sessionKey'] + '.json')
+    fd = os.open(target, os.O_RDONLY | getattr(os, 'O_NOFOLLOW', 0))
+    try:
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise Failure('RATE_LIMITED') from None
+        yield
+    finally:
+        os.close(fd)
+
+
 def limits():
     if os.name == 'posix':
         import resource
@@ -273,12 +368,17 @@ def main():
             raise Failure('INVALID_URL')
         data = json.loads(text)
         validate_input(data)
+        if data.get('access') and os.environ.get('INSTAGRAPI_AUTH_ENABLED') != '1':
+            raise Failure('PRIVATE_CONTENT')
         settings = secure_session(data)
         # Redirect incidental library prints; only the protocol reaches stdout.
-        with contextlib.redirect_stdout(sys.stderr):
+        with owner_session_lock(data), contextlib.redirect_stdout(sys.stderr):
             from instagrapi import Client
-            client = Client(public_transport='requests', request_timeout=0.1, public_request_retries_count=1, session_retry_total=0)
-            if settings:
+            client = Client(public_transport='requests', private_transport='requests', with_challenge_flow=False, request_timeout=0.1, public_request_retries_count=1, session_retry_total=0)
+            owner_mode = data.get('operation') == 'owner-story'
+            if owner_mode:
+                load_owner_session(client, data, settings)
+            elif settings:
                 # Restore only credential/device keys; never transport/retry/proxy settings.
                 client.set_settings({key: settings[key] for key in ('uuids', 'device_settings', 'cookies', 'authorization_data') if key in settings})
                 if not client.inject_sessionid_to_public():
@@ -286,8 +386,8 @@ def main():
             client.public_request_retries_count = 1
             client.session_retry_total = 0
             client._configure_public_session_retry()
-            protect_transport(client)
-            result = extract(data, client)
+            protect_transport(client, data['access']['ownerUserId'] if owner_mode else None)
+            result = extract_owner_story(data, client) if owner_mode else extract(data, client)
     except Exception as error:
         result = {'version': 1, 'status': 'error', 'code': error_code(error)}
     sys.stdout.write(json.dumps(result, separators=(',', ':'), allow_nan=False))

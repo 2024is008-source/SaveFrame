@@ -1,0 +1,11 @@
+# Admin errors and photo investigation — 2026-10-26
+
+The Error Logs chart now displays **All error reasons**, using all recorded failure events, including `LOGIN_REQUIRED`, extraction failures and cancellations. The dashboard's **System failures** metric retains the earlier system-fault-only definition. Existing events are included without a migration or database rewrite.
+
+New resolution/download failures retain the attempted photo, Reel, video, story or profile category instead of classifying everything except stories as unknown. Historical unknown events cannot be reclassified without retained source inputs, which SaveFrame intentionally does not store. Malformed bodies, early internal errors and rate-limit rejections now have sanitized failure reporting too. To preserve rate-limit protection, repeated pre-job `RATE_LIMITED` rejections are sampled once per minute per API stage/media kind rather than causing unbounded SQLite writes. Counts represent recorded events, not every discarded abusive request. Playback-only failures remain excluded from download analytics, and no submitted URLs, usernames, cookies or extractor logs are stored.
+
+Changed: `src/admin/analytics.ts`, `src/app/api/media/resolve/route.ts`, `src/app/api/media/download/route.ts`, `src/components/admin/AdminDashboard.tsx`, `scripts/check-admin.cjs`, new `scripts/check-api-error-reporting.cjs`, and its `package.json` test command.
+
+Live investigation of the supplied photo post `DKIdWQSTeHN`: the running local resolve API returned HTTP 403 / `LOGIN_REQUIRED`. A separate anonymous public-photo adapter diagnostic also received a restricted page (`PRIVATE_CONTENT`). This is evidence that anonymous retrieval failed from this environment, **not proof that the Instagram account/post itself is private**. The photo download has not been restored or claimed successful. No login restriction was bypassed, operator session shared, or success response fabricated.
+
+Verification: admin report aggregation/filter tests and API rejection/classification/deduplication/preview-isolation regressions pass. Full existing tests, typecheck/lint and production build were run alongside the owner-session and search-title changes. No production database migration, service restart, deployment or Git push was performed.

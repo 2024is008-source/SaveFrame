@@ -1,0 +1,45 @@
+# Search title updates
+
+37 distinct public-page search titles. These defaults feed HTML, Open Graph, Twitter metadata and the admin catalog; visible headings and article content are unchanged. Explicit published admin overrides retain priority. No production deployment or Search Console submission was performed.
+
+Google chooses its own search-result title and may rewrite it. Local defaults do not change the live site until deployed.
+
+| Page | New search title |
+| --- | --- |
+| / | Instagram Video Downloader – View and Save Instagram to MP4 |
+| /es/ | Descargar vídeos de Instagram – Ver y guardar en MP4 &#124; SaveFrame |
+| /pt-br/ | Baixar vídeos do Instagram – Veja e salve em MP4 &#124; SaveFrame |
+| /de/ | Instagram-Videos herunterladen – Ansehen & als MP4 speichern |
+| /fr/ | Télécharger une vidéo Instagram – Voir et enregistrer en MP4 |
+| /ja/ | Instagram動画をダウンロード – プレビューしてMP4で保存 &#124; SaveFrame |
+| /id/ | Download Video Instagram – Pratinjau & Simpan MP4 &#124; SaveFrame |
+| /tr/ | Instagram Video İndir – Önizle ve MP4 Olarak Kaydet &#124; SaveFrame |
+| /hi/ | Instagram वीडियो डाउनलोडर – देखें और MP4 में सेव करें &#124; SaveFrame |
+| /ar/ | تنزيل فيديو إنستغرام – معاينة وحفظ بصيغة MP4 &#124; SaveFrame |
+| /reels-downloader | Instagram Reels Downloader – Preview & Save MP4 &#124; SaveFrame |
+| /video-downloader | Save Instagram Videos as MP4 – Video Downloader &#124; SaveFrame |
+| /photo-downloader | Instagram Photo Downloader – Preview & Save Images &#124; SaveFrame |
+| /carousel-downloader | Instagram Carousel Downloader – Pick Photos or Save a ZIP |
+| /story-downloader | Instagram Story Downloader – Check & Save Active Stories |
+| /profile-viewer | Instagram Profile Picture Viewer – Preview Public Photos |
+| /about | About SaveFrame – How Our Instagram Download Tools Work |
+| /contact | Contact SaveFrame – Get Download Help or Report an Issue |
+| /privacy | SaveFrame Privacy Policy – Your Data & Analytics Choices |
+| /terms | SaveFrame Terms of Use – Download Rules & Access Limits |
+| /copyright | Copyright Help – Report Content & Download Responsibly |
+| /blog | Instagram Download Guides – Reels, Photos & Fixes &#124; SaveFrame |
+| /blog/how-to-download-instagram-stories-by-link | Download Instagram Stories by Link – What Works & What Doesn't |
+| /blog/how-to-download-instagram-story-videos | Save Instagram Story Videos – Check Access, Sound & Downloads |
+| /blog/how-to-download-instagram-photos-online | How to Download Instagram Photos Online – Preview & Save |
+| /blog/how-to-copy-instagram-photo-link | Copy an Instagram Photo Link – Find the Right Post URL |
+| /blog/view-instagram-profile-picture-by-url | View an Instagram Profile Picture – Use the Right Profile URL |
+| /blog/how-to-download-instagram-reels-mp4 | Download Instagram Reels as MP4 – A Step-by-Step Guide |
+| /blog/download-instagram-reels-on-iphone | Save Instagram Reels on iPhone – Find Your Downloaded MP4 |
+| /blog/download-instagram-videos-on-pc | Download Instagram Videos on PC – Preview, Save & Play |
+| /blog/download-instagram-carousel-photos | Save Instagram Carousel Photos – One Image or the Whole Set |
+| /blog/download-instagram-reels-with-audio | Download Instagram Reels with Audio – Keep Available Sound |
+| /blog/instagram-downloader-not-working | Instagram Downloader Not Working? Check These Common Fixes |
+| /blog/why-instagram-videos-wont-download | Instagram Video Won't Download? Understand the Error First |
+| /blog/download-instagram-photos-iphone-android | Save Instagram Photos on iPhone & Android – Find Your Files |
+| /blog/instagram-photo-sizes-aspect-ratios | Instagram Photo Sizes – Choose the Right Crop & Aspect Ratio |
+| /blog/backup-instagram-photos-videos-reels | Back Up Your Instagram Photos & Reels – Build a Local Archive |

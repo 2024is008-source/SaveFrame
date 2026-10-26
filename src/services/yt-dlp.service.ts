@@ -397,8 +397,24 @@ export class YtDlpService {
 
   /** No HTTP route calls this. Session-backed results never enter public caches. */
   public async extractOperatorMetadata(rawUrl: string, access: AuthorizedInstagrapiAccess, signal?: AbortSignal): Promise<NormalizedMediaResult> {
-    validateMediaInput(rawUrl);
+    const validated=validateMediaInput(rawUrl);
+    if(validated.category==='story')return this.instagrapi.extractAuthorizedStory(validated,access,signal);
     return this.extractMetadataInternal(rawUrl, undefined, signal, access);
+  }
+
+  /** Used only by a private CLI manager instance; never by public API jobs. */
+  public async downloadOperatorStory(rawUrl:string,access:AuthorizedInstagrapiAccess,options:DownloadMediaOptions):Promise<DownloadMediaArtifact>{
+    const validated=validateMediaInput(rawUrl,'story');
+    const root=fs.realpathSync(process.cwd()),output=path.resolve(options.outputDir);
+    const overlaps=(left:string,right:string)=>{const relative=path.relative(left,right);return !relative||(!relative.startsWith('..'+path.sep)&&!path.isAbsolute(relative));};
+    const sessionDir=path.resolve(process.env.INSTAGRAPI_SESSION_DIR||'/var/lib/saveframe/instagram-sessions');
+    const publicDownloads=path.resolve(process.env.DOWNLOAD_TEMP_DIR||path.join(os.tmpdir(),'saveframe-downloads'));
+    if(overlaps(root,output)||overlaps(sessionDir,output)||overlaps(output,sessionDir)||overlaps(publicDownloads,output)||overlaps(output,publicDownloads))throw new DownloaderAppError('PRIVATE_CONTENT','Owner downloads require separate private storage outside the checkout.',403);
+    const stat=fs.lstatSync(output);
+    if(!stat.isDirectory()||stat.isSymbolicLink()||fs.realpathSync(output)!==output||(process.platform!=='win32'&&((stat.mode&0o077)!==0||stat.uid!==process.getuid?.())))throw new DownloaderAppError('PRIVATE_CONTENT','Owner download storage must be private and owned by this operator.',403);
+    const controller=new AbortController();this.activeTransfers.set(options.jobId,controller);
+    try{return await this.downloadStoryFile(await this.extractOperatorMetadata(validated.canonicalUrl,access,controller.signal),options,controller);}
+    finally{this.activeTransfers.delete(options.jobId);}
   }
 
   private async extractPrimaryMetadata(rawUrl: string, tool?: string, signal?: AbortSignal): Promise<NormalizedMediaResult> {

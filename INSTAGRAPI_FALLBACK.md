@@ -2,6 +2,8 @@
 
 Date: 2026-10-26. Implemented locally; not committed, pushed or deployed. The feature remains **disabled by default**. No Instagram account, live Instagram content, Google Analytics, Gmail credentials or production database was used in these tests.
 
+Update: the separate owner-session CLI is now implemented and documented in `INSTAGRAM_OWNER_SESSIONS.md`. That guide supersedes the earlier operator-only limitations below. Anonymous fallback restrictions remain unchanged.
+
 ## Files
 
 Added:

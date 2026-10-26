@@ -8,6 +8,7 @@ const fs: typeof import('node:fs') = process.getBuiltinModule('fs');
 const os: typeof import('node:os') = process.getBuiltinModule('os');
 const recoverable = new Set(['EXTRACTOR_FAILURE', 'DOWNLOAD_TIMEOUT', 'YTDLP_NOT_INSTALLED']);
 const allowedErrors = new Set<ErrorCode>(['INVALID_URL', 'SSRF_BLOCKED', 'PRIVATE_CONTENT', 'DELETED_CONTENT', 'EXPIRED_STORY', 'LOGIN_REQUIRED', 'RATE_LIMITED', 'EXTRACTOR_FAILURE', 'DOWNLOAD_TIMEOUT', 'FILE_TOO_LARGE', 'UNSUPPORTED_MEDIA_TYPE']);
+allowedErrors.add('SESSION_EXPIRED'); allowedErrors.add('CHALLENGE_REQUIRED');
 const failure = () => new DownloaderAppError('EXTRACTOR_FAILURE', 'The optional Instagram extractor could not resolve this media.', 502, true);
 const cancelled = () => new DownloaderAppError('JOB_CANCELLED', 'Media inspection was cancelled.', 499);
 const bounded = (value: unknown, fallback: number, min: number, max: number) => { const n = Number(value); return Number.isInteger(n) && n >= min && n <= max ? n : fallback; };
@@ -35,6 +36,12 @@ export function instagrapiEligible(error: unknown): error is DownloaderAppError 
 export class InstagrapiService {
   constructor(private readonly http = new InstagramHttpClient()) {}
 
+  /** Explicit owner operation, independent of anonymous extraction/failure flags. */
+  async extractAuthorizedStory(url: ValidatedInstagramUrl, access: AuthorizedInstagrapiAccess, signal?: AbortSignal): Promise<NormalizedMediaResult> {
+    if (url.category !== 'story' || !access || process.env.INSTAGRAPI_AUTH_ENABLED !== '1') throw new DownloaderAppError('PRIVATE_CONTENT', 'Owner story extraction is disabled or unauthorized.', 403);
+    return this.extract(url, signal, access, true);
+  }
+
   async afterPrimaryFailure(url: ValidatedInstagramUrl, error: unknown, signal?: AbortSignal, access?: AuthorizedInstagrapiAccess): Promise<NormalizedMediaResult> {
     if (process.env.INSTAGRAPI_FALLBACK_ENABLED !== '1' || !instagrapiEligible(error)) throw error;
     return this.extract(url, signal, access);
@@ -43,7 +50,7 @@ export class InstagrapiService {
   private authorize(url: ValidatedInstagramUrl, access: AuthorizedInstagrapiAccess) {
     if (process.env.INSTAGRAPI_AUTH_ENABLED !== '1' || !/^[A-Za-z0-9@._-]{1,128}$/.test(access.requesterId) ||
         !/^[A-Za-z0-9._]{1,30}$/.test(access.ownerUsername) || !/^\d{1,30}$/.test(access.ownerUserId) ||
-        !/^[A-Za-z0-9_-]{1,64}$/.test(access.sessionKey) || !Array.isArray(access.allowedCanonicalUrls) ||
+        !/^[A-Za-z0-9_-]{1,64}$/.test(access.sessionKey) || !(process.env.INSTAGRAPI_SESSION_KEYS || 'owner').split(',').includes(access.sessionKey) || !Array.isArray(access.allowedCanonicalUrls) ||
         access.allowedCanonicalUrls.length > 100 || !access.allowedCanonicalUrls.includes(url.canonicalUrl) ||
         (url.username && url.username.toLowerCase() !== access.ownerUsername.toLowerCase())) {
       throw new DownloaderAppError('PRIVATE_CONTENT', 'This operation has no matching operator authorization.', 403);
@@ -64,7 +71,7 @@ export class InstagrapiService {
     } catch { throw new DownloaderAppError('PRIVATE_CONTENT', 'An external private operator session is required.', 403); }
   }
 
-  private async extract(url: ValidatedInstagramUrl, signal?: AbortSignal, access?: AuthorizedInstagrapiAccess): Promise<NormalizedMediaResult> {
+  private async extract(url: ValidatedInstagramUrl, signal?: AbortSignal, access?: AuthorizedInstagrapiAccess, ownerStory=false): Promise<NormalizedMediaResult> {
     // Revalidate even trusted callers. Never pass user-supplied args or paths to Python.
     url = validateMediaInput(url.canonicalUrl, url.category === 'profile' ? 'profile' : undefined);
     if (signal?.aborted) throw cancelled();
@@ -78,7 +85,7 @@ export class InstagrapiService {
     const timeout = bounded(process.env.INSTAGRAPI_TIMEOUT_MS, 20000, 5000, 30000);
     const total = signal ? AbortSignal.any([signal, AbortSignal.timeout(timeout)]) : AbortSignal.timeout(timeout);
     try {
-      const raw = await this.runWorker({ version: 1, url: url.canonicalUrl, category: url.category, ...(authorization ? { access: authorization } : {}) }, total);
+      const raw = await this.runWorker({ version: 1, url: url.canonicalUrl, category: url.category, ...(ownerStory ? { operation: 'owner-story' } : {}), ...(authorization ? { access: authorization } : {}) }, total);
       return await this.normalize(raw, url, total, access);
     } catch (error) {
       if (!signal?.aborted) state.cooldown = Date.now() + 30000;
@@ -106,6 +113,8 @@ export class InstagrapiService {
           ...(process.env.SystemRoot ? { SystemRoot: process.env.SystemRoot } : {}),
           TEMP: os.tmpdir(), TMP: os.tmpdir(), LANG: 'C.UTF-8',
           INSTAGRAPI_MEMORY_MB: String(bounded(process.env.INSTAGRAPI_MEMORY_MB, 512, 256, 768)),
+          INSTAGRAPI_AUTH_ENABLED: process.env.INSTAGRAPI_AUTH_ENABLED === '1' ? '1' : '0',
+          INSTAGRAPI_SESSION_KEYS: process.env.INSTAGRAPI_SESSION_KEYS || 'owner',
           ...(process.env.INSTAGRAPI_SESSION_DIR ? { INSTAGRAPI_SESSION_DIR: process.env.INSTAGRAPI_SESSION_DIR } : {}),
           ...(process.env.DOWNLOAD_TEMP_DIR ? { DOWNLOAD_TEMP_DIR: process.env.DOWNLOAD_TEMP_DIR } : {}),
         },
@@ -134,8 +143,9 @@ export class InstagrapiService {
     if (!raw || raw.version !== 1) throw failure();
     if (raw.status === 'error') {
       const code: ErrorCode = allowedErrors.has(raw.code) ? raw.code : 'EXTRACTOR_FAILURE';
-      const status = ['LOGIN_REQUIRED', 'PRIVATE_CONTENT', 'SSRF_BLOCKED'].includes(code) ? 403 : code === 'RATE_LIMITED' ? 429 : ['DELETED_CONTENT', 'EXPIRED_STORY'].includes(code) ? 404 : 502;
-      throw new DownloaderAppError(code, code === 'LOGIN_REQUIRED' ? 'Instagram requires authorized access; no automatic login was attempted.' : code === 'PRIVATE_CONTENT' ? 'Instagram denied access to this media.' : 'The optional extractor could not provide accessible media.', status, code === 'EXTRACTOR_FAILURE');
+      const status = ['LOGIN_REQUIRED', 'SESSION_EXPIRED', 'CHALLENGE_REQUIRED', 'PRIVATE_CONTENT', 'SSRF_BLOCKED'].includes(code) ? 403 : code === 'RATE_LIMITED' ? 429 : ['DELETED_CONTENT', 'EXPIRED_STORY'].includes(code) ? 404 : 502;
+      const message = code === 'SESSION_EXPIRED' ? 'The saved Instagram session has expired or was revoked. Renew it locally.' : code === 'CHALLENGE_REQUIRED' ? 'Instagram requires account verification. Complete it manually in Instagram.' : code === 'LOGIN_REQUIRED' ? 'Instagram requires authorized access; no automatic login was attempted.' : code === 'PRIVATE_CONTENT' ? 'Instagram denied access to this media.' : 'The optional extractor could not provide accessible media.';
+      throw new DownloaderAppError(code, message, status, code === 'EXTRACTOR_FAILURE');
     }
     if (raw.status !== 'ok' || typeof raw.username !== 'string' || !/^[A-Za-z0-9._]{1,30}$/.test(raw.username) || !Array.isArray(raw.items) || !raw.items.length || raw.items.length > 100 ||
         (['profile', 'story'].includes(url.category) && raw.items.length !== 1) ||
