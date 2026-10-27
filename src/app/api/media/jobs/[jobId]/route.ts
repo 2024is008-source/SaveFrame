@@ -12,6 +12,8 @@ export async function GET(_req: NextRequest, context: { params: Promise<{ jobId:
         jobId: job.jobId,
         status: job.status,
         progress: job.progress,
+        deliveryStatus: job.deliveryStatus,
+        deliveryErrorCode: job.deliveryErrorCode,
         safeFilename: job.safeFilename,
         filesizeBytes: job.filesizeBytes,
         downloadUrl: job.status === 'completed' ? `/api/media/download/${job.jobId}` : undefined,

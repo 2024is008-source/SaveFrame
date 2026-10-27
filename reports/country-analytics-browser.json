@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "syntheticData": true,
+  "desktop": {
+    "viewport": 1365,
+    "width": 1365,
+    "table": 1037
+  },
+  "mobile": {
+    "viewport": 390,
+    "width": 390,
+    "tableWidth": 314,
+    "tableScroll": 440
+  },
+  "checks": [
+    "actual production components",
+    "six countries",
+    "country/media form filtering",
+    "authenticated CSV export",
+    "desktop/mobile overflow",
+    "no browser runtime errors"
+  ],
+  "productionVpsVerified": false
+}

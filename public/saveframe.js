@@ -12,9 +12,76 @@
       const pendingDownloads = new Map();
       const preparedPreviews = new Map();
       const previewControllers = new Set();
+      const previewedItems = new WeakMap();
       // Aggregate categories only. Never pass a source link, account, caption or job ID.
-      function analytics(name, params) {
-        window.dispatchEvent(new CustomEvent('saveframe:analytics-event', {detail:{name,params}}));
+      function analytics(name, params, operation) {
+        window.dispatchEvent(new CustomEvent('saveframe:analytics-event', {detail:{name,params,operation}}));
+      }
+
+      function downloadParameters(media, request) {
+        const item = media.items.find(item => item.index === request.itemIndex) || media.items[0];
+        const format = item.formats.find(format => format.formatId === request.formatId) || item.formats[0];
+        const category = media.category === 'reels' ? 'reel' : media.category;
+        return {
+          media_type: request.zipCarousel ? 'zip' : ['reel','story','profile'].includes(category) ? category : item.mediaType,
+          download_format: request.zipCarousel ? 'zip' : format.ext || 'unknown',
+          download_method: request.zipCarousel ? 'bulk' : 'single',
+          source_page: window.location.pathname,
+        };
+      }
+
+      function createDownloadTracking(params, emit = analytics) {
+        const operation = {};
+        const sent = new Set();
+        let terminal = false;
+        return {
+          transition(name, extra = {}) {
+            if (terminal || sent.has(name)) return;
+            if (name === 'download_delivered' && !sent.has('download_prepared')) return;
+            sent.add(name);
+            if (name === 'download_failed' || name === 'download_delivered') terminal = true;
+            emit(name, {...params,...extra}, operation);
+          },
+        };
+      }
+
+      async function monitorDownloadHandoff(jobId, tracking, sourcePage) {
+        // Poll only this existing capability URL. The identifier never reaches GA4.
+        const deadline = Date.now() + 180000;
+        while (Date.now() < deadline && window.location.pathname === sourcePage) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          if (Date.now() >= deadline || window.location.pathname !== sourcePage) return;
+          try {
+            const response = await fetch('/api/media/jobs/' + encodeURIComponent(jobId), {signal:AbortSignal.timeout(10000)});
+            if (!response.ok) return;
+            const {job} = await response.json();
+            if (window.location.pathname !== sourcePage) return;
+            if (job.deliveryStatus === 'handed_off') {
+              tracking.transition('download_delivered');
+              return;
+            }
+            if (job.deliveryStatus === 'failed') {
+              tracking.transition('download_failed', {failure_stage:'handoff',error_code:job.deliveryErrorCode});
+              return;
+            }
+          } catch {
+            // A lost status response is not proof of a failed file delivery.
+            return;
+          }
+        }
+      }
+
+      function recordMediaPreview(media, item, format, element, eventName) {
+        const params = downloadParameters(media, {itemIndex:item.index,formatId:format?.formatId});
+        const record = () => {
+          const seen = previewedItems.get(media) || new Set();
+          if (seen.has(item.index)) return;
+          seen.add(item.index);
+          previewedItems.set(media, seen);
+          analytics('media_previewed', {...params,download_method:'preview'});
+        };
+        element.addEventListener(eventName, record, {once:true});
+        if (eventName === 'load' && element.complete && element.naturalWidth > 0) record();
       }
 
       // Escape API text before inserting it into the reference's HTML templates.
@@ -655,6 +722,10 @@
         });
         dialog.showModal();
         if(item.mediaType === 'video') controller = startVideoPreview(dialog.querySelector('.media-lightbox-content'), media, item, format);
+        else {
+          const image = dialog.querySelector('.media-source-image');
+          if (image) recordMediaPreview(media, item, format, image, 'load');
+        }
       }
 
       function startVideoPreview(container, media, item, format) {
@@ -689,6 +760,7 @@
             preparedPreviews.set(key,{jobId,expires:Date.now()+600000});
             container.innerHTML = `<video class="media-source-video" controls playsinline preload="metadata" poster="${previewUrl(item.thumbnailUrl)}" src="/api/media/download/${encodeURIComponent(jobId)}?preview=1" aria-label="${escapeHtml(t('Media preview'))}"></video>`;
             const video = container.querySelector('video');
+            recordMediaPreview(media, item, format, video, 'playing');
             video.addEventListener('error',()=>{
               preparedPreviews.delete(key);
               const message=document.createElement('p');message.className='media-preview-status';message.setAttribute('role','status');message.textContent=t('Unable to prepare this preview.');container.appendChild(message);
@@ -748,7 +820,9 @@
               const pending = { label: t('Preparing download…') };
               pendingDownloads.set(key, pending);
               syncDownloadButtons();
-              analytics('download_started', {media_type:media.category});
+              const parameters = downloadParameters(media, request);
+              const tracking = createDownloadTracking(parameters);
+              tracking.transition('download_started');
               try {
                 const response = await fetch('/api/media/download', {
                   method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -767,6 +841,7 @@
                   pending.label = t('Preparing download… {progress}%', { progress: Math.round(job.progress || 0) });
                   syncDownloadButtons();
                   if (job.status === 'completed') {
+                    tracking.transition('download_prepared');
                     const link = document.createElement('a');
                     link.href = '/api/media/download/' + encodeURIComponent(payload.jobId);
                     link.download = job.safeFilename || '';
@@ -774,13 +849,14 @@
                     link.click();
                     link.remove();
                     showToast('Your download is ready');
+                    await monitorDownloadHandoff(payload.jobId, tracking, parameters.source_page);
                     return;
                   }
                   if (job.status === 'failed' || job.status === 'cancelled') throw Object.assign(new Error(apiError(job.error, 'Download cancelled.')), {analyticsCode:job.error?.code});
                 }
                 throw new Error('Download preparation timed out. Please try again.');
               } catch (error) {
-                analytics('download_failed', {media_type:media.category,failure_stage:'download',error_code:error?.analyticsCode});
+                tracking.transition('download_failed', {failure_stage:'download',error_code:error?.analyticsCode});
                 setValidationBanner('error', localError(error, 'Unable to download media.'));
               } finally {
                 pendingDownloads.delete(key);
@@ -959,7 +1035,7 @@
           focusMobileResult(resolvedMedia);
         } catch (error) {
           if (controller.signal.aborted) return;
-          analytics('download_failed', {media_type:state.activeTab,failure_stage:'resolve',error_code:error?.analyticsCode});
+          analytics('download_failed', {media_type:state.activeTab,source_page:window.location.pathname,failure_stage:'resolve',error_code:error?.analyticsCode});
           resultDynamicContent.innerHTML = '';
           setValidationBanner('error', localError(error, 'Unable to inspect this link.'));
         } finally {

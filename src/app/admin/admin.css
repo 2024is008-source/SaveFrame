@@ -13,6 +13,8 @@
 @media(prefers-reduced-motion:reduce){.sf-admin *{scroll-behavior:auto!important;transition:none!important}}
 
 /* Shared form sizing stays inside the admin scope; public tool controls are unchanged. */
+.sf-admin .admin-country-table tbody th{font-size:12px;font-weight:500;color:var(--admin-ink);padding:16px 18px 16px 0;border-bottom:1px solid var(--admin-border);vertical-align:middle}
+@media(max-width:640px){.sf-admin .admin-country-table tbody th{padding:14px 14px 14px 0}}
 .sf-admin input,.sf-admin textarea,.sf-admin select{min-height:44px;font-size:14px}
 .sf-admin .admin-button{min-height:44px}
 .sf-admin .admin-button:disabled{cursor:not-allowed}

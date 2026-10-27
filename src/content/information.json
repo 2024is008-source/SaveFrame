@@ -67,6 +67,10 @@
         "Optional analytics can run automatically where the configured regional policy permits it. In consent-required or unknown regions it stays disabled until valid consent is provided. SaveFrame respects previous opt-outs, Do Not Track and Global Privacy Control. Google Analytics may use first-party cookies for visitor and session statistics. Use the analytics opt-out link below to disable further tracking in this browser and remove accessible Google Analytics cookies. Your choice is stored locally. Advertising storage and personalization remain disabled."
       ],
       [
+        "Internal download statistics",
+        "SaveFrame keeps internal operational counts for download requests, preparation, failures and server response handoffs. When enabled under a reviewed regional policy, these records may include a coarse country code supplied by our trusted hosting proxy. Country attribution respects analytics opt-outs, Do Not Track, Global Privacy Control and configured consent requirements; excluded or unavailable locations are recorded as Unknown. A first-party preference cookie mirrors your analytics choice without a visitor identifier so the server can respect it. Download statistics do not store your IP address, submitted Instagram link, Instagram username, session cookies, fingerprint or precise location. Detailed operational records follow the configured retention period, normally 30 days, while daily aggregates may remain for up to 730 reporting days. Internal country statistics are independent of optional Google Analytics."
+      ],
+      [
         "Clipboard and account access",
         "The Paste button requests access to clipboard text when you activate it. You can paste manually if permission is unavailable. Do not submit passwords, cookies, private account information or content you are not authorized to access."
       ],

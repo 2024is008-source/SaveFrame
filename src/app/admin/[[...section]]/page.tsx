@@ -3,6 +3,7 @@ import { redirect, notFound } from 'next/navigation';
 import { findSession } from '../../../admin/auth';
 import { db, settings } from '../../../admin/db';
 import { reports } from '../../../admin/analytics';
+import { countryReports } from '../../../admin/country-analytics';
 import { seoCatalog, approvedImages } from '../../../admin/catalog';
 import { seoEditor } from '../../../admin/seo-service';
 import { verificationList } from '../../../admin/verification';
@@ -13,10 +14,11 @@ export default async function AdminPage({params,searchParams}:{params:Promise<{s
   const session=findSession(token || '');
   if(!session) redirect('/admin/login');
   const segments=(await params).section || [], section=segments[0] || 'overview';
-  if(segments.length>1 || !['overview','analytics','errors','seo','verification','settings','audit'].includes(section)) notFound();
+  if(segments.length>1 || !['overview','analytics','countries','errors','seo','verification','settings','audit'].includes(section)) notFound();
   const query=await searchParams; let initial:any={};
   try {
     if(['overview','analytics','errors'].includes(section)) initial=reports(query);
+    if(section==='countries') initial=countryReports(query);
     if(section==='seo') initial={pages:seoCatalog(),images:approvedImages(),editor:seoEditor(query.route || '/')};
     if(section==='verification') initial={files:verificationList(),origin:process.env.ADMIN_ORIGIN || process.env.NEXT_PUBLIC_SITE_URL || 'https://saveframe.site'};
     if(section==='settings') initial={settings:settings(),images:approvedImages()};

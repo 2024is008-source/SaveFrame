@@ -5,6 +5,7 @@ import { AdminError, authorize, loginChallenge, checkLoginChallenge, checkOrigin
 import { beginEmailLogin,completeEmailLogin,emailChallengeName } from '../../../../admin/email-login';
 import { db, settings, audit, cleanup } from '../../../../admin/db';
 import { reports, reportCsv } from '../../../../admin/analytics';
+import { countryReports, countryCsv } from '../../../../admin/country-analytics';
 import { seoCatalog, approvedImages } from '../../../../admin/catalog';
 import { seoEditor, saveSeo, restoreSeo, saveSettings } from '../../../../admin/seo-service';
 import { saveVerification, verificationList, verificationFile, removeVerification, saveDnsRecord } from '../../../../admin/verification';
@@ -49,6 +50,11 @@ async function handler(request: Request,context: Context) {
       const parameters=query(request);
       if(action==='session') return json({email:session.email,csrf:session.csrf_token,totpEnabled:Boolean(session.totp_enabled)});
       if(action==='reports') return json(reports(parameters));
+      if(action==='reports/countries') return json(countryReports(parameters));
+      if(action==='reports/countries/export') {
+        audit(session.user_id,'reports.exported','country-statistics');
+        return new NextResponse(countryCsv(parameters),{headers:{...privateHeaders,'Content-Type':'text/csv; charset=utf-8','Content-Disposition':'attachment; filename="saveframe-country-report.csv"'}});
+      }
       if(action==='reports/export') { audit(session.user_id,'reports.exported','daily-statistics'); return new NextResponse(reportCsv(parameters),{headers:{...privateHeaders,'Content-Type':'text/csv; charset=utf-8','Content-Disposition':'attachment; filename="saveframe-report.csv"'}}); }
       if(action==='seo') return json(parameters.route ? seoEditor(parameters.route) : {pages:seoCatalog(),images:approvedImages()});
       if(action==='verification') return json({files:verificationList()});

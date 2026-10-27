@@ -5,7 +5,7 @@ import { locales } from '../i18n/config';
 
 export const consentKey = 'saveframe.analytics.consent';
 const routes = new Set(['/', '/blog', ...locales.filter(locale=>locale!=='en').map(locale=>`/${locale}`), ...tools.map(tool=>`/${tool.slug}`), ...information.map(page=>`/${page.slug}`), ...posts.filter(post=>post.published).map(post=>`/blog/${post.slug}`)]);
-const categories = new Set(['reel','reels','video','photo','carousel','story','profile','unknown']);
+const categories = new Set(['reel','reels','video','photo','carousel','story','zip','profile','unknown']);
 const codes = new Set(['INVALID_URL','INVALID_STORY_LINK','UNSUPPORTED_OPERATION','UNSUPPORTED_MEDIA_TYPE','LOGIN_REQUIRED','PRIVATE_CONTENT','EXPIRED_STORY','DELETED_CONTENT','NO_ACTIVE_STORIES','RATE_LIMITED','EXTRACTOR_FAILURE','DOWNLOAD_TIMEOUT','FILE_TOO_LARGE','JOB_CANCELLED','INTERNAL_ERROR','YTDLP_NOT_INSTALLED','FFMPEG_ERROR','INSUFFICIENT_DISK_SPACE','PROCESS_RESTARTED','DELIVERY_STREAM_ERROR']);
 export function analyticsPath(pathname:string,search=''):string|null {
   const clean=pathname.length>1?pathname.replace(/\/+$/,''):pathname;
@@ -32,13 +32,20 @@ export function analyticsCampaign(search:string,options:AnalyticsOptions={}){
   return result.campaign_source&&result.campaign_medium?result:{};
 }
 export function analyticsEvent(name:unknown, input:Record<string,unknown>={}) {
-  if(!['download_started','media_resolved','download_failed'].includes(String(name)))return null;
+  if(!['download_started','download_prepared','download_delivered','media_previewed','media_resolved','download_failed'].includes(String(name)))return null;
   if(!input||typeof input!=='object')input={};
   const category=categories.has(String(input.media_type))?String(input.media_type):'unknown';
   const params:Record<string,string>={media_type:category==='reels'?'reel':category};
+  if (name !== 'media_resolved') {
+    const format = String(input.download_format).toLowerCase();
+    params.download_format = ['mp4','m4a','jpg','jpeg','png','webp','zip'].includes(format) ? format === 'jpeg' ? 'jpg' : format : 'unknown';
+    params.download_method = name === 'media_previewed' ? 'preview' : input.download_method === 'bulk' ? 'bulk' : 'single';
+    params.download_status = name === 'download_started' ? 'requested' : name === 'download_prepared' ? 'prepared' : name === 'download_delivered' ? 'handed_off' : name === 'media_previewed' ? 'viewed' : ['JOB_CANCELLED','DELIVERY_CANCELLED'].includes(String(input.error_code)) ? 'cancelled' : 'failed';
+    params.source_page = typeof input.source_page === 'string' ? analyticsPath(input.source_page) || 'unknown' : 'unknown';
+  }
   if(name==='download_failed'){
-    params.failure_stage=input.failure_stage==='resolve'?'resolve':'download';
-    params.error_code=codes.has(String(input.error_code))?String(input.error_code):'UNKNOWN';
+    params.failure_stage=input.failure_stage==='resolve'?'resolve':input.failure_stage==='handoff'?'handoff':'download';
+    params.error_code=codes.has(String(input.error_code)) || ['DELIVERY_CANCELLED','FILE_UNAVAILABLE'].includes(String(input.error_code)) ? String(input.error_code) : 'UNKNOWN';
   }
   return {name:String(name),params};
 }
@@ -46,7 +53,7 @@ export function analyticsEvent(name:unknown, input:Record<string,unknown>={}) {
 // This controller has no dependency on React or the downloader's private data.
 export function createAnalytics(browser:Window, id:string, origin:string, production:boolean, load:()=>void,options:AnalyticsOptions={}) {
   const win=browser as Window & {saveframeDataLayer?:unknown[];SaveFrameAnalytics?:{setConsent:(value:'granted'|'denied')=>void};[key:`ga-disable-${string}`]:boolean};
-  type Runtime={configured:boolean;lastPath:string|null;referrer:string;entryReferrer:string;campaign:Record<string,string>;stop?:()=>void};
+  type Runtime={configured:boolean;lastPath:string|null;referrer:string;entryReferrer:string;campaign:Record<string,string>;operations?:WeakMap<object,Set<string>>;stop?:()=>void};
   const runtimeWindow=win as typeof win & {__saveframeGa4?:Runtime};
   const state=runtimeWindow.__saveframeGa4 ||= {configured:false,lastPath:null,referrer:'',entryReferrer:analyticsReferrer(browser.document.referrer||'',origin),campaign:analyticsCampaign(browser.location.search,options)};
   state.stop?.();
@@ -81,6 +88,10 @@ export function createAnalytics(browser:Window, id:string, origin:string, produc
     }
   };
   const apply=()=>{
+    // Preference only, without a visitor identifier. Internal country reporting
+    // can respect the same opt-out without depending on GA enablement or receipt.
+    const preference=preferenceDenied()?'denied':consent;
+    browser.document.cookie=`sf_analytics_preference=${preference==='unset'?'':preference}; Max-Age=${preference==='unset'?0:15552000}; Path=/; SameSite=Lax; Secure`;
     if(!permitted()||preferenceDenied()){
       win[`ga-disable-${id}`]=true;
       if(state.configured)tag('consent','update',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});
@@ -96,14 +107,28 @@ export function createAnalytics(browser:Window, id:string, origin:string, produc
     try{browser.localStorage.setItem(consentKey,consent);}catch{}
     apply();
   };
-  const readPreference=()=>{try{const value=browser.localStorage.getItem(consentKey);return value==='granted'?'granted':value==='denied'?'denied':'unset';}catch{return 'unset';}};
+  const readPreference=()=>{
+    let value:string|null=null;
+    try{value=browser.localStorage.getItem(consentKey);}catch{ /* Preserve an existing opt-out cookie when storage is unavailable. */ }
+    const denied=browser.document.cookie.split(';').some(value=>value.trim()==='sf_analytics_preference=denied');
+    return value==='granted'?'granted':value==='denied'||denied?'denied':'unset';
+  };
   const onStorage=(event:StorageEvent)=>{if(event.key===consentKey||event.key===null){consent=readPreference();apply();}};
   const onConsent=(event:Event)=>setConsent((event as CustomEvent).detail?.analytics==='granted'?'granted':'denied');
   const onEvent=(event:Event)=>{
     if(!allowed()){page();return;}
     const detail=(event as CustomEvent).detail;
     const safe=analyticsEvent(detail?.name,detail?.params);
-    if(safe){page();tag('event',safe.name,{...safe.params,...fields()});}
+    if(safe){
+      const operation=detail?.operation;
+      if(operation && typeof operation==='object'){
+        state.operations ||= new WeakMap();
+        const sent=state.operations.get(operation) || new Set<string>();
+        if(sent.has(safe.name))return;
+        sent.add(safe.name);state.operations.set(operation,sent);
+      }
+      page();tag('event',safe.name,{...safe.params,...fields()});
+    }
   };
   consent=readPreference();
   if(browser.location.pathname==='/privacy'&&new URLSearchParams(browser.location.search).get('analytics')==='off'){consent='denied';try{browser.localStorage.setItem(consentKey,'denied');}catch{}}

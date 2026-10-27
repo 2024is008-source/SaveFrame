@@ -135,6 +135,8 @@ export type JobStatus =
 export interface DownloadJob {
   jobId: string;
   analyticsId?: string;
+  deliveryStatus?: 'streaming' | 'handed_off' | 'failed';
+  deliveryErrorCode?: 'DELIVERY_STREAM_ERROR' | 'DELIVERY_CANCELLED' | 'FILE_UNAVAILABLE';
   url: string;
   shortcode: string;
   category: InstagramMediaCategory;

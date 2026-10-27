@@ -269,7 +269,7 @@ export class DownloadManagerService {
 
     const job: DownloadJob = {
       jobId,
-      analyticsId: input.trackAnalytics===false?undefined:input.analyticsId || beginDownload(validated.category),
+      analyticsId: input.trackAnalytics===false?undefined:input.analyticsId || beginDownload(validated.category,'XX',Boolean(input.zipCarousel)),
       url: validated.canonicalUrl,
       shortcode: validated.shortcode,
       category: validated.category,
@@ -286,7 +286,7 @@ export class DownloadManagerService {
     };
 
     this.jobs.set(jobId, job);
-    attachJob(job.analyticsId!, jobId, job.category);
+    attachJob(job.analyticsId!, jobId, job.category, job.isCarouselZip);
     this.queue.push(jobId);
     this.processQueue();
 

@@ -1,6 +1,8 @@
 import crypto from 'node:crypto';
 import { db, transaction, cleanup } from './db';
 import { AdminError } from './auth';
+import { countryCode } from '../lib/country';
+import { rebuildCountryDay } from './country-analytics';
 export const mediaKinds = ['reel','video','photo','carousel','story','profile','unknown'];
 // Expected access restrictions, input rejections and visitor cancellations are not system faults.
 export const systemFailureCodes=['INTERNAL_ERROR','YTDLP_NOT_INSTALLED','FFMPEG_ERROR','INSUFFICIENT_DISK_SPACE','PROCESS_RESTARTED','DELIVERY_STREAM_ERROR'];
@@ -16,20 +18,24 @@ function rebuildDay(time: number) {
   db().prepare('DELETE FROM daily_statistics WHERE day=?').run(day);
   db().prepare(`INSERT INTO daily_statistics SELECT ?,media_type,COUNT(*),SUM(prepared_at IS NOT NULL),SUM(failed_at IS NOT NULL),SUM(delivered_at IS NOT NULL),COALESCE(SUM(CASE WHEN prepared_at IS NOT NULL THEN duration_ms ELSE 0 END),0),SUM(prepared_at IS NOT NULL) FROM download_requests WHERE requested_at>=? AND requested_at<? GROUP BY media_type`).run(day,start,start+86400000);
 }
-export function recordEvent(id: string, event: string, type='unknown', jobId: string|null=null, code: string|null=null, duration: number|null=null) {
+export function recordEvent(id: string, event: string, type='unknown', jobId: string|null=null, code: string|null=null, duration: number|null=null, country='XX', zip=false) {
   if(!events.has(event)) throw Error('Unknown analytics event');
   const now=Date.now(); type=kind(type);
   transaction(()=> {
-    const inserted=db().prepare('INSERT OR IGNORE INTO download_events(correlation_id,job_id,event_type,media_type,error_code,duration_ms,created_at) VALUES(?,?,?,?,?,?,?)').run(id,jobId,event,type,code ? errorCode(code) : null,duration,now);
+    const original=db().prepare('SELECT country_code FROM download_requests WHERE id=?').get(id) || db().prepare('SELECT country_code FROM download_events WHERE correlation_id=? ORDER BY id LIMIT 1').get(id);
+    country=countryCode(original?.country_code ?? country);
+    const inserted=db().prepare('INSERT OR IGNORE INTO download_events(correlation_id,job_id,event_type,media_type,error_code,duration_ms,created_at,country_code) VALUES(?,?,?,?,?,?,?,?)').run(id,jobId,event,type,code ? errorCode(code) : null,duration,now,country);
     if(!inserted.changes) return;
-    if(event==='download_requested') db().prepare('INSERT OR IGNORE INTO download_requests(id,runtime_id,media_type,requested_at) VALUES(?,?,?,?)').run(id,runtime(),type,now);
+    if(event==='download_requested') db().prepare('INSERT OR IGNORE INTO download_requests(id,runtime_id,media_type,requested_at,country_code,is_zip) VALUES(?,?,?,?,?,?)').run(id,runtime(),type,now,country,zip?1:0);
     const request=db().prepare('SELECT * FROM download_requests WHERE id=?').get(id) as any;
     if(!request) return;
     if(event==='download_started') db().prepare("UPDATE download_requests SET status='processing',started_at=?,job_id=COALESCE(?,job_id) WHERE id=?").run(now,jobId,id);
     if(event==='media_prepared') db().prepare("UPDATE download_requests SET status='prepared',prepared_at=?,duration_ms=? WHERE id=? AND prepared_at IS NULL").run(now,duration ?? Math.max(0,now-(request.started_at || request.requested_at)),id);
     if(event==='download_failed' && !request.prepared_at) db().prepare("UPDATE download_requests SET status='failed',failed_at=?,error_code=? WHERE id=?").run(now,errorCode(code || ''),id);
     if(event==='delivery_completed') db().prepare("UPDATE download_requests SET status='delivered',delivered_at=COALESCE(delivered_at,?) WHERE id=?").run(now,id);
+    if(event==='delivery_failed') db().prepare('UPDATE download_requests SET delivery_failed_at=COALESCE(delivery_failed_at,?) WHERE id=?').run(now,id);
     rebuildDay(request.requested_at);
+    rebuildCountryDay(request.requested_at);
   });
 }
 let warned=false;
@@ -37,27 +43,29 @@ function bestEffort(operation:()=>void) {
   if(process.env.SAVEFRAME_ANALYTICS_DISABLED==='1' || process.env.NODE_ENV==='test') return;
   try { operation(); cleanup(); } catch { if(!warned) { warned=true; console.warn('[SaveFrame] Operational analytics storage is unavailable.'); } }
 }
-export function beginDownload(type='unknown') { const id=crypto.randomUUID(); bestEffort(()=>recordEvent(id,'download_requested',type)); return id; }
-export function beginResolution() { const id=crypto.randomUUID(); bestEffort(()=>{recordEvent(id,'request_received');recordEvent(id,'media_resolution_started');}); return id; }
+export function beginDownload(type='unknown', country='XX', zip=false) { const id=crypto.randomUUID(); bestEffort(()=>recordEvent(id,'download_requested',type,null,null,null,country,zip)); return id; }
+export function beginResolution(country='XX') { const id=crypto.randomUUID(); bestEffort(()=>{recordEvent(id,'request_received','unknown',null,null,null,country);recordEvent(id,'media_resolution_started');}); return id; }
 export function resolveEvent(id: string, success: boolean, type: string, code?: string, duration?: number) { bestEffort(()=>recordEvent(id,success?'media_resolution_succeeded':'media_resolution_failed',type,null,code || null,duration ?? null)); }
 /** API rejections before a download job exists; never retain submitted input. */
 const rejectedRateSamples=new Map<string,number>();
-export function apiFailure(event: 'media_resolution_failed' | 'download_failed', type: string, code: string) {
+export function apiFailure(event: 'media_resolution_failed' | 'download_failed', type: string, code: string, country='XX') {
   // Record the reason without turning rejected traffic into unbounded SQLite writes.
   if(code==='RATE_LIMITED'){
     const key=event+':'+kind(type),now=Date.now();
     if(now-(rejectedRateSamples.get(key)||0)<60000)return;
     rejectedRateSamples.set(key,now);
   }
-  bestEffort(()=>recordEvent(crypto.randomUUID(),event,type,null,code));
+  bestEffort(()=>recordEvent(crypto.randomUUID(),event,type,null,code,null,country));
 }
-export function attachJob(id: string, jobId: string, type: string) {
+export function attachJob(id: string, jobId: string, type: string, zip?: boolean) {
   bestEffort(()=>transaction(()=> {
     const row=db().prepare('SELECT requested_at FROM download_requests WHERE id=?').get(id) as any;
     if(!row) return;
     db().prepare("UPDATE download_requests SET job_id=?,media_type=?,status=CASE WHEN status='received' THEN 'queued' ELSE status END,runtime_id=? WHERE id=?").run(jobId,kind(type),runtime(),id);
     db().prepare('UPDATE download_events SET job_id=?,media_type=? WHERE correlation_id=?').run(jobId,kind(type),id);
+    if(zip !== undefined) db().prepare('UPDATE download_requests SET is_zip=? WHERE id=?').run(zip?1:0,id);
     rebuildDay(row.requested_at);
+    rebuildCountryDay(row.requested_at);
   }));
 }
 export function jobEvent(id: string|undefined, event: string, jobId: string|null, type: string, code?: string, duration?: number) { if(id) bestEffort(()=>recordEvent(id,event,type,jobId,code || null,duration ?? null)); }

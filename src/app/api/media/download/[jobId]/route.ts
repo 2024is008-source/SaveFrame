@@ -5,9 +5,11 @@ import { sanitizeFilename } from '../../../../../security/url-validator';
 import { jobEvent } from '../../../../../admin/analytics';
 import { DownloaderAppError } from '../../../../../types/media.types';
 import { byteRange } from '../../../../../api/byte-range';
+import { updateDelivery } from '../../../../../lib/download-delivery';
 
 export async function GET(_req: NextRequest, context: { params: Promise<{ jobId: string }> }) {
   const ctx = getApiContext();
+  let unavailable: (() => void) | undefined;
   try {
     const { jobId } = await context.params;
     const job = ctx.downloadManager.getJob(jobId);
@@ -17,8 +19,12 @@ export async function GET(_req: NextRequest, context: { params: Promise<{ jobId:
         { status: 409 }
       );
     }
-    const stat=await fs.promises.stat(job.outputFilePath);
     const inline = new URL(_req.url).searchParams.get('preview') === '1';
+    if (!inline && _req.method !== 'HEAD') unavailable = () => {
+      updateDelivery(job, 'failed', 'FILE_UNAVAILABLE');
+      jobEvent(job.analyticsId, 'delivery_failed', job.jobId, job.category, 'FILE_UNAVAILABLE');
+    };
+    const stat=await fs.promises.stat(job.outputFilePath);
     if (inline && job.mimeType !== 'video/mp4') return NextResponse.json({status:'error',error:{code:'UNSUPPORTED_OPERATION',message:'This file is not a playable video.'}},{status:400});
     const requestedRange = inline ? _req.headers.get('range') : null;
     const range = requestedRange ? byteRange(requestedRange,stat.size) : null;
@@ -31,7 +37,13 @@ export async function GET(_req: NextRequest, context: { params: Promise<{ jobId:
     const iterator=file[Symbol.asyncIterator]();
     const release=ctx.downloadManager.retainJobFile?.(jobId)||(()=>{});
     // Playback and seek requests are not completed file downloads in analytics.
-    const delivery=(event:string,code?:string)=>{if(!inline)jobEvent(job.analyticsId,event,job.jobId,job.category,code);};
+    let deliveryFinished = false;
+    const delivery=(event:string,code?:'DELIVERY_STREAM_ERROR'|'DELIVERY_CANCELLED')=>{
+      if(inline || deliveryFinished) return;
+      if(event === 'delivery_completed' || event === 'delivery_failed') deliveryFinished = true;
+      updateDelivery(job, event === 'delivery_completed' ? 'handed_off' : event === 'delivery_failed' ? 'failed' : 'streaming', code);
+      jobEvent(job.analyticsId,event,job.jobId,job.category,code);
+    };
     delivery('delivery_started');
     const body=new ReadableStream<Uint8Array>({
       async pull(controller) {
@@ -53,6 +65,7 @@ export async function GET(_req: NextRequest, context: { params: Promise<{ jobId:
       },
     });
   } catch (err: any) {
+    unavailable?.();
     return NextResponse.json(
       { status: 'error', error: { code: err instanceof DownloaderAppError ? err.code : 'JOB_NOT_FOUND', message: err instanceof DownloaderAppError ? err.userMessage : 'The prepared file is unavailable or has expired.' } },
       { status: err instanceof DownloaderAppError ? err.statusCode : 404 }

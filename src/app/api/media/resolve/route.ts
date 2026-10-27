@@ -4,8 +4,10 @@ import { DownloaderAppError, InstagramMediaCategory } from '../../../../types/me
 import { apiFailure, beginResolution, resolveEvent } from '../../../../admin/analytics';
 import { readMediaJson } from '../../../../api/request';
 import { validateMediaInput } from '../../../../security/url-validator';
+import { requestCountry } from '../../../../admin/country-policy';
 
 export async function POST(req: NextRequest) {
+  const country=requestCountry(req.headers);
   let analyticsId:string|undefined;const started=Date.now();
   let attemptedCategory:InstagramMediaCategory|'unknown'='unknown';
   try {
@@ -15,7 +17,7 @@ export async function POST(req: NextRequest) {
     if (!rl.allowed) {
       throw new DownloaderAppError('RATE_LIMITED', 'Rate limit exceeded.', 429, true);
     }
-    analyticsId=beginResolution();
+    analyticsId=beginResolution(country);
     const body = await readMediaJson(req);
     attemptedCategory=validateMediaInput(body.url||'',body.tool).category;
     const metadata = await ctx.ytDlpService.extractMetadata(body.url || '', body.tool, req.signal);
@@ -33,7 +35,7 @@ export async function POST(req: NextRequest) {
     const known=err instanceof DownloaderAppError;
     const code = known ? err.code : 'INTERNAL_ERROR';
     if(analyticsId)resolveEvent(analyticsId,false,attemptedCategory,code,Date.now()-started);
-    else apiFailure('media_resolution_failed',attemptedCategory,code);
+    else apiFailure('media_resolution_failed',attemptedCategory,code,country);
     const status = known ? err.statusCode : 500;
     return NextResponse.json(
       { status: 'error', error: { code, message: known ? err.userMessage : 'Unable to inspect this media. Please try again.', retryable: known && err.retryable } },

@@ -4,8 +4,10 @@ import { DownloaderAppError, InstagramMediaCategory } from '../../../../types/me
 import { apiFailure, beginDownload, jobEvent } from '../../../../admin/analytics';
 import { readMediaJson } from '../../../../api/request';
 import { validateMediaInput } from '../../../../security/url-validator';
+import { requestCountry } from '../../../../admin/country-policy';
 
 export async function POST(req: NextRequest) {
+  const country=requestCountry(req.headers);
   let analyticsId:string|undefined;
   let attemptedCategory:InstagramMediaCategory|'unknown'='unknown',preview=false;
   try {
@@ -19,7 +21,7 @@ export async function POST(req: NextRequest) {
     preview=body.preview===true;
     // Explicit, user-started playback uses the same bounded preparation queue.
     // It must not inflate download totals.
-    if(body.preview !== true) analyticsId=beginDownload();
+    if(body.preview !== true) analyticsId=beginDownload('unknown',country,Boolean(body.zipCarousel));
     attemptedCategory=validateMediaInput(body.url||'').category;
     const job = await ctx.downloadManager.createJob({
       url: body.url || '',
@@ -43,7 +45,7 @@ export async function POST(req: NextRequest) {
   } catch (err: any) {
     const known=err instanceof DownloaderAppError;
     if(analyticsId)jobEvent(analyticsId,'download_failed',null,attemptedCategory,known ? err.code : 'INTERNAL_ERROR');
-    else if(!preview)apiFailure('download_failed',attemptedCategory,known ? err.code : 'INTERNAL_ERROR');
+    else if(!preview)apiFailure('download_failed',attemptedCategory,known ? err.code : 'INTERNAL_ERROR',country);
     return NextResponse.json(
       { status: 'error', error: { code: known ? err.code : 'INTERNAL_ERROR', message: known ? err.userMessage : 'Unable to prepare this download. Please try again.' } },
       { status: known ? err.statusCode : 500 }

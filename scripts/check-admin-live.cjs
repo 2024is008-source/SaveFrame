@@ -28,9 +28,9 @@ async function main(){
  server=spawn(process.execPath,['node_modules/next/dist/bin/next','start','-H','127.0.0.1','-p','3107'],{cwd:process.cwd(),env:process.env,windowsHide:true,stdio:['ignore','pipe','pipe']});
  server.stdout.on('data',data=>{log=(log+data).slice(-5000)});server.stderr.on('data',data=>{log=(log+data).slice(-5000)});
  let last='';for(let attempt=0;attempt<100;attempt++){try{const response=await fetch(base+'/admin/login');last=String(response.status)+' '+(await response.text()).slice(0,150);if(response.status===200)break;}catch(error){last=error.message+' '+error.cause?.message;}if(attempt===99)throw Error('Preview failed to start: '+last+' '+log);await delay(300);}
- for(const route of ['/admin','/admin/analytics','/admin/errors','/admin/seo','/admin/verification','/admin/settings','/admin/audit']){const response=await request(route);assert.ok([303,307].includes(response.status),route);assert.match(response.headers.get('location'),/\/admin\/login/);privateResponse(response);}
+ for(const route of ['/admin','/admin/analytics','/admin/countries','/admin/errors','/admin/seo','/admin/verification','/admin/settings','/admin/audit']){const response=await request(route);assert.ok([303,307].includes(response.status),route);assert.match(response.headers.get('location'),/\/admin\/login/);privateResponse(response);}
  const login=await request('/admin/login');privateResponse(login);await styledResponse(login.clone());assert.match(await login.text(),/name="robots" content="noindex, nofollow, nocache"/);
- for(const route of ['reports','seo','verification','settings','audit']){const response=await request('/api/admin/'+route);assert.equal(response.status,401);privateResponse(response);}
+ for(const route of ['reports','reports/countries','reports/countries/export','seo','verification','settings','audit']){const response=await request('/api/admin/'+route);assert.equal(response.status,401);privateResponse(response);}
  const sitemap=await(await fetch(base+'/sitemap.xml')).text();assert.ok(!sitemap.includes('/admin'));
  const robots=await(await fetch(base+'/robots.txt')).text();assert.match(robots,/Disallow: \/admin/);
  const challenge=await json('/api/admin/auth/csrf');
@@ -41,7 +41,9 @@ async function main(){
  const session=await json('/api/admin/session');csrf=session.csrf;assert.equal(session.email,email);
  await json('/api/admin/settings',{settings:{site_name:'Bad CSRF'}},403,{'x-csrf-token':'wrong'});
  await json('/api/admin/settings',{settings:{site_name:'Wrong origin'}},403,{origin:'https://other.example'});
- for(const route of ['/admin','/admin/analytics','/admin/errors','/admin/seo','/admin/verification','/admin/settings','/admin/audit']){const response=await request(route);assert.equal(response.status,200);privateResponse(response);await styledResponse(response.clone());}
+ for(const route of ['/admin','/admin/analytics','/admin/countries','/admin/errors','/admin/seo','/admin/verification','/admin/settings','/admin/audit']){const response=await request(route);assert.equal(response.status,200);privateResponse(response);await styledResponse(response.clone());}
+ const countries=await json('/api/admin/reports/countries');assert.equal(countries.totals.requests,0);assert.equal(countries.timezone,'Asia/Colombo');
+ const countryCsv=await request('/api/admin/reports/countries/export');assert.equal(countryCsv.status,200);privateResponse(countryCsv);assert.ok((await countryCsv.text()).startsWith('date,country_code,country_name,media_type,requests,prepared,delivered,failed'));
  const report=await json('/api/admin/reports');assert.equal(report.totals.requests,0);assert.equal(report.totals.prepared,0);
  const csv=await request('/api/admin/reports/export');assert.equal(csv.status,200);privateResponse(csv);assert.match(csv.headers.get('content-type'),/text\/csv/);
  const route='/photo-downloader',editor=await json('/api/admin/seo?route='+encodeURIComponent(route));
@@ -76,7 +78,7 @@ async function main(){
  await json('/api/admin/settings',{settings:{password:'secret'}},400);
  const audit=await json('/api/admin/audit');assert.ok(audit.count>10);assert.ok(!JSON.stringify(audit).includes(password));
  await json('/api/admin/auth/logout',{});await json('/api/admin/session',undefined,401);
- console.log('PASS: owner-only login, required email OTP via local SMTP fixture, no session before code verification, private routes/headers, robots/sitemap exclusion, CSRF/origin, all seven sections, empty analytics, CSV, draft/publish/restore SSR including localized homepage/article, verification root files/check/delete/rejection, settings, audit and logout. No external email sent. Isolated database only.');
+ console.log('PASS: owner-only login, required email OTP via local SMTP fixture, no session before code verification, private routes/headers, robots/sitemap exclusion, CSRF/origin, all eight sections, empty analytics, CSV, draft/publish/restore SSR including localized homepage/article, verification root files/check/delete/rejection, settings, audit and logout. No external email sent. Isolated database only.');
  if(process.argv.includes('--keep')){fs.mkdirSync(path.dirname(preview),{recursive:true});fs.writeFileSync(preview,JSON.stringify({base,email,password}),{mode:0o600});console.log('Isolated browser preview ready on '+base+'; temporary credentials stored privately in .runtime/admin-preview.json.');await new Promise(resolve=>{process.once('SIGINT',resolve);process.once('SIGTERM',resolve);});}
 }
 main().catch(error=>{console.error(error.message);process.exitCode=1;}).finally(stop);

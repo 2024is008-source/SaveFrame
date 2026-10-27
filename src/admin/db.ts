@@ -43,6 +43,16 @@ export function db(): DatabaseSync {
       connection.exec('COMMIT');
     } catch(error) {connection.exec('ROLLBACK');connection.close();throw error;}
   }
+  if (!connection.prepare('SELECT version FROM schema_migrations WHERE version=3').get()) {
+    connection.exec('BEGIN IMMEDIATE');
+    try {
+      if (!connection.prepare('SELECT version FROM schema_migrations WHERE version=3').get()) {
+        connection.exec(fs.readFileSync(path.join(process.cwd(), 'src/admin/migrations/003-country-analytics.sql'), 'utf8'));
+        connection.prepare('INSERT INTO schema_migrations VALUES(3,?)').run(Date.now());
+      }
+      connection.exec('COMMIT');
+    } catch (error) { connection.exec('ROLLBACK'); connection.close(); throw error; }
+  }
   try { fs.chmodSync(filename, 0o600); } catch { /* Windows uses its directory ACL. */ }
   global.__saveframeAdminDbs.set(filename, connection);
   return connection;
@@ -97,6 +107,7 @@ export function cleanup(force = false) {
     db().prepare('DELETE FROM download_events WHERE created_at < ?').run(cutoff);
     db().prepare('DELETE FROM download_requests WHERE requested_at < ?').run(cutoff);
     db().prepare('DELETE FROM daily_statistics WHERE day < ?').run(new Date(now - 730 * 86400000).toISOString().slice(0,10));
+    db().prepare('DELETE FROM daily_country_statistics WHERE day < ?').run(new Date(now + 19800000 - 730 * 86400000).toISOString().slice(0,10));
     db().prepare('DELETE FROM admin_sessions WHERE expires_at < ? OR last_seen < ?').run(now, now - 1800000);
     db().prepare('DELETE FROM login_limits WHERE reset_at < ?').run(now);
     db().prepare('DELETE FROM admin_email_challenges WHERE expires_at < ?').run(now);
