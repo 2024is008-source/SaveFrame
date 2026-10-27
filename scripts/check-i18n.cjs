@@ -66,9 +66,10 @@ for (const locale of locales) {
   assert.equal(parsed.valid, false);
   assert.equal(hooks.t(parsed.message), dictionary['Only instagram.com or instagr.am links are supported. Please copy a link directly from Instagram.']);
   assert.equal(hooks.parseInstagramInput('@creator').detectedTab, 'profile');
-  assert.equal(hooks.parseInstagramInput('@creator', 'story').valid, false);
-  assert.equal(hooks.parseInstagramInput('https://www.instagram.com/creator/?utm_source=share', 'story').valid, false);
-  assert.equal(hooks.parseInstagramInput('https://www.instagram.com/stories/creator/123456789/', 'story').detectedTab, 'story');
+  assert.equal(hooks.parseInstagramInput('@creator', 'audio').valid, false);
+  assert.equal(hooks.parseInstagramInput('https://www.instagram.com/creator/?utm_source=share', 'audio').valid, false);
+  assert.equal(hooks.parseInstagramInput('https://www.instagram.com/stories/creator/123456789/', 'audio').valid, false);
+  assert.equal(hooks.parseInstagramInput('https://www.instagram.com/reel/Audio12345/', 'audio').detectedTab, 'audio');
   assert.equal(hooks.parseInstagramInput('https://www.instagram.com/stories/creator/', 'story').valid, false);
   assert.ok(hooks.formatLabel('Original (1080×1350)').startsWith(dictionary.Original));
   assert.equal(hooks.t('Preparing download… {progress}%', { progress: 42 }), translate(dictionary, 'Preparing download… {progress}%', { progress: 42 }));
@@ -102,6 +103,14 @@ for (const locale of locales) {
   carousel.supportsZipDownload = false;
   hooks.renderResultSection();
   assert.ok(!element('result-dynamic-content').innerHTML.includes('data-download-all'));
+  const audio = {...carousel, category:'audio', isCarousel:false, supportsZipDownload:false, items:[{...carousel.items[0], mediaType:'audio', formats:[128,192,320].map(bitrate=>({formatId:'mp3-'+bitrate,label:'MP3',ext:'mp3',Container:'MP3 Audio',resolution:bitrate+' kbps',hasAudio:true,hasVideo:false}))}]};
+  hooks.setMedia(audio);hooks.state.uiStateMode='single';hooks.state.activeTab='audio';hooks.state.activeCarouselIdx=0;hooks.state.selectedQualityIdx=0;
+  hooks.renderResultSection();
+  const audioResult=element('result-dynamic-content').innerHTML;
+  assert.ok(audioResult.includes('audio-result-thumb'));
+  assert.ok(audioResult.includes('width="56" height="56"'));
+  assert.ok(!audioResult.includes('id="media-preview-frame"') && !audioResult.includes('toggle-loupe-btn'));
+  assert.equal((audioResult.match(/data-quality-idx=/g)||[]).length,3);
 }
 const japanese = getDictionary('ja');
 assert.equal(translate({ ...japanese, 'Download Photo': undefined }, 'Download Photo'), 'Download Photo', 'Missing translations fall back to English');

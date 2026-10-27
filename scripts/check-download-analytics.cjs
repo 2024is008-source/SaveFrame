@@ -70,8 +70,8 @@ async function clientTests() {
   for (const [category, type, ext, expected] of [
     ['reel', 'video', 'mp4', 'reel'], ['video', 'video', 'mp4', 'video'],
     ['photo', 'photo', 'jpg', 'photo'], ['carousel', 'photo', 'jpg', 'photo'],
-    ['carousel', 'video', 'mp4', 'video'], ['story', 'video', 'mp4', 'story'],
-    ['story', 'photo', 'jpg', 'story'], ['reel', 'video', 'm4a', 'reel'],
+    ['carousel', 'video', 'mp4', 'video'], ['audio', 'audio', 'mp3', 'audio'],
+    ['reel', 'video', 'm4a', 'reel'],
   ]) {
     const params = test.sandbox.downloadParameters(media(category, type, ext), {itemIndex: 0, formatId: 'private-format-id'});
     assert.equal(params.media_type, expected);

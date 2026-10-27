@@ -3,11 +3,11 @@ import { db, transaction, cleanup } from './db';
 import { AdminError } from './auth';
 import { countryCode } from '../lib/country';
 import { rebuildCountryDay } from './country-analytics';
-export const mediaKinds = ['reel','video','photo','carousel','story','profile','unknown'];
+export const mediaKinds = ['audio','reel','video','photo','carousel','story','profile','unknown'];
 // Expected access restrictions, input rejections and visitor cancellations are not system faults.
 export const systemFailureCodes=['INTERNAL_ERROR','YTDLP_NOT_INSTALLED','FFMPEG_ERROR','INSUFFICIENT_DISK_SPACE','PROCESS_RESTARTED','DELIVERY_STREAM_ERROR'];
 const systemFailureCondition="error_code IN ('"+systemFailureCodes.join("','")+"')";
-const events = new Set(['request_received','media_resolution_started','media_resolution_succeeded','media_resolution_failed','download_requested','download_started','media_prepared','download_failed','delivery_started','delivery_completed','delivery_failed']);
+const events = new Set(['request_received','media_resolution_started','media_resolution_succeeded','media_resolution_failed','download_requested','download_started','audio_conversion_started','media_prepared','download_failed','delivery_started','delivery_completed','delivery_failed']);
 declare global { var __saveframeAnalyticsRuntime: string | undefined; }
 const runtime = () => global.__saveframeAnalyticsRuntime ||= crypto.randomUUID();
 const kind = (value: string) => mediaKinds.includes(value) ? value : 'unknown';

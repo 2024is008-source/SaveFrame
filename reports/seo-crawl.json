@@ -16,7 +16,7 @@
       "path": "/",
       "status": 200,
       "title": "Instagram Video Downloader – View and Save Instagram to MP4",
-      "description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+      "description": "Save supported public Instagram photos, videos, Reels, carousels, and MP3 audio with a simple link. Fast, clean, mobile-friendly web utility.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -24,13 +24,13 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 108
+      "responseAndBodyMs": 536
     },
     {
       "path": "/es/",
       "status": 200,
       "title": "Descargar vídeos de Instagram – Ver y guardar en MP4 | SaveFrame",
-      "description": "Guarda fotos, vídeos, Reels, carruseles e historias públicas de Instagram compatibles con un enlace. Una herramienta sencilla y adaptada al móvil.",
+      "description": "Guarda fotos, vídeos, Reels, carruseles y audio MP3 públicos de Instagram con un enlace. Una herramienta rápida y adaptada a móviles.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -38,13 +38,13 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 108
+      "responseAndBodyMs": 969
     },
     {
       "path": "/pt-br/",
       "status": 200,
       "title": "Baixar vídeos do Instagram – Veja e salve em MP4 | SaveFrame",
-      "description": "Salve fotos, vídeos, Reels, carrosséis e stories públicos do Instagram compatíveis com um link. Ferramenta simples e adaptada ao celular.",
+      "description": "Salve fotos, vídeos, Reels, carrosséis e áudio MP3 públicos do Instagram com um link. Uma ferramenta rápida e adaptada para celular.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -52,13 +52,13 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 106
+      "responseAndBodyMs": 1337
     },
     {
       "path": "/de/",
       "status": 200,
       "title": "Instagram-Videos herunterladen – Ansehen & als MP4 speichern",
-      "description": "Öffentliche Instagram-Fotos, Videos, Reels, Karussells und Storys per Link speichern, sofern unterstützt. Einfach und für Mobilgeräte geeignet.",
+      "description": "Speichere unterstützte öffentliche Instagram-Fotos, Videos, Reels, Karussells und MP3-Audio per Link. Schnell und mobilfreundlich.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -66,13 +66,13 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 130
+      "responseAndBodyMs": 673
     },
     {
       "path": "/fr/",
       "status": 200,
       "title": "Télécharger une vidéo Instagram – Voir et enregistrer en MP4",
-      "description": "Enregistrez les photos, vidéos, Reels, carrousels et stories Instagram publics compatibles avec un lien. Un outil simple et adapté au mobile.",
+      "description": "Enregistrez des photos, vidéos, Reels, carrousels et fichiers audio MP3 publics Instagram avec un lien. Un outil rapide et adapté aux mobiles.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -80,13 +80,13 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 110
+      "responseAndBodyMs": 2068
     },
     {
       "path": "/ja/",
       "status": 200,
       "title": "Instagram動画をダウンロード – プレビューしてMP4で保存 | SaveFrame",
-      "description": "対応する公開Instagramの写真、動画、リール、カルーセル、ストーリーをリンクで保存。シンプルでスマートフォンにも対応。",
+      "description": "公開Instagramの写真、動画、リール、カルーセル、MP3音声をリンクから保存。シンプルでモバイルにも対応。",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -94,13 +94,13 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 113
+      "responseAndBodyMs": 2521
     },
     {
       "path": "/id/",
       "status": 200,
       "title": "Download Video Instagram – Pratinjau & Simpan MP4 | SaveFrame",
-      "description": "Simpan foto, video, Reels, carousel, dan story Instagram publik yang didukung dengan tautan. Alat sederhana dan ramah ponsel.",
+      "description": "Simpan foto, video, Reel, carousel, dan audio MP3 publik Instagram yang didukung melalui tautan. Cepat dan ramah seluler.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -108,13 +108,13 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 122
+      "responseAndBodyMs": 892
     },
     {
       "path": "/tr/",
       "status": 200,
       "title": "Instagram Video İndir – Önizle ve MP4 Olarak Kaydet | SaveFrame",
-      "description": "Desteklenen herkese açık Instagram fotoğraf, video, Reels, kaydırmalı gönderi ve hikâyelerini bağlantıyla kaydedin. Sade ve mobil uyumlu araç.",
+      "description": "Desteklenen herkese açık Instagram fotoğraflarını, videolarını, Reel içeriklerini, çoklu gönderilerini ve MP3 seslerini bağlantıyla kaydedin. Hızlı ve mobil uyumlu.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -122,13 +122,13 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 126
+      "responseAndBodyMs": 2010
     },
     {
       "path": "/hi/",
       "status": 200,
       "title": "Instagram वीडियो डाउनलोडर – देखें और MP4 में सेव करें | SaveFrame",
-      "description": "उपलब्ध सार्वजनिक Instagram फ़ोटो, वीडियो, Reels, कैरोसेल और स्टोरी एक लिंक से सेव करें। सरल और मोबाइल के अनुकूल टूल।",
+      "description": "सार्वजनिक Instagram फ़ोटो, वीडियो, Reels, कैरोसेल और MP3 ऑडियो लिंक से सहेजें। तेज़ और मोबाइल-अनुकूल टूल।",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -136,13 +136,13 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 184
+      "responseAndBodyMs": 1629
     },
     {
       "path": "/ar/",
       "status": 200,
       "title": "تنزيل فيديو إنستغرام – معاينة وحفظ بصيغة MP4 | SaveFrame",
-      "description": "احفظ الصور والفيديوهات وريلز والمنشورات متعددة الصور والقصص العامة المدعومة من إنستغرام برابط واحد. أداة بسيطة ومناسبة للجوال.",
+      "description": "احفظ صور وفيديوهات وريلز ومنشورات إنستغرام العامة والصوت بصيغة MP3 عبر رابط. أداة سريعة ومتوافقة مع الجوال.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -150,7 +150,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 172
+      "responseAndBodyMs": 942
     },
     {
       "path": "/reels-downloader",
@@ -165,7 +165,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 227
+      "responseAndBodyMs": 1259
     },
     {
       "path": "/video-downloader",
@@ -180,7 +180,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 223
+      "responseAndBodyMs": 2301
     },
     {
       "path": "/photo-downloader",
@@ -195,7 +195,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 213
+      "responseAndBodyMs": 1289
     },
     {
       "path": "/carousel-downloader",
@@ -210,13 +210,13 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 204
+      "responseAndBodyMs": 1101
     },
     {
-      "path": "/story-downloader",
+      "path": "/audio-downloader",
       "status": 200,
-      "title": "Instagram Story Downloader – Check & Save Active Stories",
-      "description": "Download a supported public Instagram story image or video using its direct link. Check source formats, access requirements and expiration limits.",
+      "title": "Instagram Audio Downloader – Download Reels MP3",
+      "description": "Download audio from Instagram Reels and videos as MP3. Paste a public Instagram link, extract audio online, and save it for free. No signup required.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -225,7 +225,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 218
+      "responseAndBodyMs": 1528
     },
     {
       "path": "/profile-viewer",
@@ -240,7 +240,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 202
+      "responseAndBodyMs": 1181
     },
     {
       "path": "/about",
@@ -254,7 +254,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 33
+      "responseAndBodyMs": 235
     },
     {
       "path": "/contact",
@@ -268,7 +268,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 29
+      "responseAndBodyMs": 987
     },
     {
       "path": "/privacy",
@@ -282,7 +282,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 29
+      "responseAndBodyMs": 419
     },
     {
       "path": "/terms",
@@ -296,7 +296,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 33
+      "responseAndBodyMs": 331
     },
     {
       "path": "/copyright",
@@ -310,7 +310,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 29
+      "responseAndBodyMs": 857
     },
     {
       "path": "/blog",
@@ -324,7 +324,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 97
+      "responseAndBodyMs": 574
     },
     {
       "path": "/blog/how-to-download-instagram-stories-by-link",
@@ -336,7 +336,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 96
+      "responseAndBodyMs": 770
     },
     {
       "path": "/blog/how-to-download-instagram-story-videos",
@@ -348,7 +348,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 91
+      "responseAndBodyMs": 1909
     },
     {
       "path": "/blog/how-to-download-instagram-photos-online",
@@ -360,7 +360,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 107
+      "responseAndBodyMs": 1911
     },
     {
       "path": "/blog/how-to-copy-instagram-photo-link",
@@ -372,7 +372,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 120
+      "responseAndBodyMs": 970
     },
     {
       "path": "/blog/view-instagram-profile-picture-by-url",
@@ -384,7 +384,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 106
+      "responseAndBodyMs": 814
     },
     {
       "path": "/blog/how-to-download-instagram-reels-mp4",
@@ -396,7 +396,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 91
+      "responseAndBodyMs": 507
     },
     {
       "path": "/blog/download-instagram-reels-on-iphone",
@@ -408,7 +408,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 76
+      "responseAndBodyMs": 457
     },
     {
       "path": "/blog/download-instagram-videos-on-pc",
@@ -420,7 +420,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 94
+      "responseAndBodyMs": 447
     },
     {
       "path": "/blog/download-instagram-carousel-photos",
@@ -432,7 +432,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 97
+      "responseAndBodyMs": 438
     },
     {
       "path": "/blog/download-instagram-reels-with-audio",
@@ -444,7 +444,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 93
+      "responseAndBodyMs": 406
     },
     {
       "path": "/blog/instagram-downloader-not-working",
@@ -456,7 +456,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 85
+      "responseAndBodyMs": 433
     },
     {
       "path": "/blog/why-instagram-videos-wont-download",
@@ -468,7 +468,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 106
+      "responseAndBodyMs": 435
     },
     {
       "path": "/blog/download-instagram-photos-iphone-android",
@@ -480,7 +480,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 104
+      "responseAndBodyMs": 476
     },
     {
       "path": "/blog/instagram-photo-sizes-aspect-ratios",
@@ -492,7 +492,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 129
+      "responseAndBodyMs": 562
     },
     {
       "path": "/blog/backup-instagram-photos-videos-reels",
@@ -504,7 +504,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 130
+      "responseAndBodyMs": 491
     },
     {
       "path": "/blog?page=2",
@@ -518,13 +518,14 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 94
+      "responseAndBodyMs": 516
     }
   ],
   "internalDestinationsChecked": [
     "/",
     "/about",
     "/ar/",
+    "/audio-downloader",
     "/blog",
     "/blog/backup-instagram-photos-videos-reels",
     "/blog/download-instagram-carousel-photos",
@@ -570,7 +571,6 @@
     "/profile-viewer",
     "/pt-br/",
     "/reels-downloader",
-    "/story-downloader",
     "/terms",
     "/tr/",
     "/video-downloader"

@@ -148,6 +148,16 @@ async function main() {
   assert.ok(geo.includes('default XX;'));
   assert.ok(geo.includes('~^1:'));
   assert.ok(require('../package.json').scripts.start.includes('-H 127.0.0.1'), 'Default production startup must bind loopback');
+  Date.now = () => Date.parse('2026-10-28T00:00:00Z');
+  event('audio', 'download_requested', 'audio', null, 'LK');
+  event('audio', 'audio_conversion_started', 'audio');
+  event('audio', 'audio_conversion_started', 'audio');
+  event('audio', 'media_prepared', 'audio');
+  event('audio', 'delivery_completed', 'audio');
+  const audio = countryReports({from: '2026-10-28', to: '2026-10-28', type: 'audio'});
+  assert.equal(audio.totals.requests, 1); assert.equal(audio.totals.prepared, 1); assert.equal(audio.totals.delivered, 1);
+  assert.equal(audio.countries[0].country_code, 'LK');
+  assert.equal(connection.prepare("SELECT COUNT(*) count FROM download_events WHERE correlation_id='audio' AND event_type='audio_conversion_started'").get().count, 1);
   console.log('PASS: additive WAL migration/history preservation; ISO/trusted-header/privacy policy; original-country persistence; deduplication; preparation/handoff/failure/ZIP distinctions; Colombo boundaries/filtering/trends; historical Unknown; CSV compatibility; admin authorization; retention; proxy header replacement. VPS deployment is not implied.');
 }
 

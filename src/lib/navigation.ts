@@ -1,4 +1,4 @@
-export const toolPaths: Record<string, string> = { photo: '/photo-downloader', reels: '/reels-downloader', video: '/video-downloader', carousel: '/carousel-downloader', story: '/story-downloader', profile: '/profile-viewer' };
+export const toolPaths: Record<string, string> = { photo: '/photo-downloader', reels: '/reels-downloader', video: '/video-downloader', carousel: '/carousel-downloader', audio: '/audio-downloader', profile: '/profile-viewer' };
 export const infoPaths: Record<string, string> = { privacy: '/privacy', terms: '/terms', contact: '/contact' };
 export function crawlableNavigation(markup: string, home = '/') {
   const linked = markup.replace(/<button\b([^>]*)>([\s\S]*?)<\/button>/g, (full, attrs, content) => {

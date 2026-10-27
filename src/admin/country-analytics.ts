@@ -2,7 +2,7 @@ import {db, cleanup} from './db';
 import {AdminError} from './auth';
 import {countryCode, countryName, countryCodes} from '../lib/country';
 
-export const countryMediaKinds = ['reel', 'video', 'photo', 'carousel', 'story', 'profile', 'zip', 'unknown'];
+export const countryMediaKinds = ['audio', 'reel', 'video', 'photo', 'carousel', 'story', 'profile', 'zip', 'unknown'];
 export const colomboDay = (time: number) => new Date(time + 19800000).toISOString().slice(0, 10);
 
 export function rebuildCountryDay(time: number) {

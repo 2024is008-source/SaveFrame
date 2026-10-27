@@ -43,6 +43,7 @@ const PROFILE_REGEX = /^\/([A-Za-z0-9._]{2,30})\/?$/;
 /** Direct story items only. Do not turn a profile URL into a bulk story request. */
 export function validateMediaInput(rawUrl: string, tool?: string): ValidatedInstagramUrl {
   const validated = validateInstagramUrl(rawUrl);
+  if (tool === 'audio' && !['reel','video','photo'].includes(validated.category)) throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'Paste a public Instagram Reel or video post link for MP3 extraction.', 400);
   if ((tool === 'story' && validated.category !== 'story') ||
       (validated.category === 'story' && (!/^[1-9][0-9]{4,31}$/.test(validated.storyId||'') ||
         !/^[A-Za-z0-9_](?:[A-Za-z0-9._]{0,28}[A-Za-z0-9_])?$/.test(validated.username||'') ||
@@ -50,6 +51,14 @@ export function validateMediaInput(rawUrl: string, tool?: string): ValidatedInst
     throw new DownloaderAppError('INVALID_STORY_LINK', 'Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.', 400);
   }
   return validated;
+}
+
+/** Public tools no longer expose story extraction; operator workflows stay separate. */
+export function validatePublicMediaInput(rawUrl: string, tool?: string) {
+  if (tool === 'story') throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'The public story downloader has been retired.', 410);
+  const value = validateMediaInput(rawUrl, tool);
+  if (tool === 'story' || value.category === 'story') throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'The public story downloader has been retired.', 410);
+  return value;
 }
 
 /**

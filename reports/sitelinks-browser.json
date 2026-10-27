@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "base": "http://127.0.0.1:3125",
+  "automatedBrowser": true,
+  "productionDeployed": false,
+  "checks": [
+    "desktop native anchor/keyboard navigation",
+    "homepage widget click and arrow switching",
+    "all 10 mobile homepages and all six named tool links",
+    "mobile native keyboard route navigation",
+    "tool-to-tool switching",
+    "no horizontal page overflow",
+    "JavaScript-disabled footer discovery/navigation",
+    "no duplicate localized tool page",
+    "no extraction requests",
+    "no runtime/hydration errors"
+  ]
+}

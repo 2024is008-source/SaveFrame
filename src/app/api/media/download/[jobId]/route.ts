@@ -55,7 +55,7 @@ export async function GET(_req: NextRequest, context: { params: Promise<{ jobId:
       },
       cancel() { release();file.destroy(); delivery('delivery_failed','DELIVERY_CANCELLED'); },
     });
-    const extension = job.isCarouselZip ? 'zip' : job.mimeType === 'audio/mp4' ? 'm4a' : job.mimeType === 'image/webp' ? 'webp' : job.mimeType === 'image/jpeg' ? 'jpg' : 'mp4';
+    const extension = job.isCarouselZip ? 'zip' : job.mimeType === 'audio/mpeg' ? 'mp3' : job.mimeType === 'audio/mp4' ? 'm4a' : job.mimeType === 'image/webp' ? 'webp' : job.mimeType === 'image/jpeg' ? 'jpg' : 'mp4';
     const safeFilename = sanitizeFilename(job.safeFilename || `saveframe_${job.shortcode}`, extension);
     return new NextResponse(body, {
       status: range ? 206 : 200,

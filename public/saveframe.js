@@ -23,7 +23,7 @@
         const format = item.formats.find(format => format.formatId === request.formatId) || item.formats[0];
         const category = media.category === 'reels' ? 'reel' : media.category;
         return {
-          media_type: request.zipCarousel ? 'zip' : ['reel','story','profile'].includes(category) ? category : item.mediaType,
+          media_type: request.zipCarousel ? 'zip' : ['audio','reel','profile'].includes(category) ? category : item.mediaType,
           download_format: request.zipCarousel ? 'zip' : format.ext || 'unknown',
           download_method: request.zipCarousel ? 'bulk' : 'single',
           source_page: window.location.pathname,
@@ -133,7 +133,7 @@
           shortcode: escapeHtml(resolvedMedia.shortcode),
           author: escapeHtml('@' + resolvedMedia.uploader.username),
           caption: escapeHtml(mediaTitle(item, resolvedMedia.caption || resolvedMedia.title)),
-          mediaTypeBadge: escapeHtml(t(resolvedMedia.category) + ' · ' + t(item.mediaType)),
+          mediaTypeBadge: escapeHtml(t(resolvedMedia.category) + ' · ' + (resolvedMedia.category === 'audio' ? 'MP3' : t(item.mediaType))),
           aspectRatio: escapeHtml(item.aspectRatio),
           qualities: liveQualities(item),
         };
@@ -173,18 +173,14 @@
         UNSUPPORTED_MEDIA_TYPE: 'This link is not supported. Check the Instagram URL and try again.',
         UNSUPPORTED_OPERATION: 'This link is not supported. Check the Instagram URL and try again.',
         PRIVATE_CONTENT: 'This media is private or requires a login.', LOGIN_REQUIRED: 'This media is private or requires a login.',
-        DELETED_CONTENT: 'This media has been deleted or is unavailable.', EXPIRED_STORY: 'This story has expired or is no longer available.',
-        NO_ACTIVE_STORIES: 'No downloadable active stories were returned for this account.',
-        INVALID_STORY_LINK: 'Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.',
+        DELETED_CONTENT: 'This media has been deleted or is unavailable.',
         RATE_LIMITED: 'Instagram is limiting requests. Please wait and try again.',
         EXTRACTOR_FAILURE: 'The media service is unavailable. Please try again later.', YTDLP_NOT_INSTALLED: 'The media service is unavailable. Please try again later.',
         DOWNLOAD_TIMEOUT: 'Download preparation timed out. Please try again.', FILE_TOO_LARGE: 'This file is too large to download.',
         FFMPEG_ERROR: 'The server could not prepare the video and audio.', INSUFFICIENT_DISK_SPACE: 'The server does not have enough storage. Please try again later.',
         JOB_NOT_FOUND: 'This download could not be found. Start a new download.', JOB_CANCELLED: 'Download cancelled.', JOB_NOT_READY: 'Your download is still being prepared.'
       };
-      const apiError = (error, fallback) => t(error?.code === 'LOGIN_REQUIRED' && state.activeTab === 'story'
-        ? 'Instagram requires login to access this story. This downloader can only retrieve stories that Instagram makes publicly accessible.'
-        : errorMessages[error?.code] || fallback);
+      const apiError = (error, fallback) => t(errorMessages[error?.code] || fallback);
       const localError = (error, fallback) => {
         if (error instanceof TypeError) return t('Network error. Check your connection and try again.');
         if (dictionary[error?.message]) return t(error.message);
@@ -237,16 +233,14 @@
           ctaLabel: t("Download Video"),
           label: t("Video")
         },
-        story: {
-          id: 'story',
-          route: '/story-downloader',
-          heroHeading: t("Instagram Story Downloader"),
-          heroDescription: t("Preview and save active public 24-hour Instagram stories with a link."),
-          panelTitle: t("Instagram Public Story Downloader"),
-          panelSubtitle: t("Enter a public Instagram story link (/stories/username/...) published within the last 24 hours."),
-          placeholder: t("Paste a public Instagram story link"),
-          ctaLabel: t("View Story"),
-          label: t("Story")
+        audio: {
+          id: 'audio', route: '/audio-downloader',
+          heroHeading: t("Instagram Audio Downloader"),
+          heroDescription: t("Extract Reel and video audio as MP3"),
+          panelTitle: t("Instagram Audio Downloader"),
+          panelSubtitle: t("MP3 quality cannot exceed the source quality."),
+          placeholder: t("Paste Instagram Reel or video URL here"),
+          ctaLabel: t("Download Audio"), label: t("Audio")
         },
         profile: {
           id: 'profile',
@@ -326,7 +320,7 @@
         }
         // Check if @username for profile tab
         if (/^@?[a-zA-Z0-9._]{2,30}$/.test(val) && !val.includes('/')) {
-          if (requestedTab === 'story') return { valid: false, message: errorMessages.INVALID_STORY_LINK };
+          if (requestedTab === 'audio') return {valid:false,message:t('Paste Instagram Reel or video URL here')};
           return {
             valid: true,
             detectedTab: 'profile',
@@ -352,24 +346,21 @@
 
         const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
         if (pathParts.length === 0) {
-          return { valid: false, reason: 'root', message: 'This link points to the Instagram homepage. Paste a specific photo, Reel, video, story, or profile URL.' };
+          return { valid: false, reason: 'root', message: 'This link points to the Instagram homepage. Paste a specific photo, Reel, video, or profile URL.' };
         }
 
         const first = pathParts[0].toLowerCase();
-        if (requestedTab === 'story' && first !== 'stories') return { valid: false, message: errorMessages.INVALID_STORY_LINK };
+        if (requestedTab === 'audio' && !['reel','reels','p','tv'].includes(first)) return {valid:false,message:t('Paste Instagram Reel or video URL here')};
         if (first === 'p') {
-          return { valid: true, detectedTab: 'photo', shortcode: pathParts[1] || 'post_id', canonicalUrl: parsedUrl.href };
+          return { valid: true, detectedTab: requestedTab === 'audio' ? 'audio' : 'photo', shortcode: pathParts[1] || 'post_id', canonicalUrl: parsedUrl.href };
         }
         if (first === 'reel' || first === 'reels') {
-          return { valid: true, detectedTab: 'reels', shortcode: pathParts[1] || 'reel_id', canonicalUrl: parsedUrl.href };
+          return { valid: true, detectedTab: requestedTab === 'audio' ? 'audio' : 'reels', shortcode: pathParts[1] || 'reel_id', canonicalUrl: parsedUrl.href };
         }
         if (first === 'tv') {
-          return { valid: true, detectedTab: 'video', shortcode: pathParts[1] || 'video_id', canonicalUrl: parsedUrl.href };
+          return { valid: true, detectedTab: requestedTab === 'audio' ? 'audio' : 'video', shortcode: pathParts[1] || 'video_id', canonicalUrl: parsedUrl.href };
         }
-        if (first === 'stories') {
-          if (pathParts.length !== 3 || pathParts[1].toLowerCase() === 'highlights' || !/^\d{5,32}$/.test(pathParts[2])) return { valid: false, message: errorMessages.INVALID_STORY_LINK };
-          return { valid: true, detectedTab: 'story', shortcode: pathParts[2] || pathParts[1] || 'story_id', canonicalUrl: parsedUrl.href };
-        }
+        if (first === 'stories') return {valid:false,message:'The public story downloader has been retired.'};
         // Otherwise treat single path segment as profile username
         return { valid: true, detectedTab: 'profile', shortcode: pathParts[0], canonicalUrl: parsedUrl.href };
       }
@@ -448,10 +439,9 @@
 
         // Carousel preview, compact thumbnail selector, and two download actions.
         if (state.uiStateMode === 'carousel') {
-          const storyCollection = resolvedMedia.category === 'story';
-          const itemName = idx => storyCollection ? t('Story') + ' ' + (idx + 1) : t('Slide {index}', { index: idx + 1 });
+          const itemName = idx => t('Slide {index}', { index: idx + 1 });
           const slides = resolvedMedia.items.map((item, idx) => ({
-            idx, type: escapeHtml(storyCollection ? itemName(idx) + ' / ' + resolvedMedia.items.length : t('{type} · Slide {index} of {count}', { type: t(item.mediaType), index: idx + 1, count: resolvedMedia.items.length })),
+            idx, type: escapeHtml(t('{type} · Slide {index} of {count}', { type: t(item.mediaType), index: idx + 1, count: resolvedMedia.items.length })),
             dim: escapeHtml(t(item.formats[0]?.resolution || 'Source resolution')),
             format: escapeHtml(item.formats[0]?.Container || item.formats[0]?.ext || item.mediaType),
             size: escapeHtml(visibleFilesize(item.formats[0])),
@@ -464,7 +454,7 @@
               <div class="flex flex-wrap items-center justify-between gap-2 pb-3.5 mb-4 border-b border-line">
                 <div class="flex items-center gap-2">
                   <span class="px-2.5 py-1 rounded-md bg-brand-violetSoft text-brand-violet text-xs font-semibold">
-                    ${escapeHtml(storyCollection ? t('Story') + ' · ' + slides.length : t('Carousel Post · {count} Media Items', { count: slides.length }))}
+                    ${escapeHtml(t('Carousel Post · {count} Media Items', { count: slides.length }))}
                   </span>
                   <span class="text-xs text-ink-muted font-medium tabular-nums">${cfg.author}</span>
                 </div>
@@ -491,7 +481,7 @@
                       ${activeSlide.type} · ${activeSlide.dim} · ${activeSlide.format}${activeSlide.size ? ' · ' + activeSlide.size : ''}
                     </p>
                     <p class="text-xs sm:text-sm text-ink-muted mt-2">
-                      ${escapeHtml(t(storyCollection ? 'Public media found. Select a format to download.' : 'Tick the images you want to download. Click a thumbnail to preview it, or download all slides as a ZIP.'))}
+                      ${escapeHtml(t('Tick the images you want to download. Click a thumbnail to preview it, or download all slides as a ZIP.'))}
                     </p>
                   </div>
 
@@ -564,10 +554,9 @@
         const qualities = cfg.qualities;
         const selectedQ = qualities[state.selectedQualityIdx] || qualities[0];
 
-        resultDynamicContent.innerHTML = `
-          <div class="bg-white border border-line rounded-xl p-4 sm:p-5">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
-              
+        const audioResult = resolvedMedia.category === 'audio';
+        const audioItem = resolvedMedia.items[state.activeCarouselIdx] || resolvedMedia.items[0];
+        const fullPreview = audioResult ? '' : `
               <!-- Left Column: Media Thumbnail Preview + Optical Loupe Toggle -->
               <div class="md:col-span-5">
                 <div id="media-preview-frame" class="media-source-preview relative rounded-xl overflow-hidden border border-line bg-soft ${state.loupeZoom ? 'loupe-active' : ''}">
@@ -593,9 +582,17 @@
                 </div>
               </div>
 
+`;
+        resultDynamicContent.innerHTML = `
+          <div class="bg-white border border-line rounded-xl p-4 sm:p-5">
+            <div class="${audioResult ? 'flex flex-col gap-5' : 'grid grid-cols-1 md:grid-cols-12 gap-5 items-start'}">
+
+              ${fullPreview}
               <!-- Right Column: Metadata, Quality Selector, & Download CTA -->
               <div class="md:col-span-7 flex flex-col justify-between space-y-4">
-                <div>
+                <div class="${audioResult ? 'flex items-start gap-3' : ''}">
+                  ${audioResult && audioItem.thumbnailUrl ? `<img class="audio-result-thumb w-14 h-14 object-cover rounded-lg border border-line shrink-0" width="56" height="56" src="${previewUrl(audioItem.thumbnailSmallUrl || audioItem.thumbnailUrl)}" alt="${escapeHtml(t('Audio'))}" decoding="async" referrerpolicy="no-referrer" />` : ''}
+                  <div class="${audioResult ? 'min-w-0 flex-1' : ''}">
                   <div class="flex items-center justify-between gap-2">
                     <span class="text-xs font-semibold text-brand-violet">${cfg.author}</span>
                     <span class="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-medium">Public Stream Verified</span>
@@ -603,6 +600,7 @@
                   <p data-user-content class="text-xs sm:text-sm text-ink-secondary mt-1.5 line-clamp-2 leading-relaxed">
                     ${cfg.caption}
                   </p>
+                  </div>
                 </div>
 
                 <!-- Quality Selection Matrix -->
@@ -673,6 +671,7 @@
 
       function mediaPreviewMarkup(item) {
         const index = resolvedMedia.items.indexOf(item);
+        if (item.mediaType === 'audio') return item.thumbnailUrl ? `<img src="${previewUrl(item.thumbnailUrl)}" alt="${escapeHtml(t('Audio'))}" class="media-source-image" loading="eager" decoding="async" referrerpolicy="no-referrer" />` : '';
         const video = item.mediaType === 'video';
         return `<button type="button" class="media-open-btn" data-preview-index="${index}" aria-label="${escapeHtml(t(video ? 'Play video' : 'Preview photo'))}">
           ${item.thumbnailUrl ? `<img src="${previewUrl(state.loupeZoom && !video ? item.imagePreviewUrl || item.thumbnailUrl : item.thumbnailUrl)}" alt="${escapeHtml(mediaTitle(item) || t('Preview for {author}', { author: resolvedMedia.uploader.username }))}" ${item.width && item.height ? `width="${Number(item.width)}" height="${Number(item.height)}"` : ''} loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" class="media-source-image" />` : '<span aria-hidden="true" class="media-source-image" style="aspect-ratio:4/3"></span>'}
@@ -831,13 +830,14 @@
                 const payload = await response.json();
                 if (!response.ok) throw Object.assign(new Error(apiError(payload.error, 'Unable to start download.')), {analyticsCode:payload.error?.code});
                 showToast('Preparing your download…');
-                const deadline = Date.now() + (request.zipCarousel ? 900000 : 180000);
+                const deadline = Date.now() + (request.zipCarousel ? 900000 : media.category === 'audio' ? 300000 : 180000);
                 while (Date.now() < deadline) {
                   await new Promise(resolve => setTimeout(resolve, 1000));
                   const statusResponse = await fetch('/api/media/jobs/' + encodeURIComponent(payload.jobId));
                   const statusPayload = await statusResponse.json();
                   if (!statusResponse.ok) throw Object.assign(new Error(apiError(statusPayload.error, 'Unable to check download.')), {analyticsCode:statusPayload.error?.code});
                   const job = statusPayload.job;
+                  if (job.conversionStarted && media.category === 'audio') tracking.transition('audio_conversion_started');
                   pending.label = t('Preparing download… {progress}%', { progress: Math.round(job.progress || 0) });
                   syncDownloadButtons();
                   if (job.status === 'completed') {

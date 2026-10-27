@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "downloads": [
+    {
+      "viewport": 1365,
+      "requestedBitrate": 192,
+      "bytes": 305362,
+      "mp3": true
+    },
+    {
+      "viewport": 390,
+      "requestedBitrate": 320,
+      "bytes": 508908,
+      "mp3": true
+    }
+  ],
+  "allTenLanguages": true,
+  "productionDeployed": false,
+  "googleRequests": 0
+}

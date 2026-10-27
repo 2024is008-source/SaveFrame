@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "realFfmpeg": true,
+  "offlineMediaFixtures": true,
+  "liveInstagramVerified": false,
+  "qualities": [
+    128,
+    192,
+    320
+  ],
+  "sourceCategories": [
+    "reel",
+    "video"
+  ],
+  "tests": [
+    "real MP3 conversion/decoding/non-silent signal",
+    "headers/signature",
+    "duration/size/process limits",
+    "source cleanup",
+    "photo/private/URL rejection",
+    "queue/conversion status",
+    "safe analytics"
+  ]
+}

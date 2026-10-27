@@ -3,7 +3,7 @@ import { getApiContext } from '../../singleton';
 import { DownloaderAppError, InstagramMediaCategory } from '../../../../types/media.types';
 import { apiFailure, beginResolution, resolveEvent } from '../../../../admin/analytics';
 import { readMediaJson } from '../../../../api/request';
-import { validateMediaInput } from '../../../../security/url-validator';
+import { validatePublicMediaInput } from '../../../../security/url-validator';
 import { requestCountry } from '../../../../admin/country-policy';
 
 export async function POST(req: NextRequest) {
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     }
     analyticsId=beginResolution(country);
     const body = await readMediaJson(req);
-    attemptedCategory=validateMediaInput(body.url||'',body.tool).category;
+    attemptedCategory=validatePublicMediaInput(body.url||'',body.tool).category;
     const metadata = await ctx.ytDlpService.extractMetadata(body.url || '', body.tool, req.signal);
     resolveEvent(analyticsId,true,metadata.category,undefined,Date.now()-started);
     // YtDlpService already owns the bounded metadata cache used by downloads.

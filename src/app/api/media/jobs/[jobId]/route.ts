@@ -12,6 +12,8 @@ export async function GET(_req: NextRequest, context: { params: Promise<{ jobId:
         jobId: job.jobId,
         status: job.status,
         progress: job.progress,
+        conversionStarted: Boolean(job.conversionStarted),
+        durationSeconds: job.durationSeconds,
         deliveryStatus: job.deliveryStatus,
         deliveryErrorCode: job.deliveryErrorCode,
         safeFilename: job.safeFilename,

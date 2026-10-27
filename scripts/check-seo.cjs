@@ -4,7 +4,13 @@ const base = process.env.TEST_BASE_URL || 'http://localhost:3000';
 const origin = 'https://saveframe.site';
 const decode = text => text.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 async function main() {
+  const retired = await fetch(base + '/story-downloader', {redirect: 'manual'});
+  assert.equal(retired.status, 410, 'Retired story page must be Gone, not redirected');
+  assert.equal(retired.headers.get('location'), null);
   const sitemap = await (await fetch(base + '/sitemap.xml')).text();
+  assert.ok(sitemap.includes(origin + '/audio-downloader'));
+  assert.ok(!sitemap.includes(origin + '/story-downloader'));
+
   const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => new URL(decode(match[1])));
   assert.equal(urls.length, 37);
   const homeAlternates={en:'/',es:'/es/','pt-BR':'/pt-br/',de:'/de/',fr:'/fr/',ja:'/ja/',id:'/id/',tr:'/tr/',hi:'/hi/',ar:'/ar/','x-default':'/'};

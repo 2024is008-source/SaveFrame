@@ -10,8 +10,8 @@ import { Suspense } from 'react';
 import { analyticsPolicy } from '../lib/analytics-policy';
 
 export const metadata: Metadata = {
-  title: 'SaveFrame — Instagram Downloader for Photos, Reels, Videos & Stories',
-  description: 'Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.',
+  title: 'SaveFrame — Instagram Downloader for Photos, Reels, Videos & Audio',
+  description: 'Save supported public Instagram photos, videos, Reels, carousels, and MP3 audio with a simple link. Fast, clean, mobile-friendly web utility.',
   metadataBase: new URL(siteUrl),
   alternates: { canonical: '/' },
   robots: { index: hasPublicSiteUrl, follow: true },

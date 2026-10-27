@@ -14,7 +14,7 @@ type Props = { params: Promise<{ locale: string }> };
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
   const page = tools.find(page => page.slug === locale) || information.find(page => page.slug === locale);
-  if (page) return pageMetadata('/' + page.slug, page.title + ' | SaveFrame', page.description);
+  if (page) return pageMetadata('/' + page.slug, page.title + ' | SaveFrame', 'seoDescription' in page && page.seoDescription ? page.seoDescription : page.description);
   if (!isLocale(locale) || locale === 'en') notFound();
   return homepageMetadata(locale);
 }

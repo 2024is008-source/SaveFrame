@@ -4,6 +4,7 @@ export type InstagramMediaCategory =
   | 'photo'
   | 'carousel'
   | 'story'
+  | 'audio'
   | 'profile';
 
 export type ErrorCode =
@@ -68,7 +69,7 @@ export interface NormalizedFormat {
   formatId: string;
   sourceFormatId?: string; // Audio extracted from a combined video/audio source.
   label: string;
-  ext: 'mp4' | 'm4a' | 'jpg' | 'webp';
+  ext: 'mp4' | 'm4a' | 'mp3' | 'jpg' | 'webp';
   Container: string;
   width?: number;
   height?: number;
@@ -88,7 +89,7 @@ export interface NormalizedMediaItem {
   index: number;
   itemId: string;
   shortcode: string;
-  mediaType: 'video' | 'photo';
+  mediaType: 'video' | 'photo' | 'audio';
   title: string;
   thumbnailUrl: string;
   thumbnailSmallUrl?: string;
@@ -135,6 +136,8 @@ export type JobStatus =
 export interface DownloadJob {
   jobId: string;
   analyticsId?: string;
+  conversionStarted?: boolean;
+  durationSeconds?: number;
   deliveryStatus?: 'streaming' | 'handed_off' | 'failed';
   deliveryErrorCode?: 'DELIVERY_STREAM_ERROR' | 'DELIVERY_CANCELLED' | 'FILE_UNAVAILABLE';
   url: string;

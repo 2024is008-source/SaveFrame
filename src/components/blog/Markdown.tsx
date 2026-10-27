@@ -7,6 +7,7 @@ function inline(text: string) {
     const link = piece.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
     if (link && /^(https:\/\/|\/(?!\/)|#)/.test(link[2])) {
       const tool = link[2].match(/^\/\?tool=(photo|reels|story|video|profile)#main-tool$/);
+      if(tool?.[1] === 'story' || link[2] === '/story-downloader') return <Fragment key={index}>{link[1]}</Fragment>;
       return <a key={index} href={tool ? toolPaths[tool[1]] : link[2]}>{link[1]}</a>;
     }
     if (piece.startsWith('**') && piece.endsWith('**')) return <strong key={index}>{piece.slice(2, -2)}</strong>;

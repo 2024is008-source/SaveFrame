@@ -1,0 +1,13 @@
+{
+  "verified": true,
+  "httpStatus": 200,
+  "mimeType": "audio/mpeg",
+  "mp3Filename": true,
+  "bytes": 203589,
+  "signature": "ID3",
+  "ffmpegDecoded": true,
+  "durationSeconds": 12.66,
+  "conversionStarted": true,
+  "usedLogin": false,
+  "productionDeployed": false
+}

@@ -1,0 +1,1045 @@
+{
+  "checkedAt": "2026-10-27T07:57:20.213Z",
+  "rows": [
+    {
+      "path": "/pt-br/",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Baixar vídeos do Instagram – Veja e salve em MP4 | SaveFrame",
+      "description": "Salve fotos, vídeos, Reels, carrosséis e stories públicos do Instagram compatíveis com um link. Ferramenta simples e adaptada ao celular.",
+      "canonical": "https://saveframe.site/pt-br/",
+      "h1s": [
+        "Baixar do Instagram"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "Baixar Reels Vídeos verticais curtos com áudio",
+          "Reels",
+          "Baixar Reels do Instagram"
+        ],
+        "/video-downloader": [
+          "Baixar vídeos Vídeos do feed e arquivos MP4 longos",
+          "Vídeo",
+          "Baixar vídeos do Instagram"
+        ],
+        "/photo-downloader": [
+          "Baixar fotos Fotos individuais e carrosséis com várias imagens",
+          "Foto",
+          "Baixar fotos do Instagram"
+        ],
+        "/carousel-downloader": [
+          "Visualizador de carrosséis Veja publicações com várias imagens"
+        ],
+        "/story-downloader": [
+          "Baixar stories Stories públicos acessíveis",
+          "Visualizador de stories públicos Veja stories públicos no navegador",
+          "Story",
+          "Baixar stories do Instagram"
+        ],
+        "/profile-viewer": [
+          "Visualizador de perfis Veja a foto e a biografia de perfis públicos",
+          "Visualizador de perfis do Instagram Abrir ferramenta →",
+          "Visualizador de perfis do Instagram"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Baixar vídeos do Instagram – Veja e salve em MP4 | SaveFrame",
+        "og:description": "Salve fotos, vídeos, Reels, carrosséis e stories públicos do Instagram compatíveis com um link. Ferramenta simples e adaptada ao celular.",
+        "twitter:title": "Baixar vídeos do Instagram – Veja e salve em MP4 | SaveFrame",
+        "twitter:description": "Salve fotos, vídeos, Reels, carrosséis e stories públicos do Instagram compatíveis com um link. Ferramenta simples e adaptada ao celular.",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Instagram Video Downloader – View and Save Instagram to MP4",
+      "description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+      "canonical": "https://saveframe.site",
+      "h1s": [
+        "Instagram Downloader"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "Reels Downloader Vertical short videos with audio",
+          "Reels",
+          "Instagram Reels Downloader"
+        ],
+        "/video-downloader": [
+          "Video Downloader Feed videos &amp; long-form MP4 streams",
+          "Video",
+          "Instagram Video Downloader"
+        ],
+        "/photo-downloader": [
+          "Photo Downloader Single photos &amp; multi-slide carousels",
+          "Photo",
+          "Instagram Photo Downloader"
+        ],
+        "/carousel-downloader": [
+          "Carousel Post Viewer Preview multi-slide album posts"
+        ],
+        "/story-downloader": [
+          "Story Downloader Public stories where accessible",
+          "Public Story Viewer Preview public stories in browser",
+          "Story",
+          "Instagram Story Downloader"
+        ],
+        "/profile-viewer": [
+          "Profile Viewer Inspect public profile avatar &amp; bio",
+          "Instagram Profile Viewer Open tool →",
+          "Instagram Profile Viewer"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Instagram Video Downloader – View and Save Instagram to MP4",
+        "og:description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+        "twitter:title": "Instagram Video Downloader – View and Save Instagram to MP4",
+        "twitter:description": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/es/",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Descargar vídeos de Instagram – Ver y guardar en MP4 | SaveFrame",
+      "description": "Guarda fotos, vídeos, Reels, carruseles e historias públicas de Instagram compatibles con un enlace. Una herramienta sencilla y adaptada al móvil.",
+      "canonical": "https://saveframe.site/es/",
+      "h1s": [
+        "Descargador de Instagram"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "Descargador de Reels Vídeos verticales cortos con audio",
+          "Reels",
+          "Descargador de Reels de Instagram"
+        ],
+        "/video-downloader": [
+          "Descargador de vídeos Vídeos del feed y archivos MP4 largos",
+          "Vídeo",
+          "Descargador de vídeos de Instagram"
+        ],
+        "/photo-downloader": [
+          "Descargador de fotos Fotos individuales y carruseles de varias imágenes",
+          "Foto",
+          "Descargador de fotos de Instagram"
+        ],
+        "/carousel-downloader": [
+          "Visor de carruseles Previsualiza publicaciones con varias imágenes"
+        ],
+        "/story-downloader": [
+          "Descargador de historias Historias públicas accesibles",
+          "Visor de historias públicas Previsualiza historias públicas en el navegador",
+          "Historia",
+          "Descargador de historias de Instagram"
+        ],
+        "/profile-viewer": [
+          "Visor de perfiles Consulta la foto y la biografía de perfiles públicos",
+          "Visor de perfiles de Instagram Abrir herramienta →",
+          "Visor de perfiles de Instagram"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Descargar vídeos de Instagram – Ver y guardar en MP4 | SaveFrame",
+        "og:description": "Guarda fotos, vídeos, Reels, carruseles e historias públicas de Instagram compatibles con un enlace. Una herramienta sencilla y adaptada al móvil.",
+        "twitter:title": "Descargar vídeos de Instagram – Ver y guardar en MP4 | SaveFrame",
+        "twitter:description": "Guarda fotos, vídeos, Reels, carruseles e historias públicas de Instagram compatibles con un enlace. Una herramienta sencilla y adaptada al móvil.",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/de/",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Instagram-Videos herunterladen – Ansehen &amp; als MP4 speichern",
+      "description": "Öffentliche Instagram-Fotos, Videos, Reels, Karussells und Storys per Link speichern, sofern unterstützt. Einfach und für Mobilgeräte geeignet.",
+      "canonical": "https://saveframe.site/de/",
+      "h1s": [
+        "Instagram-Downloader"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "Reels-Downloader Kurze Hochkantvideos mit Ton",
+          "Reels",
+          "Instagram-Reels-Downloader"
+        ],
+        "/video-downloader": [
+          "Video-Downloader Feed-Videos und längere MP4-Dateien",
+          "Video",
+          "Instagram-Video-Downloader"
+        ],
+        "/photo-downloader": [
+          "Foto-Downloader Einzelne Fotos und Karussells mit mehreren Bildern",
+          "Foto",
+          "Instagram-Foto-Downloader"
+        ],
+        "/carousel-downloader": [
+          "Karussell-Viewer Beiträge mit mehreren Bildern ansehen"
+        ],
+        "/story-downloader": [
+          "Story-Downloader Öffentliche Storys, sofern zugänglich",
+          "Viewer für öffentliche Storys Öffentliche Storys im Browser ansehen",
+          "Story",
+          "Instagram-Story-Downloader"
+        ],
+        "/profile-viewer": [
+          "Profil-Viewer Öffentliches Profilbild und Biografie ansehen",
+          "Instagram-Profil-Viewer Werkzeug öffnen →",
+          "Instagram-Profil-Viewer"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Instagram-Videos herunterladen – Ansehen &amp; als MP4 speichern",
+        "og:description": "Öffentliche Instagram-Fotos, Videos, Reels, Karussells und Storys per Link speichern, sofern unterstützt. Einfach und für Mobilgeräte geeignet.",
+        "twitter:title": "Instagram-Videos herunterladen – Ansehen &amp; als MP4 speichern",
+        "twitter:description": "Öffentliche Instagram-Fotos, Videos, Reels, Karussells und Storys per Link speichern, sofern unterstützt. Einfach und für Mobilgeräte geeignet.",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/ja/",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Instagram動画をダウンロード – プレビューしてMP4で保存 | SaveFrame",
+      "description": "対応する公開Instagramの写真、動画、リール、カルーセル、ストーリーをリンクで保存。シンプルでスマートフォンにも対応。",
+      "canonical": "https://saveframe.site/ja/",
+      "h1s": [
+        "Instagramダウンローダー"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "リールダウンローダー 音声付きの短い縦型動画",
+          "リール",
+          "Instagramリールダウンローダー"
+        ],
+        "/video-downloader": [
+          "動画ダウンローダー フィード動画・長尺MP4動画",
+          "動画",
+          "Instagram動画ダウンローダー"
+        ],
+        "/photo-downloader": [
+          "写真ダウンローダー 単体写真・複数画像のカルーセル",
+          "写真",
+          "Instagram写真ダウンローダー"
+        ],
+        "/carousel-downloader": [
+          "カルーセルビューアー 複数画像の投稿をプレビュー"
+        ],
+        "/story-downloader": [
+          "ストーリーダウンローダー アクセス可能な公開ストーリー",
+          "公開ストーリービューアー 公開ストーリーをブラウザーでプレビュー",
+          "ストーリー",
+          "Instagramストーリーダウンローダー"
+        ],
+        "/profile-viewer": [
+          "プロフィールビューアー 公開プロフィールの画像と自己紹介を確認",
+          "Instagramプロフィールビューアー ツールを開く →",
+          "Instagramプロフィールビューアー"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Instagram動画をダウンロード – プレビューしてMP4で保存 | SaveFrame",
+        "og:description": "対応する公開Instagramの写真、動画、リール、カルーセル、ストーリーをリンクで保存。シンプルでスマートフォンにも対応。",
+        "twitter:title": "Instagram動画をダウンロード – プレビューしてMP4で保存 | SaveFrame",
+        "twitter:description": "対応する公開Instagramの写真、動画、リール、カルーセル、ストーリーをリンクで保存。シンプルでスマートフォンにも対応。",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/fr/",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Télécharger une vidéo Instagram – Voir et enregistrer en MP4",
+      "description": "Enregistrez les photos, vidéos, Reels, carrousels et stories Instagram publics compatibles avec un lien. Un outil simple et adapté au mobile.",
+      "canonical": "https://saveframe.site/fr/",
+      "h1s": [
+        "Téléchargeur Instagram"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "Téléchargeur de Reels Vidéos verticales courtes avec audio",
+          "Reels",
+          "Téléchargeur de Reels Instagram"
+        ],
+        "/video-downloader": [
+          "Téléchargeur de vidéos Vidéos du fil et fichiers MP4 longs",
+          "Vidéo",
+          "Téléchargeur de vidéos Instagram"
+        ],
+        "/photo-downloader": [
+          "Téléchargeur de photos Photos individuelles et carrousels de plusieurs images",
+          "Photo",
+          "Téléchargeur de photos Instagram"
+        ],
+        "/carousel-downloader": [
+          "Visionneuse de carrousels Prévisualisez les publications à plusieurs images"
+        ],
+        "/story-downloader": [
+          "Téléchargeur de stories Stories publiques accessibles",
+          "Visionneuse de stories publiques Prévisualisez les stories publiques dans le navigateur",
+          "Story",
+          "Téléchargeur de stories Instagram"
+        ],
+        "/profile-viewer": [
+          "Visionneuse de profils Consultez la photo et la biographie des profils publics",
+          "Visionneuse de profils Instagram Ouvrir l’outil →",
+          "Visionneuse de profils Instagram"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Télécharger une vidéo Instagram – Voir et enregistrer en MP4",
+        "og:description": "Enregistrez les photos, vidéos, Reels, carrousels et stories Instagram publics compatibles avec un lien. Un outil simple et adapté au mobile.",
+        "twitter:title": "Télécharger une vidéo Instagram – Voir et enregistrer en MP4",
+        "twitter:description": "Enregistrez les photos, vidéos, Reels, carrousels et stories Instagram publics compatibles avec un lien. Un outil simple et adapté au mobile.",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/hi/",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Instagram वीडियो डाउनलोडर – देखें और MP4 में सेव करें | SaveFrame",
+      "description": "उपलब्ध सार्वजनिक Instagram फ़ोटो, वीडियो, Reels, कैरोसेल और स्टोरी एक लिंक से सेव करें। सरल और मोबाइल के अनुकूल टूल।",
+      "canonical": "https://saveframe.site/hi/",
+      "h1s": [
+        "Instagram डाउनलोडर"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "Reels डाउनलोडर आवाज़ वाले छोटे वर्टिकल वीडियो",
+          "Reels",
+          "Instagram Reels डाउनलोडर"
+        ],
+        "/video-downloader": [
+          "वीडियो डाउनलोडर फ़ीड वीडियो और लंबे MP4 वीडियो",
+          "वीडियो",
+          "Instagram वीडियो डाउनलोडर"
+        ],
+        "/photo-downloader": [
+          "फ़ोटो डाउनलोडर एक फ़ोटो और कई तस्वीरों वाले कैरोसेल",
+          "फ़ोटो",
+          "Instagram फ़ोटो डाउनलोडर"
+        ],
+        "/carousel-downloader": [
+          "कैरोसेल पोस्ट व्यूअर कई तस्वीरों वाली पोस्ट का प्रीव्यू देखें"
+        ],
+        "/story-downloader": [
+          "स्टोरी डाउनलोडर जहाँ उपलब्ध हों, सार्वजनिक स्टोरी",
+          "सार्वजनिक स्टोरी व्यूअर ब्राउज़र में सार्वजनिक स्टोरी का प्रीव्यू देखें",
+          "स्टोरी",
+          "Instagram स्टोरी डाउनलोडर"
+        ],
+        "/profile-viewer": [
+          "प्रोफ़ाइल व्यूअर सार्वजनिक प्रोफ़ाइल की तस्वीर और बायो देखें",
+          "Instagram प्रोफ़ाइल व्यूअर टूल खोलें →",
+          "Instagram प्रोफ़ाइल व्यूअर"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Instagram वीडियो डाउनलोडर – देखें और MP4 में सेव करें | SaveFrame",
+        "og:description": "उपलब्ध सार्वजनिक Instagram फ़ोटो, वीडियो, Reels, कैरोसेल और स्टोरी एक लिंक से सेव करें। सरल और मोबाइल के अनुकूल टूल।",
+        "twitter:title": "Instagram वीडियो डाउनलोडर – देखें और MP4 में सेव करें | SaveFrame",
+        "twitter:description": "उपलब्ध सार्वजनिक Instagram फ़ोटो, वीडियो, Reels, कैरोसेल और स्टोरी एक लिंक से सेव करें। सरल और मोबाइल के अनुकूल टूल।",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/id/",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Download Video Instagram – Pratinjau &amp; Simpan MP4 | SaveFrame",
+      "description": "Simpan foto, video, Reels, carousel, dan story Instagram publik yang didukung dengan tautan. Alat sederhana dan ramah ponsel.",
+      "canonical": "https://saveframe.site/id/",
+      "h1s": [
+        "Pengunduh Instagram"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "Pengunduh Reels Video vertikal pendek dengan audio",
+          "Reels",
+          "Pengunduh Reels Instagram"
+        ],
+        "/video-downloader": [
+          "Pengunduh video Video feed dan file MP4 berdurasi panjang",
+          "Video",
+          "Pengunduh video Instagram"
+        ],
+        "/photo-downloader": [
+          "Pengunduh foto Foto tunggal dan carousel beberapa gambar",
+          "Foto",
+          "Pengunduh foto Instagram"
+        ],
+        "/carousel-downloader": [
+          "Penampil carousel Pratinjau postingan dengan beberapa gambar"
+        ],
+        "/story-downloader": [
+          "Pengunduh story Story publik yang dapat diakses",
+          "Penampil story publik Pratinjau story publik di browser",
+          "Story",
+          "Pengunduh story Instagram"
+        ],
+        "/profile-viewer": [
+          "Penampil profil Lihat foto profil dan bio publik",
+          "Penampil profil Instagram Buka alat →",
+          "Penampil profil Instagram"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Download Video Instagram – Pratinjau &amp; Simpan MP4 | SaveFrame",
+        "og:description": "Simpan foto, video, Reels, carousel, dan story Instagram publik yang didukung dengan tautan. Alat sederhana dan ramah ponsel.",
+        "twitter:title": "Download Video Instagram – Pratinjau &amp; Simpan MP4 | SaveFrame",
+        "twitter:description": "Simpan foto, video, Reels, carousel, dan story Instagram publik yang didukung dengan tautan. Alat sederhana dan ramah ponsel.",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/tr/",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Instagram Video İndir – Önizle ve MP4 Olarak Kaydet | SaveFrame",
+      "description": "Desteklenen herkese açık Instagram fotoğraf, video, Reels, kaydırmalı gönderi ve hikâyelerini bağlantıyla kaydedin. Sade ve mobil uyumlu araç.",
+      "canonical": "https://saveframe.site/tr/",
+      "h1s": [
+        "Instagram İndirici"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "Reels İndirici Sesli kısa dikey videolar",
+          "Reels",
+          "Instagram Reels İndirici"
+        ],
+        "/video-downloader": [
+          "Video İndirici Akış videoları ve uzun MP4 dosyaları",
+          "Video",
+          "Instagram Video İndirici"
+        ],
+        "/photo-downloader": [
+          "Fotoğraf İndirici Tek fotoğraflar ve çok görselli kaydırmalı gönderiler",
+          "Fotoğraf",
+          "Instagram Fotoğraf İndirici"
+        ],
+        "/carousel-downloader": [
+          "Kaydırmalı Gönderi Görüntüleyici Çok görselli gönderileri önizleyin"
+        ],
+        "/story-downloader": [
+          "Hikâye İndirici Erişilebilir herkese açık hikâyeler",
+          "Açık Hikâye Görüntüleyici Herkese açık hikâyeleri tarayıcıda önizleyin",
+          "Hikâye",
+          "Instagram Hikâye İndirici"
+        ],
+        "/profile-viewer": [
+          "Profil Görüntüleyici Herkese açık profil fotoğrafını ve biyografiyi inceleyin",
+          "Instagram Profil Görüntüleyici Aracı aç →",
+          "Instagram Profil Görüntüleyici"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Instagram Video İndir – Önizle ve MP4 Olarak Kaydet | SaveFrame",
+        "og:description": "Desteklenen herkese açık Instagram fotoğraf, video, Reels, kaydırmalı gönderi ve hikâyelerini bağlantıyla kaydedin. Sade ve mobil uyumlu araç.",
+        "twitter:title": "Instagram Video İndir – Önizle ve MP4 Olarak Kaydet | SaveFrame",
+        "twitter:description": "Desteklenen herkese açık Instagram fotoğraf, video, Reels, kaydırmalı gönderi ve hikâyelerini bağlantıyla kaydedin. Sade ve mobil uyumlu araç.",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/ar/",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "تنزيل فيديو إنستغرام – معاينة وحفظ بصيغة MP4 | SaveFrame",
+      "description": "احفظ الصور والفيديوهات وريلز والمنشورات متعددة الصور والقصص العامة المدعومة من إنستغرام برابط واحد. أداة بسيطة ومناسبة للجوال.",
+      "canonical": "https://saveframe.site/ar/",
+      "h1s": [
+        "تنزيل من إنستغرام"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "تنزيل ريلز مقاطع عمودية قصيرة مع الصوت",
+          "ريلز",
+          "تنزيل ريلز إنستغرام"
+        ],
+        "/video-downloader": [
+          "تنزيل الفيديو فيديوهات الخلاصة وملفات MP4 الطويلة",
+          "فيديو",
+          "تنزيل فيديو إنستغرام"
+        ],
+        "/photo-downloader": [
+          "تنزيل الصور صور منفردة ومنشورات متعددة الصور",
+          "صورة",
+          "تنزيل صور إنستغرام"
+        ],
+        "/carousel-downloader": [
+          "عارض المنشورات متعددة الصور عاين المنشورات التي تحتوي على عدة صور"
+        ],
+        "/story-downloader": [
+          "تنزيل القصص القصص العامة المتاحة للوصول",
+          "عارض القصص العامة عاين القصص العامة في المتصفح",
+          "قصة",
+          "تنزيل قصص إنستغرام"
+        ],
+        "/profile-viewer": [
+          "عارض الملفات الشخصية اعرض صورة الملف العام ونبذته",
+          "عارض ملفات إنستغرام الشخصية افتح الأداة ←",
+          "عارض ملفات إنستغرام الشخصية"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "تنزيل فيديو إنستغرام – معاينة وحفظ بصيغة MP4 | SaveFrame",
+        "og:description": "احفظ الصور والفيديوهات وريلز والمنشورات متعددة الصور والقصص العامة المدعومة من إنستغرام برابط واحد. أداة بسيطة ومناسبة للجوال.",
+        "twitter:title": "تنزيل فيديو إنستغرام – معاينة وحفظ بصيغة MP4 | SaveFrame",
+        "twitter:description": "احفظ الصور والفيديوهات وريلز والمنشورات متعددة الصور والقصص العامة المدعومة من إنستغرام برابط واحد. أداة بسيطة ومناسبة للجوال.",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/video-downloader",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Save Instagram Videos as MP4 – Video Downloader | SaveFrame",
+      "description": "Save supported public Instagram feed videos to your phone or computer. Inspect MP4 options and troubleshoot processing or playback problems.",
+      "canonical": "https://saveframe.site/video-downloader",
+      "h1s": [
+        "Instagram Video Downloader"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "Reels Downloader Vertical short videos with audio",
+          "Reels",
+          "Instagram Reels Downloader",
+          "Instagram Reels Downloader"
+        ],
+        "/video-downloader": [
+          "Video Downloader Feed videos &amp; long-form MP4 streams",
+          "Video",
+          "Instagram Video Downloader",
+          "Instagram Video Downloader"
+        ],
+        "/photo-downloader": [
+          "Photo Downloader Single photos &amp; multi-slide carousels",
+          "Photo",
+          "Instagram Photo Downloader",
+          "Instagram Photo Downloader"
+        ],
+        "/carousel-downloader": [
+          "Carousel Post Viewer Preview multi-slide album posts",
+          "Instagram Carousel Downloader"
+        ],
+        "/story-downloader": [
+          "Story Downloader Public stories where accessible",
+          "Public Story Viewer Preview public stories in browser",
+          "Story",
+          "Instagram Story Downloader",
+          "Instagram Story Downloader"
+        ],
+        "/profile-viewer": [
+          "Profile Viewer Inspect public profile avatar &amp; bio",
+          "Instagram Profile Viewer Open tool →",
+          "Instagram Profile Viewer",
+          "Instagram Profile Viewer"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Save Instagram Videos as MP4 – Video Downloader | SaveFrame",
+        "og:description": "Save supported public Instagram feed videos to your phone or computer. Inspect MP4 options and troubleshoot processing or playback problems.",
+        "twitter:title": "Save Instagram Videos as MP4 – Video Downloader | SaveFrame",
+        "twitter:description": "Save supported public Instagram feed videos to your phone or computer. Inspect MP4 options and troubleshoot processing or playback problems.",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/reels-downloader",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Instagram Reels Downloader – Preview &amp; Save MP4 | SaveFrame",
+      "description": "Download supported public Instagram Reels as MP4. Preview available resolutions, choose video or audio, and check the finished file on your device.",
+      "canonical": "https://saveframe.site/reels-downloader",
+      "h1s": [
+        "Instagram Reels Downloader"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "Reels Downloader Vertical short videos with audio",
+          "Reels",
+          "Instagram Reels Downloader",
+          "Instagram Reels Downloader"
+        ],
+        "/video-downloader": [
+          "Video Downloader Feed videos &amp; long-form MP4 streams",
+          "Video",
+          "Instagram Video Downloader",
+          "Instagram Video Downloader"
+        ],
+        "/photo-downloader": [
+          "Photo Downloader Single photos &amp; multi-slide carousels",
+          "Photo",
+          "Instagram Photo Downloader",
+          "Instagram Photo Downloader"
+        ],
+        "/carousel-downloader": [
+          "Carousel Post Viewer Preview multi-slide album posts",
+          "Instagram Carousel Downloader"
+        ],
+        "/story-downloader": [
+          "Story Downloader Public stories where accessible",
+          "Public Story Viewer Preview public stories in browser",
+          "Story",
+          "Instagram Story Downloader",
+          "Instagram Story Downloader"
+        ],
+        "/profile-viewer": [
+          "Profile Viewer Inspect public profile avatar &amp; bio",
+          "Instagram Profile Viewer Open tool →",
+          "Instagram Profile Viewer",
+          "Instagram Profile Viewer"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Instagram Reels Downloader – Preview &amp; Save MP4 | SaveFrame",
+        "og:description": "Download supported public Instagram Reels as MP4. Preview available resolutions, choose video or audio, and check the finished file on your device.",
+        "twitter:title": "Instagram Reels Downloader – Preview &amp; Save MP4 | SaveFrame",
+        "twitter:description": "Download supported public Instagram Reels as MP4. Preview available resolutions, choose video or audio, and check the finished file on your device.",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/story-downloader",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Instagram Story Downloader – Check &amp; Save Active Stories",
+      "description": "Download a supported public Instagram story image or video using its direct link. Check source formats, access requirements and expiration limits.",
+      "canonical": "https://saveframe.site/story-downloader",
+      "h1s": [
+        "Instagram Story Downloader"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "Reels Downloader Vertical short videos with audio",
+          "Reels",
+          "Instagram Reels Downloader",
+          "Instagram Reels Downloader"
+        ],
+        "/video-downloader": [
+          "Video Downloader Feed videos &amp; long-form MP4 streams",
+          "Video",
+          "Instagram Video Downloader",
+          "Instagram Video Downloader"
+        ],
+        "/photo-downloader": [
+          "Photo Downloader Single photos &amp; multi-slide carousels",
+          "Photo",
+          "Instagram Photo Downloader",
+          "Instagram Photo Downloader"
+        ],
+        "/carousel-downloader": [
+          "Carousel Post Viewer Preview multi-slide album posts",
+          "Instagram Carousel Downloader"
+        ],
+        "/story-downloader": [
+          "Story Downloader Public stories where accessible",
+          "Public Story Viewer Preview public stories in browser",
+          "Story",
+          "Instagram Story Downloader",
+          "Instagram Story Downloader"
+        ],
+        "/profile-viewer": [
+          "Profile Viewer Inspect public profile avatar &amp; bio",
+          "Instagram Profile Viewer Open tool →",
+          "Instagram Profile Viewer",
+          "Instagram Profile Viewer"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Instagram Story Downloader – Check &amp; Save Active Stories",
+        "og:description": "Download a supported public Instagram story image or video using its direct link. Check source formats, access requirements and expiration limits.",
+        "twitter:title": "Instagram Story Downloader – Check &amp; Save Active Stories",
+        "twitter:description": "Download a supported public Instagram story image or video using its direct link. Check source formats, access requirements and expiration limits.",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/photo-downloader",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Instagram Photo Downloader – Preview &amp; Save Images | SaveFrame",
+      "description": "Download supported public Instagram photos from a post link. Preview the image, inspect available dimensions, and save a local copy without signing in.",
+      "canonical": "https://saveframe.site/photo-downloader",
+      "h1s": [
+        "Instagram Photo Downloader"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "Reels Downloader Vertical short videos with audio",
+          "Reels",
+          "Instagram Reels Downloader",
+          "Instagram Reels Downloader"
+        ],
+        "/video-downloader": [
+          "Video Downloader Feed videos &amp; long-form MP4 streams",
+          "Video",
+          "Instagram Video Downloader",
+          "Instagram Video Downloader"
+        ],
+        "/photo-downloader": [
+          "Photo Downloader Single photos &amp; multi-slide carousels",
+          "Photo",
+          "Instagram Photo Downloader",
+          "Instagram Photo Downloader"
+        ],
+        "/carousel-downloader": [
+          "Carousel Post Viewer Preview multi-slide album posts",
+          "Instagram Carousel Downloader"
+        ],
+        "/story-downloader": [
+          "Story Downloader Public stories where accessible",
+          "Public Story Viewer Preview public stories in browser",
+          "Story",
+          "Instagram Story Downloader",
+          "Instagram Story Downloader"
+        ],
+        "/profile-viewer": [
+          "Profile Viewer Inspect public profile avatar &amp; bio",
+          "Instagram Profile Viewer Open tool →",
+          "Instagram Profile Viewer",
+          "Instagram Profile Viewer"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Instagram Photo Downloader – Preview &amp; Save Images | SaveFrame",
+        "og:description": "Download supported public Instagram photos from a post link. Preview the image, inspect available dimensions, and save a local copy without signing in.",
+        "twitter:title": "Instagram Photo Downloader – Preview &amp; Save Images | SaveFrame",
+        "twitter:description": "Download supported public Instagram photos from a post link. Preview the image, inspect available dimensions, and save a local copy without signing in.",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/carousel-downloader",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Instagram Carousel Downloader – Pick Photos or Save a ZIP",
+      "description": "Download individual photos from supported public Instagram carousels. Preview each returned slide, choose the items you need, and preserve their order.",
+      "canonical": "https://saveframe.site/carousel-downloader",
+      "h1s": [
+        "Instagram Carousel Downloader"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "Reels Downloader Vertical short videos with audio",
+          "Reels",
+          "Instagram Reels Downloader",
+          "Instagram Reels Downloader"
+        ],
+        "/video-downloader": [
+          "Video Downloader Feed videos &amp; long-form MP4 streams",
+          "Video",
+          "Instagram Video Downloader",
+          "Instagram Video Downloader"
+        ],
+        "/photo-downloader": [
+          "Photo Downloader Single photos &amp; multi-slide carousels",
+          "Photo",
+          "Instagram Photo Downloader",
+          "Instagram Photo Downloader"
+        ],
+        "/carousel-downloader": [
+          "Carousel Post Viewer Preview multi-slide album posts",
+          "Instagram Carousel Downloader"
+        ],
+        "/story-downloader": [
+          "Story Downloader Public stories where accessible",
+          "Public Story Viewer Preview public stories in browser",
+          "Story",
+          "Instagram Story Downloader",
+          "Instagram Story Downloader"
+        ],
+        "/profile-viewer": [
+          "Profile Viewer Inspect public profile avatar &amp; bio",
+          "Instagram Profile Viewer Open tool →",
+          "Instagram Profile Viewer",
+          "Instagram Profile Viewer"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Instagram Carousel Downloader – Pick Photos or Save a ZIP",
+        "og:description": "Download individual photos from supported public Instagram carousels. Preview each returned slide, choose the items you need, and preserve their order.",
+        "twitter:title": "Instagram Carousel Downloader – Pick Photos or Save a ZIP",
+        "twitter:description": "Download individual photos from supported public Instagram carousels. Preview each returned slide, choose the items you need, and preserve their order.",
+        "twitter:card": "summary_large_image"
+      }
+    },
+    {
+      "path": "/profile-viewer",
+      "status": 200,
+      "redirect": null,
+      "indexHeader": null,
+      "title": "Instagram Profile Picture Viewer – Preview Public Photos",
+      "description": "View supported public Instagram profile information and available profile pictures by URL or username. Understand avatar resolution and access limits.",
+      "canonical": "https://saveframe.site/profile-viewer",
+      "h1s": [
+        "Instagram Profile Viewer"
+      ],
+      "tools": {
+        "/reels-downloader": [
+          "Reels Downloader Vertical short videos with audio",
+          "Reels",
+          "Instagram Reels Downloader",
+          "Instagram Reels Downloader"
+        ],
+        "/video-downloader": [
+          "Video Downloader Feed videos &amp; long-form MP4 streams",
+          "Video",
+          "Instagram Video Downloader",
+          "Instagram Video Downloader"
+        ],
+        "/photo-downloader": [
+          "Photo Downloader Single photos &amp; multi-slide carousels",
+          "Photo",
+          "Instagram Photo Downloader",
+          "Instagram Photo Downloader"
+        ],
+        "/carousel-downloader": [
+          "Carousel Post Viewer Preview multi-slide album posts",
+          "Instagram Carousel Downloader"
+        ],
+        "/story-downloader": [
+          "Story Downloader Public stories where accessible",
+          "Public Story Viewer Preview public stories in browser",
+          "Story",
+          "Instagram Story Downloader",
+          "Instagram Story Downloader"
+        ],
+        "/profile-viewer": [
+          "Profile Viewer Inspect public profile avatar &amp; bio",
+          "Instagram Profile Viewer Open tool →",
+          "Instagram Profile Viewer",
+          "Instagram Profile Viewer"
+        ]
+      },
+      "websites": [
+        {
+          "@type": "WebSite",
+          "@id": "https://saveframe.site/#website",
+          "name": "SaveFrame",
+          "url": "https://saveframe.site/",
+          "publisher": {
+            "@id": "https://saveframe.site/#organization"
+          }
+        }
+      ],
+      "robotsMeta": "index, follow",
+      "socialMetadata": {
+        "og:title": "Instagram Profile Picture Viewer – Preview Public Photos",
+        "og:description": "View supported public Instagram profile information and available profile pictures by URL or username. Understand avatar resolution and access limits.",
+        "twitter:title": "Instagram Profile Picture Viewer – Preview Public Photos",
+        "twitter:description": "View supported public Instagram profile information and available profile pictures by URL or username. Understand avatar resolution and access limits.",
+        "twitter:card": "summary_large_image"
+      }
+    }
+  ],
+  "extra": {
+    "/robots.txt": {
+      "status": 200,
+      "body": "# As a condition of accessing this website, you agree to abide by the following\n# content signals:\n\n# (a)  If a Content-Signal = yes, you may collect content for the corresponding\n#      use.\n# (b)  If a Content-Signal = no, you may not collect content for the\n#      corresponding use.\n# (c)  If the website operator does not include a Content-Signal for a\n#      corresponding use, the website operator neither grants nor restricts\n#      permission via Content-Signal with respect to the corresponding use.\n\n# The content signals and their meanings are:\n\n# search:   building a search index and providing search results (e.g., returning\n#           hyperlinks and short excerpts from your website's contents). Search does not\n#           include providing AI-generated search summaries.\n# ai-input: inputting content into one or more AI models (e.g., retrieval\n#           augmented generation, grounding, or other real-time taking of content for\n#           generative AI search answers).\n# ai-train: training or fine-tuning AI models.\n# use:      how AI systems may consume the content (immediate, reference, or full).\n\n# ANY RESTRICTIONS EXPRESSED VIA CONTENT SIGNALS ARE EXPRESS RESERVATIONS OF\n# RIGHTS UNDER ARTICLE 4 OF THE EUROPEAN UNION DIRECTIVE 2019/790 ON COPYRIGHT\n# AND RELATED RIGHTS IN THE DIGITAL SINGLE MARKET.\n\n# BEGIN Cloudflare Managed content\n\n\nUser-agent: *\nContent-Signal: search=yes,ai-train=no,use=reference\nAllow: /\n\n# Training crawlers\nUser-agent: Amazonbot\nDisallow: /\n\nUser-agent: Applebot-Extended\nDisallow: /\n\nUser-agent: Bytespider\nDisallow: /\n\nUser-agent: CCBot\nDisallow: /\n\nUser-agent: ClaudeBot\nDisallow: /\n\nUser-agent: Diffbot\nDisallow: /\n\nUser-agent: Google-Extended\nDisallow: /\n\nUser-agent: GPTBot\nDisallow: /\n\nUser-agent: omgili\nDisallow: /\n\nUser-agent: anthropic-ai\nDisallow: /\n\nUser-agent: Claude-Web\nDisallow: /\n\nUser-agent: cohere-ai\nDisallow: /\n\nUser-agent: MistralAI-Training\nDisallow: /\n\nUser-agent: meta-externalagent\nDisallow: /\n\nUser-agent: GoogleOther\nDisallow: /\n\nUser-agent: Baiduspider\nDisallow: /\n\nUser-agent: PetalBot\nDisallow: /\n\nUser-agent: AwarioSmartBot\nUser-agent: AwarioRssBot\nDisallow: /\n\nUser-agent: Google-CloudVertexBot\nDisallow: /\n\nUser-agent: QualifiedBot\nDisallow: /\n\nUser-agent: Cotoyogi\nDisallow: /\n\nUser-agent: ICC-Crawler\nDisallow: /\n\nUser-agent: atlassian-bot\nDisallow: /\n\nUser-agent: FishBot\nDisallow: /\n\nUser-agent: BorderxBot\nDisallow: /\n\nUser-agent: NavuBot\nDisallow: /\n\nUser-agent: SemrushBot-SWA\nDisallow: /\n\nUser-agent: WARDBot\nDisallow: /\n\nUser-agent: magpie-crawler\nDisallow: /\n\nUser-agent: KimiBot\nDisallow: /\n\nUser-agent: CitibotSiteCrawler\nDisallow: /\n\n# AI Agents\nUser-agent: Perplexity-User\nDisallow: /\n\nUser-agent: FireCrawl\nDisallow: /\n\nUser-agent: FirecrawlAgent\nDisallow: /\n\nUser-agent: Claude-User\nDisallow: /\n\nUser-agent: ChatGPT-User\nDisallow: /\n\nUser-agent: Google-Agent\nDisallow: /\n\nUser-agent: Google-GeminiNotebook\nUser-agent: Google-NotebookLM\nDisallow: /\n\nUser-agent: MistralAI-User\nDisallow: /\n\nUser-agent: Kimi-User\nDisallow: /\n\nUser-agent: Amzn-User\nDisallow: /\n\nUser-agent: meta-externalfetcher\nDisallow: /\n\nUser-agent: Retool\nDisallow: /\n\nUser-agent: Instapaper\nDisallow: /\n\nUser-agent: ChathiveCrawler\nDisallow: /\n\n# END Cloudflare Managed Content\n\nUser-Agent: *\nAllow: /\nDisallow: /api/\nDisallow: /admin\nDisallow: /admin/\n\nSitemap: https://saveframe.site/sitemap.xml\n"
+    },
+    "/sitemap.xml": {
+      "status": 200,
+      "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xhtml=\"http://www.w3.org/1999/xhtml\">\n<url>\n<loc>https://saveframe.site/</loc>\n<xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"https://saveframe.site/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"es\" href=\"https://saveframe.site/es/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"pt-BR\" href=\"https://saveframe.site/pt-br/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"de\" href=\"https://saveframe.site/de/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"fr\" href=\"https://saveframe.site/fr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ja\" href=\"https://saveframe.site/ja/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"id\" href=\"https://saveframe.site/id/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"tr\" href=\"https://saveframe.site/tr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"hi\" href=\"https://saveframe.site/hi/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ar\" href=\"https://saveframe.site/ar/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"https://saveframe.site/\" />\n</url>\n<url>\n<loc>https://saveframe.site/es/</loc>\n<xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"https://saveframe.site/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"es\" href=\"https://saveframe.site/es/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"pt-BR\" href=\"https://saveframe.site/pt-br/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"de\" href=\"https://saveframe.site/de/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"fr\" href=\"https://saveframe.site/fr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ja\" href=\"https://saveframe.site/ja/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"id\" href=\"https://saveframe.site/id/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"tr\" href=\"https://saveframe.site/tr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"hi\" href=\"https://saveframe.site/hi/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ar\" href=\"https://saveframe.site/ar/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"https://saveframe.site/\" />\n</url>\n<url>\n<loc>https://saveframe.site/pt-br/</loc>\n<xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"https://saveframe.site/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"es\" href=\"https://saveframe.site/es/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"pt-BR\" href=\"https://saveframe.site/pt-br/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"de\" href=\"https://saveframe.site/de/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"fr\" href=\"https://saveframe.site/fr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ja\" href=\"https://saveframe.site/ja/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"id\" href=\"https://saveframe.site/id/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"tr\" href=\"https://saveframe.site/tr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"hi\" href=\"https://saveframe.site/hi/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ar\" href=\"https://saveframe.site/ar/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"https://saveframe.site/\" />\n</url>\n<url>\n<loc>https://saveframe.site/de/</loc>\n<xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"https://saveframe.site/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"es\" href=\"https://saveframe.site/es/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"pt-BR\" href=\"https://saveframe.site/pt-br/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"de\" href=\"https://saveframe.site/de/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"fr\" href=\"https://saveframe.site/fr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ja\" href=\"https://saveframe.site/ja/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"id\" href=\"https://saveframe.site/id/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"tr\" href=\"https://saveframe.site/tr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"hi\" href=\"https://saveframe.site/hi/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ar\" href=\"https://saveframe.site/ar/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"https://saveframe.site/\" />\n</url>\n<url>\n<loc>https://saveframe.site/fr/</loc>\n<xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"https://saveframe.site/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"es\" href=\"https://saveframe.site/es/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"pt-BR\" href=\"https://saveframe.site/pt-br/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"de\" href=\"https://saveframe.site/de/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"fr\" href=\"https://saveframe.site/fr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ja\" href=\"https://saveframe.site/ja/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"id\" href=\"https://saveframe.site/id/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"tr\" href=\"https://saveframe.site/tr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"hi\" href=\"https://saveframe.site/hi/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ar\" href=\"https://saveframe.site/ar/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"https://saveframe.site/\" />\n</url>\n<url>\n<loc>https://saveframe.site/ja/</loc>\n<xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"https://saveframe.site/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"es\" href=\"https://saveframe.site/es/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"pt-BR\" href=\"https://saveframe.site/pt-br/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"de\" href=\"https://saveframe.site/de/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"fr\" href=\"https://saveframe.site/fr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ja\" href=\"https://saveframe.site/ja/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"id\" href=\"https://saveframe.site/id/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"tr\" href=\"https://saveframe.site/tr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"hi\" href=\"https://saveframe.site/hi/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ar\" href=\"https://saveframe.site/ar/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"https://saveframe.site/\" />\n</url>\n<url>\n<loc>https://saveframe.site/id/</loc>\n<xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"https://saveframe.site/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"es\" href=\"https://saveframe.site/es/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"pt-BR\" href=\"https://saveframe.site/pt-br/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"de\" href=\"https://saveframe.site/de/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"fr\" href=\"https://saveframe.site/fr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ja\" href=\"https://saveframe.site/ja/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"id\" href=\"https://saveframe.site/id/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"tr\" href=\"https://saveframe.site/tr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"hi\" href=\"https://saveframe.site/hi/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ar\" href=\"https://saveframe.site/ar/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"https://saveframe.site/\" />\n</url>\n<url>\n<loc>https://saveframe.site/tr/</loc>\n<xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"https://saveframe.site/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"es\" href=\"https://saveframe.site/es/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"pt-BR\" href=\"https://saveframe.site/pt-br/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"de\" href=\"https://saveframe.site/de/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"fr\" href=\"https://saveframe.site/fr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ja\" href=\"https://saveframe.site/ja/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"id\" href=\"https://saveframe.site/id/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"tr\" href=\"https://saveframe.site/tr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"hi\" href=\"https://saveframe.site/hi/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ar\" href=\"https://saveframe.site/ar/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"https://saveframe.site/\" />\n</url>\n<url>\n<loc>https://saveframe.site/hi/</loc>\n<xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"https://saveframe.site/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"es\" href=\"https://saveframe.site/es/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"pt-BR\" href=\"https://saveframe.site/pt-br/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"de\" href=\"https://saveframe.site/de/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"fr\" href=\"https://saveframe.site/fr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ja\" href=\"https://saveframe.site/ja/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"id\" href=\"https://saveframe.site/id/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"tr\" href=\"https://saveframe.site/tr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"hi\" href=\"https://saveframe.site/hi/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ar\" href=\"https://saveframe.site/ar/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"https://saveframe.site/\" />\n</url>\n<url>\n<loc>https://saveframe.site/ar/</loc>\n<xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"https://saveframe.site/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"es\" href=\"https://saveframe.site/es/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"pt-BR\" href=\"https://saveframe.site/pt-br/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"de\" href=\"https://saveframe.site/de/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"fr\" href=\"https://saveframe.site/fr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ja\" href=\"https://saveframe.site/ja/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"id\" href=\"https://saveframe.site/id/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"tr\" href=\"https://saveframe.site/tr/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"hi\" href=\"https://saveframe.site/hi/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"ar\" href=\"https://saveframe.site/ar/\" />\n<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"https://saveframe.site/\" />\n</url>\n<url>\n<loc>https://saveframe.site/reels-downloader</loc>\n</url>\n<url>\n<loc>https://saveframe.site/video-downloader</loc>\n</url>\n<url>\n<loc>https://saveframe.site/photo-downloader</loc>\n</url>\n<url>\n<loc>https://saveframe.site/carousel-downloader</loc>\n</url>\n<url>\n<loc>https://saveframe.site/story-downloader</loc>\n</url>\n<url>\n<loc>https://saveframe.site/profile-viewer</loc>\n</url>\n<url>\n<loc>https://saveframe.site/about</loc>\n</url>\n<url>\n<loc>https://saveframe.site/contact</loc>\n</url>\n<url>\n<loc>https://saveframe.site/privacy</loc>\n</url>\n<url>\n<loc>https://saveframe.site/terms</loc>\n</url>\n<url>\n<loc>https://saveframe.site/copyright</loc>\n</url>\n<url>\n<loc>https://saveframe.site/blog</loc>\n</url>\n<url>\n<loc>https://saveframe.site/blog/how-to-download-instagram-stories-by-link</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n<url>\n<loc>https://saveframe.site/blog/how-to-download-instagram-story-videos</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n<url>\n<loc>https://saveframe.site/blog/how-to-download-instagram-photos-online</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n<url>\n<loc>https://saveframe.site/blog/how-to-copy-instagram-photo-link</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n<url>\n<loc>https://saveframe.site/blog/view-instagram-profile-picture-by-url</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n<url>\n<loc>https://saveframe.site/blog/how-to-download-instagram-reels-mp4</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n<url>\n<loc>https://saveframe.site/blog/download-instagram-reels-on-iphone</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n<url>\n<loc>https://saveframe.site/blog/download-instagram-videos-on-pc</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n<url>\n<loc>https://saveframe.site/blog/download-instagram-carousel-photos</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n<url>\n<loc>https://saveframe.site/blog/download-instagram-reels-with-audio</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n<url>\n<loc>https://saveframe.site/blog/instagram-downloader-not-working</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n<url>\n<loc>https://saveframe.site/blog/why-instagram-videos-wont-download</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n<url>\n<loc>https://saveframe.site/blog/download-instagram-photos-iphone-android</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n<url>\n<loc>https://saveframe.site/blog/instagram-photo-sizes-aspect-ratios</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n<url>\n<loc>https://saveframe.site/blog/backup-instagram-photos-videos-reels</loc>\n<lastmod>2026-10-23T18:30:00.000Z</lastmod>\n</url>\n</urlset>\n"
+    }
+  },
+  "technicalIndexabilityVerified": true,
+  "googleIndexingVerified": false
+}

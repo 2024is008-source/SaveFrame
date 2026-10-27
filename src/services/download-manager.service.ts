@@ -9,6 +9,7 @@ import {
 import { validateMediaInput, sanitizeFilename } from '../security/url-validator';
 import { YtDlpService } from './yt-dlp.service';
 import { beginDownload, attachJob, jobEvent, recoverInterruptedJobs } from '../admin/analytics';
+import {isMp3Format} from './audio';
 
 export interface DownloadManagerConfig {
   tempDir?: string;
@@ -272,7 +273,7 @@ export class DownloadManagerService {
       analyticsId: input.trackAnalytics===false?undefined:input.analyticsId || beginDownload(validated.category,'XX',Boolean(input.zipCarousel)),
       url: validated.canonicalUrl,
       shortcode: validated.shortcode,
-      category: validated.category,
+      category: isMp3Format(input.formatId) ? 'audio' : validated.category,
       formatId: input.formatId || 'best',
       itemIndex: input.itemIndex ?? 0,
       itemIndices: input.itemIndices ? [...new Set(input.itemIndices)].sort((a, b) => a - b) : undefined,
@@ -470,6 +471,10 @@ export class DownloadManagerService {
         outputDir: this.tempDir,
         onProgress: (p) => {
           if ((job.status as string) === 'cancelled') return;
+          if(job.category === 'audio' && p.conversionStarted && !job.conversionStarted) {
+            job.conversionStarted = true;
+            jobEvent(job.analyticsId, 'audio_conversion_started', job.jobId, 'audio');
+          }
           job.status = p.stage;
           job.progress = Math.round(p.percent);
           if (p.etaSeconds !== undefined) job.etaSeconds = p.etaSeconds;
@@ -484,6 +489,7 @@ export class DownloadManagerService {
       }
       job.safeFilename = artifact.safeFilename;
       job.mimeType = artifact.mimeType;
+      job.durationSeconds = artifact.durationSeconds;
       job.filesizeBytes = artifact.filesizeBytes;
       job.downloadedBytes = artifact.filesizeBytes;
       job.totalBytes = artifact.filesizeBytes;

@@ -5,7 +5,7 @@ import {
   HealthStatus,
   NormalizedMediaResult,
 } from '../types/media.types';
-import { sanitizeFilename } from '../security/url-validator';
+import { sanitizeFilename, validatePublicMediaInput } from '../security/url-validator';
 import { RedisStoreService } from '../services/redis-store.service';
 import { YtDlpService } from '../services/yt-dlp.service';
 import { DownloadManagerService } from '../services/download-manager.service';
@@ -167,8 +167,9 @@ export async function handleApiRequest(
 
       const body = await readJsonBody(req);
       const rawUrl = typeof body.url === 'string' ? body.url : '';
-
-      const metadata = await ctx.ytDlpService.extractMetadata(rawUrl);
+      const tool = typeof body.tool === 'string' ? body.tool : undefined;
+      validatePublicMediaInput(rawUrl, tool);
+      const metadata = await ctx.ytDlpService.extractMetadata(rawUrl, tool);
       const cacheKey = `resolve:${metadata.canonicalUrl}`;
       await ctx.redisStore.setJson(cacheKey, metadata, 300);
 
@@ -201,6 +202,7 @@ export async function handleApiRequest(
       }
 
       const body = await readJsonBody(req);
+      validatePublicMediaInput(typeof body.url === 'string' ? body.url : '');
       const job = await ctx.downloadManager.createJob({
         url: typeof body.url === 'string' ? body.url : '',
         formatId: typeof body.formatId === 'string' ? body.formatId : undefined,

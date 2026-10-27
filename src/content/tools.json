@@ -136,38 +136,42 @@
     ]
   },
   {
-    "slug": "story-downloader",
-    "tool": "story",
-    "title": "Instagram Story Downloader",
-    "description": "Download a supported public Instagram story image or video using its direct link. Check source formats, access requirements and expiration limits.",
-    "intro": "Paste the direct link to one active public story image or video. The link must contain /stories/, the account username and the numeric story identifier. Profile links do not identify a single story and are not accepted in this tool.",
-    "heading": "Check story access and expiration",
-    "body": "SaveFrame checks the specified story image or video and offers available download formats when Instagram permits public access. Some stories require login even when their account is public. Available files depend on what Instagram allows the tool to access. This tool cannot bypass login restrictions or restore expired stories.",
+    "slug": "audio-downloader",
+    "tool": "audio",
+    "title": "Instagram Audio Downloader",
+    "description": "Download audio from public Instagram Reels and videos as MP3. Paste an Instagram link, extract the available audio, and save it to your device for free.",
+    "heading": "Extract available Instagram audio as MP3",
+    "intro": "Paste an accessible public Reel or video post link to inspect its audio track. Choose an MP3 output bitrate and prepare the file with the existing secure download queue.",
+    "body": "Standard encodes at 128 kbps, High at 192 kbps, and Best available at up to 320 kbps. Encoding at a higher bitrate cannot restore detail absent from the source. Audio preparation supports videos up to 10 minutes.",
     "steps": [
-      "Open the individual active story image or video in Instagram and copy its direct story link.",
-      "Paste the complete /stories/username/story-id/ URL above.",
-      "If the story is accessible, check its preview and download the available image or video."
+      "Copy a public Instagram Reel or video post link.",
+      "Paste the link and choose an MP3 quality.",
+      "Download Audio and save the prepared MP3 to your device."
     ],
-    "limits": "This tool handles one story image or video at a time. Profile links, entire-account story collections and bulk story downloads are unsupported. Login-restricted, private, expired or source-blocked stories cannot be retrieved.",
+    "limits": "Only audio available from accessible public videos can be extracted. Photo-only posts, private or login-restricted media, and removed content are not supported. Only download audio you own or have permission to save.",
     "faqs": [
       [
-        "Can I download an expired Instagram story?",
-        "No. SaveFrame cannot retrieve a story the source no longer makes available. Use your own original or Instagram archive when you control the account."
+        "Can I download Instagram audio as MP3?",
+        "Yes. Accessible public Reels and video posts with an audio track can be converted to a real MP3 file."
       ],
       [
-        "Does this work with private stories?",
-        "No. The interface does not bypass account privacy or authentication requirements."
+        "Does 320 kbps improve the original audio?",
+        "No. The selected bitrate controls MP3 encoding; source quality remains the limit."
       ],
       [
-        "Why does an active story still fail?",
-        "Instagram may require login or limit server access. Confirm the complete story URL, wait if requests are limited, or obtain the original from its creator."
+        "Can I extract audio from a photo?",
+        "Photo-only posts without an accessible audio stream are not supported."
+      ],
+      [
+        "Do I need to sign in?",
+        "SaveFrame does not request an Instagram login. Instagram may still restrict access to some public content."
       ]
     ],
     "guides": [
-      "how-to-download-instagram-stories-by-link",
-      "how-to-download-instagram-story-videos",
+      "how-to-download-instagram-reels-mp4",
       "instagram-downloader-not-working"
-    ]
+    ],
+    "seoDescription": "Download audio from Instagram Reels and videos as MP3. Paste a public Instagram link, extract audio online, and save it for free. No signup required."
   },
   {
     "slug": "profile-viewer",

@@ -20,6 +20,7 @@ import { InstagramAuthorizedAdapters } from './instagram-adapters.service';
 import { InstagramHttpClient } from './instagram-http.service';
 import { AuthorizedStoryAccess, StoryExtractionPipeline, parseStoryJson, ytDlpStoryCandidates } from './story-extraction.service';
 import { AuthorizedInstagrapiAccess, InstagrapiService, instagrapiEligible } from './instagrapi.service';
+import {audioMetadata, encodeMp3, isMp3Format} from './audio';
 
 export interface YtDlpServiceConfig {
   ytDlpBinaryPath?: string;
@@ -47,6 +48,7 @@ export interface DownloadMediaOptions {
     totalBytes?: number;
     etaSeconds?: number;
     stage: 'processing' | 'merging';
+    conversionStarted?: boolean;
   }) => void;
 }
 
@@ -55,6 +57,7 @@ export interface DownloadMediaArtifact {
   safeFilename: string;
   mimeType: string;
   filesizeBytes: number;
+  durationSeconds?: number;
 }
 
 /**
@@ -349,6 +352,7 @@ export class YtDlpService {
   public async extractMetadata(rawUrl: string, tool?: string, signal?: AbortSignal): Promise<NormalizedMediaResult> {
     if(signal?.aborted)throw new DownloaderAppError('JOB_CANCELLED','Media inspection was cancelled.',499);
     const validated=validateMediaInput(rawUrl,tool);
+    if(tool==='audio') return audioMetadata(await this.extractMetadata(rawUrl, undefined, signal));
     const cached=this.metadataCache.get(validated.canonicalUrl);
     if(cached&&cached.expiresAt>Date.now())return cached.data;
     if(validated.category==='story'){
@@ -549,6 +553,7 @@ export class YtDlpService {
     options: DownloadMediaOptions
   ): Promise<DownloadMediaArtifact> {
     const validated = validateInstagramUrl(rawUrl);
+    if(isMp3Format(options.formatId)) return this.downloadMp3(rawUrl, options);
     if (validated.category === 'profile' && options.formatId === 'bulk-profile') {
       throw new DownloaderAppError(
         'UNSUPPORTED_OPERATION',
@@ -751,6 +756,40 @@ export class YtDlpService {
       filesizeBytes: stat.size,
     };
     }finally{this.activeTransfers.delete(options.jobId);}
+  }
+
+  private async downloadMp3(rawUrl: string, options: DownloadMediaOptions): Promise<DownloadMediaArtifact> {
+    validateMediaInput(rawUrl, 'audio');
+    if (!/^[A-Za-z0-9_-]{1,100}$/.test(options.jobId)) throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'Invalid audio job.', 400);
+    const controller = new AbortController();
+    this.activeTransfers.set(options.jobId, controller);
+    let source: DownloadMediaArtifact | undefined, timedOut = false;
+    const timer = setTimeout(() => { timedOut = true; this.cancelDownload(options.jobId); }, 240000);
+    try {
+      const metadata = await this.extractMetadata(rawUrl, undefined, controller.signal);
+      const audio = audioMetadata(metadata);
+      const item = metadata.items[options.itemIndex ?? audio.items[0].index];
+      if (!item || item.mediaType !== 'video') throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'Choose a video with an audio track.', 422);
+      const format = item.formats.find(format => format.hasAudio && !format.hasVideo) || item.formats.find(format => format.hasAudio && !format.needsMerge) || item.formats.find(format => format.hasAudio);
+      if (!format) throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'No accessible audio track was found.', 422);
+      source = await this.downloadMedia(rawUrl, {...options, jobId: options.jobId + '_audio_source', itemIndex: item.index, formatId: format.formatId});
+      if (controller.signal.aborted) throw new DownloaderAppError('JOB_CANCELLED', 'Audio download cancelled.', 499);
+      const safeFilename = sanitizeFilename(`${metadata.uploader.username}_${metadata.shortcode}_audio`, 'mp3');
+      const destination = path.join(options.outputDir, options.jobId + '_' + safeFilename);
+      const artifact = await encodeMp3(source.filePath, destination, Number(options.formatId!.split('-')[1]), this.maxFileSizeBytes,
+        (args, timeout) => {
+          if(args.includes('-c:a')) options.onProgress?.({percent: 90, downloadedBytes: source!.filesizeBytes, stage: 'merging', conversionStarted: true});
+          return this.runSubprocess(this.ffmpegPath, args, timeout, options.jobId, undefined, controller.signal);
+        });
+      return {...artifact, safeFilename};
+    } catch (error) {
+      if (timedOut) throw new DownloaderAppError('DOWNLOAD_TIMEOUT', 'Audio preparation timed out.', 504, true);
+      throw error;
+    } finally {
+      clearTimeout(timer);
+      if (source) await fs.promises.unlink(source.filePath).catch(() => {});
+      this.activeTransfers.delete(options.jobId);
+    }
   }
 
   /**

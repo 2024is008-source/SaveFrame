@@ -2,7 +2,7 @@
 
 ## SEO and public pages
 
-Dedicated English tools are available at `/reels-downloader`, `/video-downloader`, `/photo-downloader`, `/carousel-downloader`, `/story-downloader` and `/profile-viewer`. They share the existing downloader and have distinct server-rendered instructions and FAQs. `/about`, `/contact`, `/privacy`, `/terms` and `/copyright` provide crawlable information pages. Existing homepage query links and ten language URLs still work.
+Dedicated English tools are available at `/reels-downloader`, `/video-downloader`, `/photo-downloader`, `/carousel-downloader`, `/audio-downloader` and `/profile-viewer`. They share the existing downloader and have distinct server-rendered instructions and FAQs. `/about`, `/contact`, `/privacy`, `/terms` and `/copyright` provide crawlable information pages. Existing homepage query links and ten language URLs still work.
 
 `npm run test:seo` crawls the running production preview, checks metadata, headings, canonical URLs, structured data and internal links, and writes `reports/seo-crawl.json`. The sitemap includes 37 canonical URLs; unfiltered blog page two is separately indexable with its own canonical. API responses carry noindex headers and are excluded from the sitemap.
 
@@ -40,9 +40,13 @@ npm run build
 npm start
 ```
 
+## MP3 audio and retired story tool
+
+The Audio tool provides real MP3 extraction at 128/192/up to 320 kbps from accessible public Reels and video posts, with a ten-minute source duration limit. Higher encoding bitrate cannot restore source quality. `/story-downloader` returns HTTP 410; historical story articles remain available with a retirement notice. Separate authorized owner-story CLI workflows remain server-only. No paid API is needed. See `AUDIO_DOWNLOADER_REPORT.md` for validation and deployment on the existing port 3001.
+
 ## Supported access
 
-Paste a public Instagram photo, Reel, video, active story, or profile URL. The app resolves available metadata and formats, then prepares the selected download through a background job. Private, deleted, expired, login-restricted, and rate-limited content returns an error instead of a fabricated result. Instagram may restrict access even to links viewable in a signed-in browser.
+Paste a public Instagram photo, Reel, video, or profile URL. The app resolves available metadata and formats, then prepares the selected download through a background job. Private, deleted, expired, login-restricted, and rate-limited content returns an error instead of a fabricated result. Instagram may restrict access even to links viewable in a signed-in browser.
 
 `GET /api/health` checks yt-dlp, FFmpeg, temporary storage, and the job store. Redis is optional; the local server uses its in-memory store when Redis is not configured.
 

@@ -53,7 +53,7 @@ export function saveSettings(input: Record<string,string>, actor: string) {
     if(key==='site_name' && (!value.trim() || value.length>60)) throw new AdminError(400,'Use a site name of 1–60 characters.');
     if(key==='contact_email' && (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || value.length>200)) throw new AdminError(400,'Enter a valid contact email.');
     if(key==='analytics_retention_days' && (!/^\d+$/.test(value) || Number(value)<7 || Number(value)>180)) throw new AdminError(400,'Analytics retention must be 7–180 days.');
-    if(key==='default_tool' && !['photo','reels','video','story','profile'].includes(value)) throw new AdminError(400,'Choose an existing tool.');
+    if(key==='default_tool' && !['photo','reels','video','audio','profile'].includes(value)) throw new AdminError(400,'Choose an existing tool.');
     if(key==='default_social_image' && !approvedImages().includes(value)) throw new AdminError(400,'Choose an approved image.');
     if(key==='default_description' && value.length>320) throw new AdminError(400,'Use a description of at most 320 characters.');
   }

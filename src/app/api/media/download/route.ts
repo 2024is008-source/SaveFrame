@@ -3,7 +3,7 @@ import { getApiContext } from '../../singleton';
 import { DownloaderAppError, InstagramMediaCategory } from '../../../../types/media.types';
 import { apiFailure, beginDownload, jobEvent } from '../../../../admin/analytics';
 import { readMediaJson } from '../../../../api/request';
-import { validateMediaInput } from '../../../../security/url-validator';
+import { validatePublicMediaInput } from '../../../../security/url-validator';
 import { requestCountry } from '../../../../admin/country-policy';
 
 export async function POST(req: NextRequest) {
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     // Explicit, user-started playback uses the same bounded preparation queue.
     // It must not inflate download totals.
     if(body.preview !== true) analyticsId=beginDownload('unknown',country,Boolean(body.zipCarousel));
-    attemptedCategory=validateMediaInput(body.url||'').category;
+    attemptedCategory=validatePublicMediaInput(body.url||'').category;
     const job = await ctx.downloadManager.createJob({
       url: body.url || '',
       formatId: body.formatId,

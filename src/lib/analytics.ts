@@ -5,7 +5,7 @@ import { locales } from '../i18n/config';
 
 export const consentKey = 'saveframe.analytics.consent';
 const routes = new Set(['/', '/blog', ...locales.filter(locale=>locale!=='en').map(locale=>`/${locale}`), ...tools.map(tool=>`/${tool.slug}`), ...information.map(page=>`/${page.slug}`), ...posts.filter(post=>post.published).map(post=>`/blog/${post.slug}`)]);
-const categories = new Set(['reel','reels','video','photo','carousel','story','zip','profile','unknown']);
+const categories = new Set(['audio','reel','reels','video','photo','carousel','story','zip','profile','unknown']);
 const codes = new Set(['INVALID_URL','INVALID_STORY_LINK','UNSUPPORTED_OPERATION','UNSUPPORTED_MEDIA_TYPE','LOGIN_REQUIRED','PRIVATE_CONTENT','EXPIRED_STORY','DELETED_CONTENT','NO_ACTIVE_STORIES','RATE_LIMITED','EXTRACTOR_FAILURE','DOWNLOAD_TIMEOUT','FILE_TOO_LARGE','JOB_CANCELLED','INTERNAL_ERROR','YTDLP_NOT_INSTALLED','FFMPEG_ERROR','INSUFFICIENT_DISK_SPACE','PROCESS_RESTARTED','DELIVERY_STREAM_ERROR']);
 export function analyticsPath(pathname:string,search=''):string|null {
   const clean=pathname.length>1?pathname.replace(/\/+$/,''):pathname;
@@ -32,15 +32,15 @@ export function analyticsCampaign(search:string,options:AnalyticsOptions={}){
   return result.campaign_source&&result.campaign_medium?result:{};
 }
 export function analyticsEvent(name:unknown, input:Record<string,unknown>={}) {
-  if(!['download_started','download_prepared','download_delivered','media_previewed','media_resolved','download_failed'].includes(String(name)))return null;
+  if(!['audio_conversion_started','download_started','download_prepared','download_delivered','media_previewed','media_resolved','download_failed'].includes(String(name)))return null;
   if(!input||typeof input!=='object')input={};
   const category=categories.has(String(input.media_type))?String(input.media_type):'unknown';
   const params:Record<string,string>={media_type:category==='reels'?'reel':category};
   if (name !== 'media_resolved') {
     const format = String(input.download_format).toLowerCase();
-    params.download_format = ['mp4','m4a','jpg','jpeg','png','webp','zip'].includes(format) ? format === 'jpeg' ? 'jpg' : format : 'unknown';
+    params.download_format = ['mp3','mp4','m4a','jpg','jpeg','png','webp','zip'].includes(format) ? format === 'jpeg' ? 'jpg' : format : 'unknown';
     params.download_method = name === 'media_previewed' ? 'preview' : input.download_method === 'bulk' ? 'bulk' : 'single';
-    params.download_status = name === 'download_started' ? 'requested' : name === 'download_prepared' ? 'prepared' : name === 'download_delivered' ? 'handed_off' : name === 'media_previewed' ? 'viewed' : ['JOB_CANCELLED','DELIVERY_CANCELLED'].includes(String(input.error_code)) ? 'cancelled' : 'failed';
+    params.download_status = name === 'audio_conversion_started' ? 'converting' : name === 'download_started' ? 'requested' : name === 'download_prepared' ? 'prepared' : name === 'download_delivered' ? 'handed_off' : name === 'media_previewed' ? 'viewed' : ['JOB_CANCELLED','DELIVERY_CANCELLED'].includes(String(input.error_code)) ? 'cancelled' : 'failed';
     params.source_page = typeof input.source_page === 'string' ? analyticsPath(input.source_page) || 'unknown' : 'unknown';
   }
   if(name==='download_failed'){

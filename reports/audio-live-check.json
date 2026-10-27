@@ -1,0 +1,11 @@
+{
+  "status": 200,
+  "category": "audio",
+  "formats": [
+    "mp3",
+    "mp3",
+    "mp3"
+  ],
+  "loggedIn": false,
+  "liveDownloadVerified": false
+}
