@@ -7,6 +7,11 @@ const {GET,POST}=require('../src/app/api/admin/[[...segments]]/route.ts');
 const context=segments=>({params:Promise.resolve({segments:segments.split('/')})});
 const rejectStatus=status=>error=>error.status===status;
 async function main(){
+ const {formatAdminTime}=require('../src/lib/admin-time.ts');
+ assert.equal(formatAdminTime(Date.parse('2026-10-27T08:20:15Z')),'2026-10-27 13:50:15 SLST');
+ assert.equal(formatAdminTime(Date.parse('2026-10-27T18:29:59Z')),'2026-10-27 23:59:59 SLST');
+ assert.equal(formatAdminTime(Date.parse('2026-10-27T18:30:00Z')),'2026-10-28 00:00:00 SLST');
+ for(const value of [undefined,null,'',NaN,'invalid'])assert.equal(formatAdminTime(value),'—');
  const connection=store.db();assert.equal(connection.prepare('SELECT MAX(version) version FROM schema_migrations').get().version,3);
  const password='admin-fixture-'+require('node:crypto').randomBytes(18).toString('hex');const id=await auth.createAdmin('operator@example.test',password);
  const user=connection.prepare('SELECT * FROM admin_users WHERE id=?').get(id);assert.ok(user.password_hash.startsWith('$argon2id$'));

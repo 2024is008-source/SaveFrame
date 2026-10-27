@@ -54,6 +54,24 @@ async function main() {
     const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(match => JSON.parse(match[1]));
     assert.ok(schemas.length, path + ': schema missing');
     const nodes = schemas.flatMap(value => Array.isArray(value) ? value : value['@graph'] || [value]);
+    if (Object.values(homeAlternates).includes(path) || tools.some(tool => path === '/' + tool.slug)) {
+      const websites = nodes.filter(node => node['@type'] === 'WebSite');
+      assert.equal(websites.length, 1, path + ': one authoritative WebSite node');
+      assert.equal(websites[0].name, 'SaveFrame');
+      assert.equal(websites[0].url, origin + '/');
+      assert.equal(websites[0]['@id'], origin + '/#website');
+      assert.ok(!nodes.some(node => node['@type'] === 'SearchAction' || node.potentialAction), 'No unsupported sitelinks search box');
+      for (const tag of ['og:title', 'og:description']) assert.match(html, new RegExp(`property="${tag}" content="[^"]+"`), path + ': ' + tag);
+      for (const tag of ['twitter:title', 'twitter:description']) assert.match(html, new RegExp(`name="${tag}" content="[^"]+"`), path + ': ' + tag);
+      const rendered = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+      const drawer = rendered.match(/<div\b[^>]*id="mobile-nav-drawer"[^>]*>([\s\S]*?)<\/header>/)?.[1];
+      const footer = rendered.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1];
+      for (const tool of tools) {
+        const anchor = new RegExp(`<a\\b[^>]*href="/${tool.slug}"[^>]*>[\\s\\S]*?</a>`);
+        assert.match(drawer || '', anchor, path + ': mobile link to ' + tool.slug);
+        assert.match(footer || '', anchor, path + ': footer link to ' + tool.slug);
+      }
+    }
     for (const data of schemas) assert.ok(Array.isArray(data) || data['@context'] === 'https://schema.org');
     assert.ok(nodes.some(node => ['WebPage', 'BlogPosting'].includes(node['@type'])), path + ': page schema');
     for (const node of nodes) {
