@@ -11,13 +11,14 @@ import {
   NormalizedMediaResult,
 } from '../types/media.types';
 import {
-  validateInstagramUrl,
+  validateTikTokUrl,
   validateMediaInput,
   assertSafeHostResolution,
   sanitizeFilename,
 } from '../security/url-validator';
 import { InstagramAuthorizedAdapters } from './instagram-adapters.service';
 import { InstagramHttpClient } from './instagram-http.service';
+import { TikTokHttpClient, parseTikTokPhotos } from './tiktok.service';
 import { AuthorizedStoryAccess, StoryExtractionPipeline, parseStoryJson, ytDlpStoryCandidates } from './story-extraction.service';
 import { AuthorizedInstagrapiAccess, InstagrapiService, instagrapiEligible } from './instagrapi.service';
 import {audioMetadata, encodeMp3, isMp3Format} from './audio';
@@ -66,7 +67,7 @@ export interface DownloadMediaArtifact {
  * Security & Architecture Guarantees:
  * - Executes `yt-dlp` strictly via `child_process.spawn(binary, argsArray, { shell: false })`.
  * - Never concatenates user input into a shell string or passes user-controlled CLI flags.
- * - Uses `--` argument terminator before the validated canonical Instagram URL.
+ * - Uses `--` argument terminator before the validated canonical TikTok URL.
  * - Enforces process timeouts, stdout buffer caps, socket timeouts, and max file size limits.
  * - Normalizes `yt-dlp --dump-single-json --no-download` into `NormalizedMediaResult` while
  *   stripping cookies, headers, and internal extractor secrets.
@@ -314,7 +315,7 @@ export class YtDlpService {
           reject(
             new DownloaderAppError(
               'DOWNLOAD_TIMEOUT',
-              'Media extraction timed out. Instagram may be slow or the file is too large.',
+              'Media extraction timed out. TikTok may be slow or the file is too large.',
               504,
               true,
               stderr
@@ -346,7 +347,7 @@ export class YtDlpService {
 
   /**
    * 1. extractMetadata(url)
-   * Validates the Instagram URL, invokes `yt-dlp --dump-single-json --no-download`,
+   * Validates the TikTok URL, invokes `yt-dlp --dump-single-json --no-download`,
    * handles single-photo and profile fallback adapters, and normalizes the output.
    */
   public async extractMetadata(rawUrl: string, tool?: string, signal?: AbortSignal): Promise<NormalizedMediaResult> {
@@ -389,6 +390,7 @@ export class YtDlpService {
     const validated = validateMediaInput(rawUrl, tool);
     try { return await this.extractPrimaryMetadata(rawUrl, tool, signal); }
     catch (primaryError) {
+      if (new URL(validated.canonicalUrl).hostname.endsWith('tiktok.com')) throw primaryError;
       let error = primaryError;
       if (validated.category === 'photo' && instagrapiEligible(error)) {
         try { return this.rememberMetadata(validated.canonicalUrl, await this.adapters.extractPublicPhotoPost(validated, undefined, signal)); }
@@ -422,15 +424,39 @@ export class YtDlpService {
   }
 
   private async extractPrimaryMetadata(rawUrl: string, tool?: string, signal?: AbortSignal): Promise<NormalizedMediaResult> {
-    const validated = validateMediaInput(rawUrl, tool);
+    let validated = validateMediaInput(rawUrl, tool);
+    const inputUrl = validated.canonicalUrl;
+    const transport = new TikTokHttpClient();
+    if (!validated.username) validated = validateTikTokUrl(await transport.resolveUrl(inputUrl, signal));
     const cached = this.metadataCache.get(validated.canonicalUrl);
     if (cached && cached.expiresAt > Date.now()) return cached.data;
     this.metadataCache.delete(validated.canonicalUrl);
     if(validated.category==='story')return this.rememberMetadata(validated.canonicalUrl,await this.stories.extract(validated,signal));
-    await assertSafeHostResolution('www.instagram.com');
+    await assertSafeHostResolution(new URL(validated.canonicalUrl).hostname);
+    if (validated.category === 'photo') {
+      // TikTok sometimes publishes a photo post's public hydration only at its
+      // same-ID /video/ representation. Both pages remain subject to host checks.
+      const deadline = Date.now() + this.metadataTimeoutMs;
+      let lastError: unknown;
+      for (const source of [validated.canonicalUrl, validated.canonicalUrl.replace('/photo/', '/video/')]) {
+        if (signal?.aborted) throw signal.reason;
+        const remaining = deadline - Date.now();
+        if (remaining <= 0) break;
+        try {
+          const html = await transport.metadata(source, { timeoutMs: remaining, signal });
+          const data = parseTikTokPhotos(html, validated.canonicalUrl);
+          this.rememberMetadata(validated.canonicalUrl, data);
+          return this.rememberMetadata(inputUrl, data);
+        } catch (error) {
+          if (error instanceof DownloaderAppError && error.code === 'PRIVATE_CONTENT') throw error;
+          lastError = error;
+        }
+      }
+      throw lastError || new DownloaderAppError('EXTRACTOR_FAILURE', 'No supported public photos were returned. Please try again later.', 502, true);
+    }
 
     // Profile URLs are handled by our dedicated Profile Metadata Adapter
-    // because yt-dlp's InstagramUserIE is marked _WORKING = False and bulk profile downloads are prohibited.
+    // because yt-dlp's TikTokUserIE is marked _WORKING = False and bulk profile downloads are prohibited.
     if (validated.category === 'profile') {
       return this.rememberMetadata(validated.canonicalUrl,await this.adapters.extractPublicProfileMetadata(validated,undefined,signal));
     }
@@ -440,9 +466,8 @@ export class YtDlpService {
       '--no-download',
       '--no-config',
       '--no-warnings',
-      // Instagram photo carousels expose thumbnails without video formats.
+      // TikTok photo carousels expose thumbnails without video formats.
       // Keep those entries so they can be normalized as downloadable images.
-      ...(validated.category === 'photo' ? ['--ignore-no-formats-error'] : []),
       '--socket-timeout',
       String(this.socketTimeoutSeconds),
       '--',
@@ -459,7 +484,7 @@ export class YtDlpService {
       // Check if yt-dlp reported "There is no video in this post" on a single photo post (/p/...)
       if (
         stderr.includes('There is no video in this post') &&
-        validated.category === 'photo'
+        String(validated.category) === 'photo'
       ) {
         throw new DownloaderAppError('EXTRACTOR_FAILURE', 'The post requires image extraction.', 502, true);
       }
@@ -552,12 +577,12 @@ export class YtDlpService {
     rawUrl: string,
     options: DownloadMediaOptions
   ): Promise<DownloadMediaArtifact> {
-    const validated = validateInstagramUrl(rawUrl);
+    const validated = validateMediaInput(rawUrl);
     if(isMp3Format(options.formatId)) return this.downloadMp3(rawUrl, options);
     if (validated.category === 'profile' && options.formatId === 'bulk-profile') {
       throw new DownloaderAppError(
         'UNSUPPORTED_OPERATION',
-        'Bulk downloading of entire Instagram profiles is not permitted.',
+        'Bulk downloading of entire TikTok profiles is not permitted.',
         400
       );
     }
@@ -622,9 +647,9 @@ export class YtDlpService {
           stage: 'processing',
         });
       }
-      const { bytesWritten, mimeType } = await this.adapters.downloadImageToFile(
-        selectedFormat.directUrl,
-        finalFilePath,controller.signal
+      const { bytesWritten, mimeType } = await new TikTokHttpClient().download(
+        selectedFormat.directUrl, finalFilePath, selectedFormat.ext === 'webp' ? 'image/webp' : 'image/jpeg',
+        this.maxFileSizeBytes, { signal: controller.signal, timeoutMs: this.downloadTimeoutMs }
       );
       if (options.onProgress) {
         options.onProgress({
@@ -676,7 +701,7 @@ export class YtDlpService {
     }
 
     // Reuse the server-only extraction result, including its stream URLs, so a
-    // click does not make Instagram resolve the same post a second time.
+    // click does not make TikTok resolve the same post a second time.
     const cachedMetadata = this.metadataCache.get(validated.canonicalUrl);
     const infoPath = cachedMetadata && cachedMetadata.expiresAt > Date.now()
       ? path.join(options.outputDir, `${options.jobId}.info.json`)
@@ -896,20 +921,20 @@ export class YtDlpService {
     validated: { canonicalUrl: string; category: InstagramMediaCategory; shortcode: string }
   ): NormalizedMediaResult {
     if (validated.category === 'story' && raw?._type === 'playlist' && Array.isArray(raw.entries) && !raw.entries.length) {
-      throw new DownloaderAppError('NO_ACTIVE_STORIES', 'No downloadable active stories were returned by Instagram.', 404);
+      throw new DownloaderAppError('NO_ACTIVE_STORIES', 'No downloadable active stories were returned by TikTok.', 404);
     }
     const isPlaylist =
       raw._type === 'playlist' && Array.isArray(raw.entries) && raw.entries.length > 0;
     const rawEntries: any[] = isPlaylist ? raw.entries : [raw];
 
     const uploaderUsername =
-      raw.channel ||
+      raw.uploader || raw.channel ||
       raw.uploader_id ||
       rawEntries[0]?.channel ||
       rawEntries[0]?.uploader ||
-      'instagram_user';
+      'tiktok_creator';
     const uploaderFullName =
-      raw.uploader || rawEntries[0]?.uploader || uploaderUsername;
+      raw.creator || raw.uploader || rawEntries[0]?.uploader || uploaderUsername;
 
     const items: NormalizedMediaItem[] = rawEntries.map((entry, idx) => {
       const itemShortcode = entry.id || `${validated.shortcode}_${idx + 1}`;
@@ -1059,7 +1084,7 @@ export class YtDlpService {
           : undefined;
 
       if (hasVideo) {
-        const needsMerge = !hasAudio;
+        const needsMerge = !hasAudio && rawFormats.some(candidate => candidate.acodec && candidate.acodec !== 'none' && candidate.vcodec === 'none');
         const heightLabel = height ? `${height}p` : 'HD';
         videoFormats.push({
           formatId: String(f.format_id || 'best'),
@@ -1075,7 +1100,7 @@ export class YtDlpService {
           vcodec,
           acodec,
           hasVideo: true,
-          hasAudio: true, // Guaranteed after download/FFmpeg merge
+          hasAudio: hasAudio || needsMerge,
           needsMerge,
           filesizeBytes,
           filesizeFormatted: this.formatBytes(filesizeBytes) || 'Size unavailable',
@@ -1119,7 +1144,7 @@ export class YtDlpService {
     if (audioFormats.length > 0) {
       deduped.push(audioFormats[0]);
     } else {
-      // A combined stream can still provide audio when Instagram has no separate track.
+      // A combined stream can still provide audio when TikTok has no separate track.
       const combined = deduped.find(format => !format.needsMerge);
       if (combined) deduped.push({
         formatId: 'audio-extract', sourceFormatId: combined.formatId,
@@ -1129,7 +1154,7 @@ export class YtDlpService {
       });
     }
 
-    return deduped;
+    return deduped.filter(format => format.hasVideo);
   }
 
   private computeAspectRatio(w: number, h: number): string {
@@ -1162,6 +1187,7 @@ export class YtDlpService {
     category: InstagramMediaCategory
   ): DownloaderAppError {
     const lower = (stderr || '').toLowerCase();
+    if (lower.includes('ip address is blocked') || lower.includes('ip blocked')) return new DownloaderAppError('RATE_LIMITED', 'TikTok is restricting access from this server. Please try again later.', 429, true, stderr);
 
     if (
       lower.includes('rate-limit') ||
@@ -1171,7 +1197,7 @@ export class YtDlpService {
     ) {
       return new DownloaderAppError(
         'RATE_LIMITED',
-        'Instagram rate limit reached for unauthenticated requests. Please wait a few minutes and try again.',
+        'TikTok rate limit reached for unauthenticated requests. Please wait a few minutes and try again.',
         429,
         true,
         stderr
@@ -1182,19 +1208,19 @@ export class YtDlpService {
       // Upstream often reports "unreachable" together with "login required".
       // Authentication failure is not evidence that a story has expired.
       if (/log[ -]?in|log in|authentication|cookies/.test(lower)) {
-        return new DownloaderAppError('LOGIN_REQUIRED', 'Instagram requires login to access this story. Only accessible story media can be retrieved.', 403, false, stderr);
+        return new DownloaderAppError('LOGIN_REQUIRED', 'TikTok requires login to access this story. Only accessible story media can be retrieved.', 403, false, stderr);
       }
-      if (/403|forbidden|access denied|permission denied/.test(lower))return new DownloaderAppError('PRIVATE_CONTENT','Instagram denied access to this story.',403,false,stderr);
+      if (/403|forbidden|access denied|permission denied/.test(lower))return new DownloaderAppError('PRIVATE_CONTENT','TikTok denied access to this story.',403,false,stderr);
       if (lower.includes('expired')) {
         return new DownloaderAppError(
           'EXPIRED_STORY',
-          'This Instagram Story is unavailable or has expired past its 24-hour visibility window.',
+          'This TikTok Story is unavailable or has expired past its 24-hour visibility window.',
           404,
           false,
           stderr
         );
       }
-      if(lower.includes('not found')||lower.includes('404'))return new DownloaderAppError('DELETED_CONTENT','This Instagram story was not found or is unavailable.',404,false,stderr);
+      if(lower.includes('not found')||lower.includes('404'))return new DownloaderAppError('DELETED_CONTENT','This TikTok story was not found or is unavailable.',404,false,stderr);
     }
 
     if (
@@ -1205,7 +1231,7 @@ export class YtDlpService {
     ) {
       return new DownloaderAppError(
         'PRIVATE_CONTENT',
-        'This content belongs to a private or restricted Instagram account and cannot be accessed.',
+        'This content belongs to a private or restricted TikTok account and cannot be accessed.',
         403,
         false,
         stderr
@@ -1219,7 +1245,7 @@ export class YtDlpService {
     ) {
       return new DownloaderAppError(
         'LOGIN_REQUIRED',
-        'Instagram requires login to view this post. Only publicly accessible media without login walls can be processed.',
+        'TikTok requires login to view this post. Only publicly accessible media without login walls can be processed.',
         403,
         false,
         stderr
@@ -1234,7 +1260,7 @@ export class YtDlpService {
     ) {
       return new DownloaderAppError(
         'DELETED_CONTENT',
-        'This Instagram post could not be found. It may have been deleted or the shortcode is invalid.',
+        'This TikTok post could not be found. It may have been deleted or the shortcode is invalid.',
         404,
         false,
         stderr
@@ -1263,7 +1289,7 @@ export class YtDlpService {
 
     return new DownloaderAppError(
       'EXTRACTOR_FAILURE',
-      'Unable to extract media from this Instagram link. Verify that the link points to a public post.',
+      'Unable to extract media from this TikTok link. Verify that the link points to a public post.',
       502,
       true,
       stderr

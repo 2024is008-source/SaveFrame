@@ -1,5 +1,5 @@
 {
-  "name": "saveframe-instagram-downloader",
+  "name": "tiksave-mp4",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -10,7 +10,7 @@
     "postbuild": "node scripts/sanitize-build-traces.cjs",
     "start": "next start -H 127.0.0.1",
     "lint": "eslint src next.config.ts",
-    "test": "npm run test:admin && npm run test:security && npm run test:preview && npm run test:downloader && npm run test:stories && npm run test:i18n && npm run test:blog && npm run test:analytics && npm run test:sitelinks && npm run test:audio",
+    "test": "npm run test:tiktok && npm run test:blog",
     "test:sitelinks": "node scripts/check-sitelinks.cjs",
     "test:audio": "node scripts/check-audio.cjs",
     "test:audio:browser": "node scripts/check-audio-browser.cjs",
@@ -35,7 +35,12 @@
     "test:admin": "node scripts/check-admin.cjs && node scripts/check-api-error-reporting.cjs && node scripts/check-country-analytics.cjs",
     "test:countries": "node scripts/check-country-analytics.cjs",
     "test:admin:live": "node scripts/check-admin-live.cjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:legacy": "npm run test:admin && npm run test:security && npm run test:preview && npm run test:downloader && npm run test:stories && npm run test:i18n && npm run test:blog && npm run test:analytics && npm run test:sitelinks && npm run test:audio",
+    "test:tiktok": "node scripts/check-tiktok.cjs",
+    "test:browser": "node scripts/check-tiktok-browser.cjs",
+    "test:blog:browser": "node scripts/check-tiktok-blog-browser.cjs",
+    "test:seo:metadata": "node scripts/check-seo-metadata.cjs"
   },
   "dependencies": {
     "@next/third-parties": "^15.5.28",

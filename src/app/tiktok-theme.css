@@ -1,0 +1,46 @@
+/* The supplied SaveFrame layout in a white TikTok-inspired theme. */
+.tiksave-theme{--tik-cyan:#25f4ee;--tik-pink:#fe2c55;--tik-action:#d91f46;--tik-ink:#161616;--tik-muted:#606069;--tik-surface:#fff}
+.tiksave-theme>header,.saveframe-home>header{background:#fff;border-color:#e4e4e9;color:var(--tik-ink)}
+.tiksave-theme header .text-ink{color:var(--tik-ink)}.tiksave-theme header .text-ink-secondary,.tiksave-theme header .text-ink-muted{color:var(--tik-muted)}
+.tiksave-theme header button:hover,.tiksave-theme header a:hover{color:#087f83}
+.tiksave-theme header [id$="-menu"],.tiksave-theme #mobile-nav-drawer{background:#fff;border-color:#e4e4e9}
+.tiksave-theme header [id$="-menu"] button:hover,.tiksave-theme header [id$="-menu"] a:hover{background:#f2fbfb}
+.tiksave-theme #language-select,.tiksave-theme #mobile-menu-btn{background:#f7f7f8;border-color:#e4e4e9;color:#393941}
+.tiksave-theme #brand-home-btn>span,.tiksave-theme footer .w-8{background:#121215;border-color:#121215;color:#fff}
+.tiksave-theme #main-tool>section:first-child{background:#fff;padding-top:48px;padding-bottom:64px;position:relative;color:var(--tik-ink)}
+.tiksave-theme #main-tool>section:first-child>div{max-width:880px}
+.tiksave-theme #hero-heading{color:var(--tik-ink);font-size:clamp(30px,4vw,56px);font-weight:800;letter-spacing:-.035em;line-height:1.1}
+.tiksave-theme #hero-description{color:var(--tik-muted);font-size:16px;max-width:600px;margin:18px auto 0;line-height:1.65}
+.tiksave-theme #main-tool [role=tablist]{background:#f6f6f8;border-color:#e4e4e9;padding:6px;margin-top:32px;border-radius:16px}
+.tiksave-theme .media-tab-btn[aria-selected=true]{background:#fff;color:#087f83;border-color:#d5ecea;box-shadow:inset 0 -2px 0 var(--tik-cyan)}
+.tiksave-theme .media-tab-btn[aria-selected=false]{color:var(--tik-muted)}.tiksave-theme .media-tab-btn:hover{color:#087f83;background:#edfafa}
+.tiksave-theme #downloader-panel{background:#fff;border:3px solid #161616;border-radius:20px;box-shadow:none}
+.tiksave-theme .spectrum-bar{background:linear-gradient(90deg,var(--tik-cyan) 0 49%,var(--tik-pink) 51% 100%);height:3px}
+.tiksave-theme #panel-tool-title{color:var(--tik-ink);font-size:20px;font-weight:700}.tiksave-theme #panel-tool-subtitle{color:var(--tik-muted);line-height:1.6}
+.tiksave-theme #downloader-form label{color:#393941}.tiksave-theme #tiktok-url-input{background:#f9f9fa;color:var(--tik-ink);font-size:16px;min-height:52px;padding-right:96px}
+.tiksave-theme #tiktok-url-input::placeholder{color:#73737e}.tiksave-theme #paste-url-btn{color:#393941;background:#fff;border-color:#e1e1e6;min-height:40px}
+.tiksave-theme #submit-download-btn{background:var(--tik-action);color:#fff;border-color:var(--tik-action);min-height:56px;font-size:15px;font-weight:700;transition:background .18s ease,transform .18s ease}
+.tiksave-theme #submit-download-btn:hover{background:#bc193c;transform:translateY(-1px)}.tiksave-theme #submit-download-btn:active{transform:translateY(1px)}
+.tiksave-theme #validation-feedback{color:#19191e}.tiksave-theme #loading-state-panel{margin-top:16px;padding:0;border:0;background:transparent}
+.tiksave-theme .media-loading-card{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px;border:1px solid #e4e4e9;border-radius:14px;background:#fff;text-align:left}
+.tiksave-theme .media-loading-content{display:flex;align-items:center;gap:12px;min-width:0}
+.tiksave-theme .media-loading-icon{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:12px;background:#fff0f3;color:var(--tik-action)}
+.tiksave-theme .media-loading-copy{min-width:0;overflow-wrap:anywhere}
+.tiksave-theme #loading-step-title{margin:0;font-size:14px;line-height:1.5;font-weight:600;color:var(--tik-ink)}
+.tiksave-theme #loading-step-detail{margin:3px 0 0;font-size:13px;line-height:1.5;color:var(--tik-muted)}
+.tiksave-theme .media-loading-cancel{flex-shrink:0;min-height:44px;padding:10px 16px;border:1px solid #e4e4e9;border-radius:10px;background:#fff;font-size:14px;line-height:1.5;font-weight:500;color:#393941;cursor:pointer}
+.tiksave-theme .media-loading-cancel:hover{background:#f7f7f8;border-color:#c8c8d0}
+@media(max-width:479px){.tiksave-theme .media-loading-card{align-items:stretch;flex-direction:column;gap:12px;padding:16px}.tiksave-theme .media-loading-cancel{align-self:flex-start;margin-inline-start:52px}}
+@media(prefers-reduced-motion:reduce){.tiksave-theme .media-loading-icon .animate-spin{animation:none}}
+.tiksave-theme #main-tool>section:first-child:after{content:"";position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--tik-cyan) 0 50%,var(--tik-pink) 50% 100%)}
+.tiksave-theme #how-to-use,.tiksave-theme #faq-section{background:#f7f7f9}.tiksave-theme #features-section{background:#fff}
+.tiksave-theme #faq-accordion-list>div{border-color:#e2e2e7}.tiksave-theme #faq-accordion-list>div:has(button[aria-expanded=true]){border-color:#efbac5}
+.tiksave-theme footer{background:#f7f7f9;color:var(--tik-muted);border-color:#e4e4e9}.tiksave-theme footer .text-ink{color:var(--tik-ink)}.tiksave-theme footer [class*="text-ink-muted"]{color:var(--tik-muted)}.tiksave-theme footer .border-line{border-color:#e4e4e9}.tiksave-theme footer a:hover{color:#087f83}
+.tiksave-theme button:focus-visible,.tiksave-theme a:focus-visible,.tiksave-theme input:focus-visible,.tiksave-theme select:focus-visible{outline:3px solid #09868a;outline-offset:3px}
+.tiksave-theme #result-section-wrap{color:var(--tik-ink)}.tiksave-theme #result-dynamic-content .trigger-download-btn.bg-brand-violet{background:var(--tik-action)}
+@media(max-width:640px){.tiksave-theme #main-tool>section:first-child{padding-top:32px;padding-bottom:44px}.tiksave-theme #hero-heading{font-size:30px}.tiksave-theme #hero-description{font-size:14px;margin-top:14px}.tiksave-theme #main-tool [role=tablist]{margin-top:24px}.tiksave-theme #panel-tool-title{font-size:18px}.tiksave-theme #downloader-panel{box-shadow:none}.tiksave-theme #submit-download-btn{width:100%}.tiksave-theme #brand-home-btn>div>span{max-width:130px}.tiksave-theme #language-select{width:100px}}
+@media(prefers-reduced-motion:reduce){.tiksave-theme #submit-download-btn{transition:none;transform:none}}
+.tiksave-theme .guide-card-copy>p:not(.guide-meta){font-size:16px}
+@media(min-width:768px) and (max-width:1023px){.tiksave-theme header nav[aria-label="Primary Navigation"]{display:none}.tiksave-theme #mobile-menu-btn{display:flex}.tiksave-theme #mobile-nav-drawer:not(.hidden){display:block}}
+
+.tiksave-theme #downloader-panel > .spectrum-bar{display:none}

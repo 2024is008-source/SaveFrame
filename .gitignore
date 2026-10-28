@@ -13,3 +13,7 @@ dist/
 **/instagram-sessions/
 **/*.instagrapi-session.json
 python/__pycache__/
+
+.taste-skill/
+reports/tiktok-browser/
+reports/tiktok-blog/

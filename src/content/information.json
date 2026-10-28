@@ -1,132 +1,92 @@
 [
   {
     "slug": "about",
-    "title": "About SaveFrame",
-    "description": "Learn what SaveFrame does, how its public Instagram media tools work, and the access and quality limits behind every download.",
+    "title": "About TikSaveMP4",
+    "description": "Learn how TikSaveMP4 saves public TikTok videos and photo slideshows, which formats are available, and what source quality and access limits mean.",
     "sections": [
       [
-        "What SaveFrame helps you do",
-        "SaveFrame is an independent browser interface for inspecting and saving supported public Instagram media. You paste an individual link, check the returned preview and formats, and request a file. The tools cover photos, Reels, feed videos, carousel items, active public stories and available public profile information."
+        "What we do",
+        "TikSaveMP4 checks public TikTok post links and prepares available videos or photo slideshows for download. Save a video as MP4, save an individual image, or package photo slides in their original order as a ZIP."
       ],
       [
-        "How the tools work",
-        "The application checks submitted links and uses server-side media extraction to inspect accessible source files. Video and audio tracks can be prepared together when supported. The interface shows actual returned options; it does not promise that every public link will resolve or that every file will be high definition."
+        "What to expect",
+        "Available quality depends on the source. Some posts are blocked by TikTok, unavailable in your region, private, deleted or limited to signed-in users. We do not ask for TikTok passwords or login cookies."
       ],
       [
-        "Our practical limits",
-        "Private content, login-restricted posts, expired stories and deleted media may be unavailable. The service does not ask for Instagram passwords or login cookies. A successful download does not grant ownership or permission to republish the material."
-      ],
-      [
-        "Guides and responsibility",
-        "The SaveFrame blog explains link copying, device downloads, file formats and troubleshooting. Keep originals when you own the account, verify downloaded files before archiving, and respect the creator's rights. SaveFrame is not affiliated with or endorsed by Instagram or Meta Platforms, Inc."
+        "Independent service",
+        "TikSaveMP4 is not affiliated with TikTok or ByteDance. Downloading does not grant permission to republish someone else’s work. Respect copyright and keep creator attribution."
       ]
     ]
   },
   {
     "slug": "contact",
-    "title": "Contact SaveFrame",
-    "description": "Find the information to include in a SaveFrame support or copyright request, without sharing passwords, login cookies or private account data.",
+    "title": "Contact TikSaveMP4",
+    "description": "Get help with TikTok video, image, or ZIP downloads. Find out which link, device details, and error message to include when contacting TikSaveMP4.",
     "sections": [
       [
-        "Describe the issue",
-        "For a download problem, include the public Instagram link, the tool you used, your browser and device, and the exact error displayed. Mention whether the failure happened during inspection, preparation or file delivery. Do not send private account links, passwords, login cookies or other sensitive information."
+        "Download help",
+        "Include the public TikTok post link, your browser and device, and the exact error message. Say whether the error happened while checking the link, preparing the file, or saving it. Never send passwords or login cookies."
       ],
       [
-        "Check access first",
-        "Confirm that the link identifies an individual public post, Reel or video. Private, expired and login-restricted items cannot be made accessible by repeating the request. See the troubleshooting guides for link and playback checks."
-      ],
-      [
-        "Copyright concerns",
-        "If you are a rights holder or authorized representative, identify the original work and the specific public link involved. Explain your relationship to the work and provide a way to follow up. Do not include unnecessary private documents in an initial request."
-      ],
-      [
-        "Response expectations",
-        "There is no published response-time guarantee. The contact channels shown below are the public channels available for this deployment."
+        "Access limits",
+        "Check that the link is a public video or photo post. Private, deleted and region-restricted posts may be unavailable. Repeated requests cannot remove these restrictions."
       ]
     ]
   },
   {
     "slug": "privacy",
-    "title": "SaveFrame Privacy Information",
-    "description": "Understand the public links, technical request data and temporary download files processed by SaveFrame, including external services used by the interface.",
+    "title": "Privacy policy",
+    "description": "Read how TikSaveMP4 processes TikTok links, temporary download files, operational records, and optional analytics, plus your privacy choices.",
     "sections": [
       [
-        "Links and media processing",
-        "When you submit a link, the server processes that public URL to inspect available metadata and prepare your requested file. Metadata and job information may be cached temporarily to support the download. The interface does not require an Instagram password or account registration."
+        "Links and temporary files",
+        "Submitted public TikTok links are sent to the server for validation, extraction and file preparation. Download jobs and media files are temporary and expire after the configured retention period, which defaults to 15 minutes. We do not need your TikTok password."
       ],
       [
-        "Temporary files and technical data",
-        "Prepared files and job records use temporary storage with an expiration and cleanup process. The current application default is approximately fifteen minutes after processing; deployment settings and cleanup timing can change that period. Network and hosting infrastructure may process IP addresses and request logs for operation and abuse prevention. This is not a promise of zero logging."
+        "Operational records",
+        "The server uses request information for rate limiting and may record download outcomes, error categories, timestamps and operational logs. Hosting infrastructure may log IP addresses. Administrator sessions use essential cookies."
       ],
       [
-        "External requests",
-        "Media previews can load from Instagram or its content-delivery network. Fonts are hosted locally. Where regional policy permits automatic analytics, or after valid consent where required, Google Analytics may receive public page paths, referring website domains, approved campaign labels, aggregate downloader categories and standard technical connection data under Google's policies. SaveFrame excludes submitted Instagram links, usernames, captions, tokens and raw error messages from analytics events. Your browser stores downloaded files according to its settings."
+        "Third-party connections",
+        "The server contacts TikTok and its media delivery networks. Preview images load directly from those networks, which can receive your IP address. Optional Google Analytics is disabled in the supplied production configuration; if enabled later, regional policy and visitor preferences apply."
       ],
       [
-        "Analytics preferences",
-        "Optional analytics can run automatically where the configured regional policy permits it. In consent-required or unknown regions it stays disabled until valid consent is provided. SaveFrame respects previous opt-outs, Do Not Track and Global Privacy Control. Google Analytics may use first-party cookies for visitor and session statistics. Use the analytics opt-out link below to disable further tracking in this browser and remove accessible Google Analytics cookies. Your choice is stored locally. Advertising storage and personalization remain disabled."
-      ],
-      [
-        "Internal download statistics",
-        "SaveFrame keeps internal operational counts for download requests, preparation, failures and server response handoffs. When enabled under a reviewed regional policy, these records may include a coarse country code supplied by our trusted hosting proxy. Country attribution respects analytics opt-outs, Do Not Track, Global Privacy Control and configured consent requirements; excluded or unavailable locations are recorded as Unknown. A first-party preference cookie mirrors your analytics choice without a visitor identifier so the server can respect it. Download statistics do not store your IP address, submitted Instagram link, Instagram username, session cookies, fingerprint or precise location. Detailed operational records follow the configured retention period, normally 30 days, while daily aggregates may remain for up to 730 reporting days. Internal country statistics are independent of optional Google Analytics."
-      ],
-      [
-        "Clipboard and account access",
-        "The Paste button requests access to clipboard text when you activate it. You can paste manually if permission is unavailable. Do not submit passwords, cookies, private account information or content you are not authorized to access."
-      ],
-      [
-        "Questions and changes",
-        "Use the contact page for questions about link processing or download data. Hosting services and any future analytics or advertising integrations can have their own data practices, so consult the current disclosures when using the service."
+        "Your choices",
+        "Do not submit private information. Use the contact page to ask about privacy or deletion. You can opt out of optional analytics using the link below."
       ]
     ]
   },
   {
     "slug": "terms",
-    "title": "SaveFrame Terms of Use",
-    "description": "Read the permitted-use conditions and practical limitations for SaveFrame's public Instagram media inspection and download tools.",
+    "title": "Terms of use",
+    "description": "Read the terms for using TikSaveMP4, including permitted downloads, copyright responsibilities, temporary files, service limits, and source availability.",
     "sections": [
       [
         "Permitted use",
-        "Use SaveFrame only to inspect and save media you own or have permission to download. You remain responsible for complying with applicable law, the creator's rights and the relevant platform terms. Public visibility alone does not grant reuse rights."
+        "Use the service to save content you own or have permission to download. Respect creators, copyright, privacy and applicable platform terms. Do not use this service to bypass private-account access controls."
       ],
       [
-        "Access boundaries",
-        "Do not use the service to bypass private accounts, authentication, access restrictions or rate limits. Do not submit malicious links, overwhelm the service with automated requests, or attempt to access internal network resources."
+        "Availability and quality",
+        "The service depends on publicly accessible source media. Access and formats may change without notice. No guarantee is made about availability, watermark removal or source quality."
       ],
       [
-        "Availability and files",
-        "Supported formats depend on what the source provides. Media may become unavailable, requests may fail, and preparation may time out. Verify downloaded files before relying on them. SaveFrame does not guarantee original camera quality, a particular resolution, a complete account archive or unrestricted access."
-      ],
-      [
-        "Independent service",
-        "SaveFrame is not affiliated with, sponsored by or endorsed by Instagram or Meta Platforms, Inc. Product names and marks belong to their respective owners. No download gives you ownership of another person's work."
-      ],
-      [
-        "Questions",
-        "Use the contact page for support information and the copyright page for rights concerns. These conditions cover the public media tools described on this website. Check the current tool instructions before relying on an available format or feature."
+        "Fair use of the service",
+        "Do not abuse the service through excessive automation, harmful links or attempts to defeat rate limits. Temporary download links expire; keep your own copies of authorized originals."
       ]
     ]
   },
   {
     "slug": "copyright",
-    "title": "Copyright and Responsible Downloading",
-    "description": "Learn how SaveFrame handles responsible media use and what rights holders should include when reporting a copyright concern.",
+    "title": "Copyright",
+    "description": "Learn about creator rights when saving TikTok content, permitted reuse, and the information to provide when reporting a copyright concern to TikSaveMP4.",
     "sections": [
       [
-        "Download permission matters",
-        "Save only material you own or are authorized to download. A public Instagram link does not make a photo, video or soundtrack free to republish. Attribution is useful context but does not replace permission when permission is required."
+        "Creator rights",
+        "Rights to downloaded content remain with the original rights holders. TikSaveMP4 is an independent tool and does not grant a licence to reuse or republish a work."
       ],
       [
-        "What this service provides",
-        "SaveFrame inspects individual public links and prepares supported source media on request. It is not an account archive or a license to reuse the content. Keep the creator, original link, permission context and download date with files used in a project."
-      ],
-      [
-        "Reporting a rights concern",
-        "Identify the work, the specific public Instagram link, the nature of your rights and the issue you want reviewed. Include accurate contact details for follow-up and state whether you are the owner or an authorized representative. Use the public copyright contact below when configured."
-      ],
-      [
-        "Original platform content",
-        "If you need an Instagram post removed from Instagram itself, use Instagram's official reporting process. A request to SaveFrame cannot by itself remove material from another platform. See the contact page for the channels available for this deployment."
+        "Report a concern",
+        "Send the public post URL, a description of the original work, your relationship to the rights holder and a contact method. Avoid sending unnecessary personal documents in an initial request."
       ]
     ]
   }

@@ -1,0 +1,62 @@
+
+> tiksave-mp4@1.0.0 prebuild
+> node scripts/prepare-performance-assets.cjs
+
+Prepared minified client 68334 → 43245 bytes and 15 responsive thumbnails.
+
+> tiksave-mp4@1.0.0 build
+> next build
+
+   ▲ Next.js 15.5.28
+   - Environments: .env.production
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 7.3s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/21) ...
+   Generating static pages (5/21) 
+   Generating static pages (10/21) 
+   Generating static pages (15/21) 
+ ✓ Generating static pages (21/21)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                       Size  First Load JS
+┌ ƒ /                                          2.26 kB         105 kB
+├ ƒ /_not-found                                  146 B         103 kB
+├ ƒ /[locale]                                  2.79 kB         109 kB
+├ ƒ /admin/[[...section]]                      11.2 kB         117 kB
+├ ƒ /admin/login                               1.36 kB         104 kB
+├ ƒ /api/admin/[[...segments]]                   146 B         103 kB
+├ ƒ /api/health                                  146 B         103 kB
+├ ƒ /api/media/download                          146 B         103 kB
+├ ƒ /api/media/download/[jobId]                  146 B         103 kB
+├ ƒ /api/media/jobs/[jobId]                      146 B         103 kB
+├ ƒ /api/media/resolve                           146 B         103 kB
+├ ƒ /api/verification/[filename]                 146 B         103 kB
+├ ƒ /blog                                        872 B         112 kB
+├ ● /blog/[slug]                                 872 B         112 kB
+├   ├ /blog/how-to-download-tiktok-videos-mp4
+├   ├ /blog/download-tiktok-photo-slideshows
+├   ├ /blog/how-to-copy-tiktok-link
+├   └ [+9 more paths]
+├ ○ /robots.txt                                  146 B         103 kB
+└ ƒ /sitemap.xml                                 146 B         103 kB
++ First Load JS shared by all                   103 kB
+  ├ chunks/255-04dea02e72e68301.js             46.5 kB
+  ├ chunks/4bd1b696-c023c6e3521b1417.js        54.2 kB
+  └ other shared chunks (total)                   2 kB
+
+
+ƒ Middleware                                   34.7 kB
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
+
+> tiksave-mp4@1.0.0 postbuild
+> node scripts/sanitize-build-traces.cjs
+
+Build privacy: verified 21 manifests; removed 52 private-state references. Original files untouched.

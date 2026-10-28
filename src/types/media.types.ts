@@ -120,7 +120,7 @@ export interface NormalizedMediaResult {
   isCarousel: boolean;
   supportsZipDownload: boolean;
   items: NormalizedMediaItem[];
-  extractorSource: 'yt-dlp' | 'yt-dlp+image-adapter' | 'profile-adapter' | 'story-http' | 'gallery-dl' | 'instagrapi';
+  extractorSource: 'yt-dlp' | 'yt-dlp+image-adapter' | 'profile-adapter' | 'story-http' | 'gallery-dl' | 'instagrapi' | 'tiktok-web';
   warnings?: string[];
 }
 

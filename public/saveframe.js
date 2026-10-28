@@ -92,7 +92,8 @@
       function previewUrl(value) {
         try {
           const url = new URL(value);
-          return url.protocol === 'https:' || url.protocol === 'http:' ? escapeHtml(url.href) : '';
+          const allowed = ['tiktokcdn.com','tiktokcdn-us.com','tiktokcdn-eu.com','tiktokcdn-eu.net','byteoversea.com','ibytedtos.com','ibyteimg.com','muscdn.com'].some(domain => url.hostname === domain || url.hostname.endsWith('.' + domain));
+          return allowed && url.protocol === 'https:' && !url.username && !url.password && !url.port ? escapeHtml(url.href) : '';
         } catch { return ''; }
       }
 
@@ -167,14 +168,14 @@
         return (dictionary[key] || key).replace(/\{(\w+)\}/g, (match, name) => String(values[name] ?? match));
       }
       const errorMessages = {
-        INVALID_URL: 'This link is not supported. Check the Instagram URL and try again.',
-        UNSUPPORTED_DOMAIN: 'This link is not supported. Check the Instagram URL and try again.',
-        SSRF_BLOCKED: 'This link is not supported. Check the Instagram URL and try again.',
-        UNSUPPORTED_MEDIA_TYPE: 'This link is not supported. Check the Instagram URL and try again.',
-        UNSUPPORTED_OPERATION: 'This link is not supported. Check the Instagram URL and try again.',
+        INVALID_URL: 'This link is not supported. Check the TikTok URL and try again.',
+        UNSUPPORTED_DOMAIN: 'This link is not supported. Check the TikTok URL and try again.',
+        SSRF_BLOCKED: 'This link is not supported. Check the TikTok URL and try again.',
+        UNSUPPORTED_MEDIA_TYPE: 'This link is not supported. Check the TikTok URL and try again.',
+        UNSUPPORTED_OPERATION: 'This link is not supported. Check the TikTok URL and try again.',
         PRIVATE_CONTENT: 'This media is private or requires a login.', LOGIN_REQUIRED: 'This media is private or requires a login.',
         DELETED_CONTENT: 'This media has been deleted or is unavailable.',
-        RATE_LIMITED: 'Instagram is limiting requests. Please wait and try again.',
+        RATE_LIMITED: 'TikTok is limiting requests. Please wait and try again.',
         EXTRACTOR_FAILURE: 'The media service is unavailable. Please try again later.', YTDLP_NOT_INSTALLED: 'The media service is unavailable. Please try again later.',
         DOWNLOAD_TIMEOUT: 'Download preparation timed out. Please try again.', FILE_TOO_LARGE: 'This file is too large to download.',
         FFMPEG_ERROR: 'The server could not prepare the video and audio.', INSUFFICIENT_DISK_SPACE: 'The server does not have enough storage. Please try again later.',
@@ -183,6 +184,8 @@
       const apiError = (error, fallback) => t(errorMessages[error?.code] || fallback);
       const localError = (error, fallback) => {
         if (error instanceof TypeError) return t('Network error. Check your connection and try again.');
+        if (errorMessages[error?.analyticsCode]) return t(errorMessages[error.analyticsCode]);
+        if (Object.values(errorMessages).includes(error?.message)) return t(error.message);
         if (dictionary[error?.message]) return t(error.message);
         if (Object.values(dictionary).includes(error?.message)) return error.message;
         return t(fallback);
@@ -200,65 +203,14 @@
 
       // Tool configuration per tab
       const TOOL_CONFIG = {
-        photo: {
-          id: 'photo',
-          route: '/photo-downloader',
-          heroHeading: t("Instagram Photo Downloader"),
-          heroDescription: t("Save supported public Instagram photos and multi-slide carousel images with a link."),
-          panelTitle: t("Instagram Photo & Carousel Downloader"),
-          panelSubtitle: t("Paste a public Instagram photo link (/p/...) to inspect dimensions and save original JPEG images."),
-          placeholder: t("Paste an Instagram photo or carousel link"),
-          ctaLabel: t("Download Photo"),
-          label: t("Photo")
-        },
-        reels: {
-          id: 'reels',
-          route: '/reels-downloader',
-          heroHeading: t("Instagram Reels Downloader"),
-          heroDescription: t("Save supported public Instagram Reels in vertical MP4 format with a simple link."),
-          panelTitle: t("Instagram Reels Video Downloader"),
-          panelSubtitle: t("Paste a public Instagram Reel link (/reel/...) to preview video streams and audio tracks."),
-          placeholder: t("Paste an Instagram Reel link"),
-          ctaLabel: t("Download Reel"),
-          label: t("Reels")
-        },
-        video: {
-          id: 'video',
-          route: '/video-downloader',
-          heroHeading: t("Instagram Video Downloader"),
-          heroDescription: t("Save supported public Instagram feed videos and MP4 streams directly in your browser."),
-          panelTitle: t("Instagram Feed Video Downloader"),
-          panelSubtitle: t("Paste a public Instagram video link (/p/... or /tv/...) to inspect MP4 stream quality."),
-          placeholder: t("Paste an Instagram video link"),
-          ctaLabel: t("Download Video"),
-          label: t("Video")
-        },
-        audio: {
-          id: 'audio', route: '/audio-downloader',
-          heroHeading: t("Instagram Audio Downloader"),
-          heroDescription: t("Extract Reel and video audio as MP3"),
-          panelTitle: t("Instagram Audio Downloader"),
-          panelSubtitle: t("MP3 quality cannot exceed the source quality."),
-          placeholder: t("Paste Instagram Reel or video URL here"),
-          ctaLabel: t("Download Audio"), label: t("Audio")
-        },
-        profile: {
-          id: 'profile',
-          route: '/profile-viewer',
-          heroHeading: t("Instagram Profile Viewer"),
-          heroDescription: t("View supported public Instagram profile information, bio, and profile picture."),
-          panelTitle: t("Instagram Public Profile Viewer"),
-          panelSubtitle: t("Enter a public Instagram username (@username) or profile URL to inspect public profile metadata."),
-          placeholder: t("Paste a public profile link or @username"),
-          ctaLabel: t("View Profile"),
-          label: t("Profile")
-        }
-      };
+photo: {id:'photo',route:'/photo-downloader',heroHeading:'Download TikTok Photos & Slideshows',heroDescription:'Save public TikTok photos and photo slideshows with a simple link.',panelTitle:'Download TikTok Photos & Slideshows',panelSubtitle:'Paste a public TikTok photo post or share link to save individual images or the whole slideshow.',placeholder:'Paste a TikTok photo post or share link',ctaLabel:'Download Photo',label:'Photo'},
+video: {id:'video',route:'/video-downloader',heroHeading:'Download TikTok Videos as MP4',heroDescription:'Save public TikTok videos as MP4 with a simple link.',panelTitle:'Download TikTok Videos as MP4',panelSubtitle:'Paste a public TikTok video or share link to preview available MP4 formats.',placeholder:'Paste a TikTok video or share link',ctaLabel:'Download Video',label:'Video'}
+};
 
       // Application State
       let state = {
         activeTab: 'photo',
-        dedicatedRouteActive: false, // false = homepage "Instagram Downloader" heading; true = dedicated tool heading
+        dedicatedRouteActive: false, // false = homepage "TikTok Downloader" heading; true = dedicated tool heading
         uiStateMode: 'single',       // Real single-item or carousel result
         selectedQualityIdx: 0,
         activeCarouselIdx: 0,
@@ -273,7 +225,7 @@
       const heroDescription = document.getElementById('hero-description');
       const panelTitle = document.getElementById('panel-tool-title');
       const panelSubtitle = document.getElementById('panel-tool-subtitle');
-      const urlInput = document.getElementById('instagram-url-input');
+      const urlInput = document.getElementById('tiktok-url-input');
       const clearBtn = document.getElementById('clear-url-btn');
       const pasteBtn = document.getElementById('paste-url-btn');
       const submitBtnLabel = document.getElementById('submit-btn-label');
@@ -312,58 +264,23 @@
         urlInput.style.paddingRight = Math.max(140, Math.ceil(controlsWidth) + 12) + 'px';
       }
 
-      // Parse Instagram URL or username
-      function parseInstagramInput(raw, requestedTab = state.activeTab) {
-        const val = (raw || '').trim();
-        if (!val) {
-          return { valid: false, reason: 'empty', message: 'Please paste an Instagram link or @username above to continue.' };
-        }
-        // Check if @username for profile tab
-        if (/^@?[a-zA-Z0-9._]{2,30}$/.test(val) && !val.includes('/')) {
-          if (requestedTab === 'audio') return {valid:false,message:t('Paste Instagram Reel or video URL here')};
-          return {
-            valid: true,
-            detectedTab: 'profile',
-            shortcode: val.replace(/^@/, ''),
-            canonicalUrl: 'https://www.instagram.com/' + val.replace(/^@/, '') + '/'
-          };
-        }
-        // Check URL
-        let parsedUrl;
-        try {
-          parsedUrl = new URL(val.startsWith('http') ? val : 'https://' + val);
-        } catch (e) {
-          return { valid: false, reason: 'malformed', message: 'That does not look like a valid Instagram link. Copy the link directly from Instagram and try again.' };
-        }
-        const host = parsedUrl.hostname.toLowerCase();
-        if (!['instagram.com', 'instagr.am'].some(domain => host === domain || host.endsWith('.' + domain))) {
-          return {
-            valid: false,
-            reason: 'domain',
-            message: 'Only instagram.com or instagr.am links are supported. Please copy a link directly from Instagram.'
-          };
-        }
-
-        const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
-        if (pathParts.length === 0) {
-          return { valid: false, reason: 'root', message: 'This link points to the Instagram homepage. Paste a specific photo, Reel, video, or profile URL.' };
-        }
-
-        const first = pathParts[0].toLowerCase();
-        if (requestedTab === 'audio' && !['reel','reels','p','tv'].includes(first)) return {valid:false,message:t('Paste Instagram Reel or video URL here')};
-        if (first === 'p') {
-          return { valid: true, detectedTab: requestedTab === 'audio' ? 'audio' : 'photo', shortcode: pathParts[1] || 'post_id', canonicalUrl: parsedUrl.href };
-        }
-        if (first === 'reel' || first === 'reels') {
-          return { valid: true, detectedTab: requestedTab === 'audio' ? 'audio' : 'reels', shortcode: pathParts[1] || 'reel_id', canonicalUrl: parsedUrl.href };
-        }
-        if (first === 'tv') {
-          return { valid: true, detectedTab: requestedTab === 'audio' ? 'audio' : 'video', shortcode: pathParts[1] || 'video_id', canonicalUrl: parsedUrl.href };
-        }
-        if (first === 'stories') return {valid:false,message:'The public story downloader has been retired.'};
-        // Otherwise treat single path segment as profile username
-        return { valid: true, detectedTab: 'profile', shortcode: pathParts[0], canonicalUrl: parsedUrl.href };
-      }
+      // Parse TikTok URL or username
+      function parseTikTokInput(raw, requestedTab = state.activeTab) {
+const invalid=message=>({valid:false,message});
+const value=String(raw||'').trim();
+if(!value)return invalid('Please paste a TikTok video, photo post, or share link.');
+if(value.length>2048||/[\s\\]/.test(value))return invalid('Please paste a valid TikTok post link.');
+let parsed;try{parsed=new URL(/^https?:\/\//i.test(value)?value:'https://'+value);}catch{return invalid('Please paste a valid TikTok post link.');}
+const host=parsed.hostname.toLowerCase();
+if(parsed.protocol!=='https:'||parsed.username||parsed.password||parsed.port)return invalid('Use an HTTPS TikTok link without credentials or a custom port.');
+if(!['tiktok.com','www.tiktok.com','m.tiktok.com','vm.tiktok.com','vt.tiktok.com'].includes(host))return invalid('Only official TikTok links are supported.');
+const short=['vm.tiktok.com','vt.tiktok.com'].includes(host)?parsed.pathname.match(/^\/([A-Za-z0-9]{4,80})\/?$/):parsed.pathname.match(/^\/t\/([A-Za-z0-9]{4,80})\/?$/);
+if(short)return{valid:true,detectedTab:requestedTab,shortcode:short[1],canonicalUrl:'https://'+host+(['vm.tiktok.com','vt.tiktok.com'].includes(host)?'/':'/t/')+short[1]+'/'};
+if(['vm.tiktok.com','vt.tiktok.com'].includes(host))return invalid('Use a TikTok post or share link.');
+const post=parsed.pathname.match(/^\/@([A-Za-z0-9._]{1,30})\/(video|photo)\/([0-9]{10,25})\/?$/);
+if(!post)return invalid('Use a TikTok video or photo post link. Profile and live links are not supported.');
+return{valid:true,detectedTab:post[2],shortcode:post[3],canonicalUrl:'https://www.tiktok.com/@'+post[1]+'/'+post[2]+'/'+post[3]};
+}
 
       // Show or hide inline validation banner
       function setValidationBanner(type, message, actionLabel, onAction) {
@@ -395,13 +312,13 @@
         const cfg = TOOL_CONFIG[state.activeTab];
         const page = localeData.pageTool;
 
-        // Hero Heading: On main homepage view keep "Instagram Downloader" unless user switched tabs or chose a dedicated tool page
+        // Hero Heading: On main homepage view keep "TikTok Downloader" unless user switched tabs or chose a dedicated tool page
         if (state.dedicatedRouteActive) {
           heroHeading.textContent = page?.tool === state.activeTab ? page.title : cfg.heroHeading;
           heroDescription.textContent = page?.tool === state.activeTab ? page.description : cfg.heroDescription;
         } else {
-          heroHeading.textContent = t('Instagram Downloader');
-          heroDescription.textContent = t('Save supported Instagram photos, videos, and Reels with a simple link.');
+          heroHeading.textContent = t('Download TikTok Videos & Photos');
+          heroDescription.textContent = t('Save supported TikTok videos and photo slideshows with a simple link.');
         }
 
         panelTitle.textContent = cfg.panelTitle;
@@ -702,7 +619,19 @@
         const previousOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
         let controller;
+        const previewHistoryId = 'tiksave-preview-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+        let ownsHistory = false;
+        const closeOnBack = () => {
+          ownsHistory = false;
+          if (dialog.open) dialog.close();
+        };
+        window.addEventListener('popstate', closeOnBack);
         dialog.addEventListener('close', () => {
+          window.removeEventListener('popstate', closeOnBack);
+          if (ownsHistory && window.history.state?.tiksavePreview === previewHistoryId) {
+            ownsHistory = false;
+            window.history.back();
+          }
           controller?.abort();
           const video = dialog.querySelector('video');
           if(video) { video.pause(); video.removeAttribute('src'); video.load(); }
@@ -720,6 +649,8 @@
           if(event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
         });
         dialog.showModal();
+        window.history.pushState({...window.history.state, tiksavePreview:previewHistoryId}, '', window.location.href);
+        ownsHistory = true;
         if(item.mediaType === 'video') controller = startVideoPreview(dialog.querySelector('.media-lightbox-content'), media, item, format);
         else {
           const image = dialog.querySelector('.media-source-image');
@@ -921,7 +852,7 @@
 
       // Input typing listener
       urlInput.addEventListener('input', event => {
-        const samePending = resolveController && parseInstagramInput(urlInput.value).canonicalUrl === pendingResolveUrl;
+        const samePending = resolveController && parseTikTokInput(urlInput.value).canonicalUrl === pendingResolveUrl;
         if (!samePending) { clearLiveResult(); renderResultSection(); }
         syncInputControls();
         setValidationBanner(null);
@@ -942,17 +873,17 @@
       }
       urlInput.addEventListener('paste', schedulePastedFetch);
 
-      function focusMobileResult(media) {
-        if (!window.matchMedia('(max-width: 767px)').matches) return;
-        requestAnimationFrame(() => {
+      function focusResolvedResult(media) {
+        // Wait for the loading panel to collapse before positioning the viewport.
+        requestAnimationFrame(() => requestAnimationFrame(() => {
           if (resolvedMedia !== media || !resultDynamicContent.isConnected) return;
           urlInput.blur();
           resultDynamicContent.setAttribute('tabindex', '-1');
           resultDynamicContent.setAttribute('role', 'region');
           resultDynamicContent.setAttribute('aria-label', t('Media preview'));
+          resultDynamicContent.scrollIntoView({block:'start',behavior:'instant'});
           resultDynamicContent.focus({ preventScroll: true });
-          resultDynamicContent.scrollIntoView({block:'start',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
-        });
+        }));
       }
 
       // Clear Button
@@ -980,13 +911,13 @@
           }
         } catch {}
         urlInput.focus();
-        setValidationBanner('warning', 'Clipboard access is unavailable. Paste your Instagram link into the field.');
+        setValidationBanner('warning', 'Clipboard access is unavailable. Paste your TikTok link into the field.');
       });
 
       // Form Submit Handler
       document.getElementById('downloader-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const parsed = parseInstagramInput(urlInput.value);
+        const parsed = parseTikTokInput(urlInput.value);
         if (!parsed.valid) {
           setValidationBanner('error', parsed.message);
           urlInput.focus();
@@ -1032,7 +963,7 @@
           state.uiStateMode = resolvedMedia.isCarousel ? 'carousel' : 'single';
           renderToolState();
           setValidationBanner('success', 'Public media found. Select a format to download.');
-          focusMobileResult(resolvedMedia);
+          focusResolvedResult(resolvedMedia);
         } catch (error) {
           if (controller.signal.aborted) return;
           analytics('download_failed', {media_type:state.activeTab,source_page:window.location.pathname,failure_stage:'resolve',error_code:error?.analyticsCode});
@@ -1143,15 +1074,6 @@
         });
       });
 
-      // Language changes use normal navigation so direct URLs and browser history agree.
-      document.getElementById('language-select').addEventListener('change', event => {
-        const locale = event.target.value;
-        if (!['en', 'es', 'pt-br', 'de', 'fr', 'ja', 'id', 'tr', 'hi', 'ar'].includes(locale)) return;
-        const destination = new URL(locale === 'en' ? '/' : '/' + locale + '/', window.location.origin);
-        if (state.dedicatedRouteActive) destination.searchParams.set('tool', state.activeTab);
-        window.location.assign(destination.href);
-      });
-
       // FAQ Accordions
       document.querySelectorAll('.faq-toggle-btn').forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -1182,9 +1104,9 @@
         'privacy': {
           title: 'Privacy Policy',
           html: `
-            <p>SaveFrame processes pasted public links solely to inspect media metadata requested by the user in real time.</p>
+            <p>TikSaveMP4 processes pasted public links solely to inspect media metadata requested by the user in real time.</p>
             <ul class="list-disc list-inside space-y-1.5">
-              <li>No account registration or Instagram login credentials are requested or stored.</li>
+              <li>No account registration or TikTok login credentials are requested or stored.</li>
               <li>Submitted public links are not sold or shared with third-party advertisers.</li>
               <li>Private accounts and non-public media are strictly excluded from processing.</li>
             </ul>
@@ -1193,9 +1115,9 @@
         'terms': {
           title: 'Terms of Service & Fair Use',
           html: `
-            <p>SaveFrame is provided as an independent web interface for inspecting and backing up publicly available media that you own or have explicit permission from the copyright holder to download.</p>
+            <p>TikSaveMP4 is provided as an independent web interface for inspecting and backing up publicly available media that you own or have explicit permission from the copyright holder to download.</p>
             <ul class="list-disc list-inside space-y-1.5">
-              <li>Users are solely responsible for complying with applicable copyright laws and Instagram's Terms of Use.</li>
+              <li>Users are solely responsible for complying with applicable copyright laws and TikTok's Terms of Use.</li>
               <li>Do not use this tool to redistribute creators' work without authorization.</li>
             </ul>
           `

@@ -1,0 +1,14 @@
+
+> tiksave-mp4@1.0.0 test
+> npm run test:tiktok && npm run test:blog
+
+
+> tiksave-mp4@1.0.0 test:tiktok
+> node scripts/check-tiktok.cjs
+
+PASS: TikTok links, unsupported hosts, private IPs, both photo schemas, unavailable posts, short photo links, cached video download, individual images, ZIP order, invalid item selection.
+
+> tiksave-mp4@1.0.0 test:blog
+> node scripts/check-blog.cjs
+
+PASS: 12 full articles, 3427 words, working filters, related links, table-of-contents IDs, and optimized covers.

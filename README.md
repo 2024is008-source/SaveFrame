@@ -1,96 +1,91 @@
-# SaveFrame
+# TikSaveMP4
 
-## SEO and public pages
+TikTok video and photo downloader for **https://tiksavemp4.online**. Built from SaveFrame with its original page layout, downloader controls, carousel previews, FAQ and admin dashboard. The public interface uses a white theme, TikTok Sans, cyan highlights and pink download buttons.
 
-Dedicated English tools are available at `/reels-downloader`, `/video-downloader`, `/photo-downloader`, `/carousel-downloader`, `/audio-downloader` and `/profile-viewer`. They share the existing downloader and have distinct server-rendered instructions and FAQs. `/about`, `/contact`, `/privacy`, `/terms` and `/copyright` provide crawlable information pages. Existing homepage query links and ten language URLs still work.
+## Downloads
 
-`npm run test:seo` crawls the running production preview, checks metadata, headings, canonical URLs, structured data and internal links, and writes `reports/seo-crawl.json`. The sitemap includes 37 canonical URLs; unfiltered blog page two is separately indexable with its own canonical. API responses carry noindex headers and are excluded from the sitemap.
+- Public TikTok videos as MP4 using yt-dlp and FFmpeg.
+- Photo posts: individual JPEG/WebP images or an ordered ZIP of the slideshow.
+- Direct `/@creator/video/{id}` and `/@creator/photo/{id}` URLs, plus official `vm.tiktok.com`, `vt.tiktok.com` and `tiktok.com/t/` share links.
+- Real previews, format selection, bounded downloads, rate limits, background jobs and temporary-file cleanup.
 
-Support and copyright contact addresses are configured with `SAVEFRAME_SUPPORT_EMAIL` and `SAVEFRAME_COPYRIGHT_EMAIL`; the approved public address is `backbencherz@gmail.com`. See `SEO_IMPLEMENTATION_REPORT.md` for the complete audit, changes, tests and deployment requirements. The Nginx TLS file is a deployment example, not a change to a running server.
+The public tools are `/`, `/video-downloader` and `/photo-downloader`. The blog at `/blog` includes 12 TikTok guides, with search, category filters, related articles and a homepage preview. The original Instagram-only tools and article URLs are no longer advertised or indexed. Retained Instagram extraction modules and historical reports are implementation history, not supported public features. Existing environment variable names beginning with `SAVEFRAME_` remain compatible with the admin and queue internals.
 
-## Homepage languages
+## Local development
 
-The shared homepage supports English `/`, Spanish `/es/`, Brazilian Portuguese `/pt-br/`, German `/de/`, French `/fr/`, Japanese `/ja/`, Indonesian `/id/`, Turkish `/tr/`, Hindi `/hi/`, and Arabic `/ar/`. Localized pages render on the server with their own metadata, canonical URLs, language alternatives and sitemap entries. Arabic uses RTL. Blog and legal content stays English.
-
-Translations are maintained in `src/i18n/dictionaries/*.json`. Keep all ten files in sync with the English key set and preserve named interpolation placeholders. Only the active dictionary is sent to the browser. The language selector navigates to the selected language URL and retains the active tool when applicable. No automatic locale redirect is used.
-
-Run `npm run test:i18n`, then build and start the application. With the server running, `node scripts/check-i18n-live.cjs` checks all ten routes and international SEO. See `design-system/insta-save/MULTILINGUAL-DELIVERY.md` for the complete implementation and validation report.
-
-Instagram media downloader built with Next.js. The interface preserves the supplied SaveFrame design and displays media returned by the backend. No sample results or developer controls are shown.
-
-## Run locally
+Requires Node.js 24+ and Python 3.11+.
 
 ```powershell
-npm install
+npm ci
 python -m venv .runtime
-.\.runtime\Scripts\python.exe -m pip install yt-dlp imageio-ffmpeg
+.\.runtime\Scripts\python.exe -m pip install -r requirements.txt imageio-ffmpeg
 npm run dev
 ```
 
-Open http://localhost:3000. On Windows, the server automatically finds yt-dlp and FFmpeg in the project’s `.runtime` directory. Alternatively, set `YTDLP_BINARY_PATH` and `FFMPEG_BINARY_PATH` in `.env.local` to existing executable paths. Other platforms can install the tools on their PATH or use those variables.
+Open http://127.0.0.1:3000. Windows discovers yt-dlp and FFmpeg in `.runtime`. On Linux, install FFmpeg with your package manager. Custom locations can be supplied using `YTDLP_BINARY_PATH` and `FFMPEG_BINARY_PATH`.
 
-The local runtime packages are installed from the [yt-dlp](https://github.com/yt-dlp/yt-dlp/wiki/Installation) and [imageio-ffmpeg](https://github.com/imageio/imageio-ffmpeg) projects.
+`.env.production` supplies the production origin. For development with domain-specific SEO, set `NEXT_PUBLIC_SITE_URL=https://tiksavemp4.online` in `.env.local`. Google Analytics is disabled; the original site's measurement ID has been removed.
 
-## Production
+## VPS deployment: Nginx and PM2
 
-Development writes to `.next-dev`; production builds and `npm start` use `.next`. This prevents a development server from overwriting the production CSS and JavaScript assets. Run `npm run build` before `npm start`, and restart the production process after rebuilding. Do not rebuild `.next` while a production process is serving it.
+The supplied PM2 configuration uses **127.0.0.1:3002**, one process and persistent data under `/var/lib/tiksave`. Choose another free port in both the PM2 and Nginx files if needed. Run the application under a dedicated deployment user.
 
-```powershell
+From the uploaded project directory, with Node 24, Python, Nginx, Certbot and FFmpeg installed:
+
+```bash
+npm ci
+python3 -m venv .runtime
+.runtime/bin/python -m pip install -r requirements.txt
+sudo install -d -o "$USER" /var/lib/tiksave/admin /var/lib/tiksave/downloads
+npm test
 npm run build
-npm start
+npm install -g pm2
+pm2 start ecosystem.config.cjs --env production
+pm2 save
+pm2 startup
 ```
 
-## MP3 audio and retired story tool
+Run the startup command PM2 prints to register boot persistence. Configure any private admin email/SMTP credentials in the server environment or a protected `.env.local`; never commit them. No admin account is created automatically. The inherited admin setup command is `npm run admin:setup`.
 
-The Audio tool provides real MP3 extraction at 128/192/up to 320 kbps from accessible public Reels and video posts, with a ten-minute source duration limit. Higher encoding bitrate cannot restore source quality. `/story-downloader` returns HTTP 410; historical story articles remain available with a retirement notice. Separate authorized owner-story CLI workflows remain server-only. No paid API is needed. See `AUDIO_DOWNLOADER_REPORT.md` for validation and deployment on the existing port 3001.
+Point the apex and `www` DNS records to the VPS, then enable the supplied HTTP proxy and obtain HTTPS:
 
-## Supported access
+```bash
+sudo cp nginx/tiksavemp4-proxy.conf /etc/nginx/snippets/tiksavemp4-proxy.conf
+sudo cp nginx/tiksavemp4.conf /etc/nginx/sites-available/tiksavemp4
+sudo ln -s /etc/nginx/sites-available/tiksavemp4 /etc/nginx/sites-enabled/tiksavemp4
+sudo nginx -t
+sudo systemctl reload nginx
+sudo certbot --nginx --redirect -d tiksavemp4.online -d www.tiksavemp4.online
+curl http://127.0.0.1:3002/api/health
+```
 
-Paste a public Instagram photo, Reel, video, or profile URL. The app resolves available metadata and formats, then prepares the selected download through a background job. Private, deleted, expired, login-restricted, and rate-limited content returns an error instead of a fabricated result. Instagram may restrict access even to links viewable in a signed-in browser.
+Use the new `tiksavemp4` configurations; the older `saveframe` Nginx files are retained examples. Keep **one PM2 worker** because the queue and job lookup share in-process state. Rebuild before restarting after updates. Active jobs do not survive a restart, so wait for the queue to finish before maintenance.
 
-`GET /api/health` checks yt-dlp, FFmpeg, temporary storage, and the job store. Redis is optional; the local server uses its in-memory store when Redis is not configured.
+## Checks
 
-## Blog and images
+```bash
+npm test
+npm run typecheck
+npm run lint
+npm run build
+```
 
-The homepage's guide cards link to real articles at `/blog/[slug]`. `/blog` supports search, category filters, and pagination through ordinary GET links and forms, so the catalog does not require a client-side search bundle.
+`npm test` uses explicit offline fixtures to verify URL validation, restricted hosts, private IP checks, photo metadata, share-link routing, cached MP4 preparation, image downloads and ZIP ordering.
 
-Published article records live in `src/content/blog/posts.json`; each body is a Markdown file named after its slug in the same directory. To add an article:
+For browser checks, install Playwright separately or point `TIKSAVE_PLAYWRIGHT_PATH` to an existing installation. Start a local production preview, then run:
 
-1. Write an original Markdown body using paragraphs, `##`/`###` headings, lists, links, bold text, and inline code. Raw HTML is not supported.
-2. Add its metadata record with a unique slug, accurate description, category, keyword, author, actual publication/modification dates, cover basename and alt text, and matching downloader `tool`.
-3. Use `published: false` while drafting. Drafts are excluded from the listing, article lookup, related posts, static article routes, and sitemap.
-4. Put optimized WebP covers in `public/images/blog/` at 480, 960, and 1200 pixels wide. Use a unique cover for each article; checks reject repeated cover names and identical files.
-5. Run `npm run test:blog`, then stop the running app and run `npm run build`. Content is generated statically, so publication changes require a new build.
+```bash
+TEST_BASE_URL=http://127.0.0.1:3002 node scripts/check-tiktok-browser.cjs
+```
 
-Deploy the content files along with the application. Blog articles remain file-based; private administration now uses a persistent SQLite database outside the public directory.
+The browser test exercises responsive layouts, navigation, validation, slideshow/MP4 download controls, information pages and the production-domain sitemap. Its media responses are test fixtures. Screenshots are written to `reports/tiktok-browser/`.
 
-The production origin is configured as `https://saveframe.site` in `.env.production`. Change `NEXT_PUBLIC_SITE_URL` before building if the deployment domain changes. Development without an override uses localhost and disables indexing. With a public origin, published guides are crawlable, `/api/` is excluded from robots, and article metadata, Open Graph/Twitter images, BlogPosting/BreadcrumbList structured data, and sitemap URLs use that origin. Filtered/paginated listing URLs canonicalize to `/blog` and are marked noindex.
+## Source availability
 
-The blog has 15 articles dated 24 October 2026. The author is attributed to SaveFrame; no personal qualifications or testimonials are invented. Cover images are generated editorial illustrations in the supplied warm photographic style, not documentary photos or Instagram screenshots. Image prompts and asset notes are in `design-system/insta-save/IMAGE-NOTES.md`.
-## Direct story images and videos
+TikTok can restrict server IPs, regions or unauthenticated access. Private, deleted and login-restricted posts are unsupported. Downloads use the files TikTok exposes; source quality and watermark removal are not guaranteed. During development, a live video test returned an upstream IP block, so successful live downloads must also be checked from the VPS after deployment. Update yt-dlp when TikTok changes its extraction behavior.
 
-The Story tool accepts one active story image or video URL containing `/stories/username/story-id/`. It tries yt-dlp, then a bounded canonical-page HTTP fallback on recoverable errors, then optional gallery-dl when explicitly enabled. Profile links, whole-account stories and bulk story downloads are rejected. Public requests remain anonymous; no paid provider or shared account is configured. Instagram login restrictions remain explicit failures. See [hybrid story architecture and configuration](docs/HYBRID_STORIES.md) for deadlines, security checks, optional operator-only authorization and deployment steps.
+Media expires after 15 minutes by default. The public downloader accepts no passwords or cookies. Optional operational analytics and private administrator features remain available from the original project.
 
-Run `npm run test:stories` for offline provider, image/video/audio, transport, cancellation, authorization and error fixtures. Add `-- --live-url=https://www.instagram.com/stories/username/story-id/` for an explicitly requested live test on a disposable local production server after building.
+## Design resources
 
-## Media previews and public avatars
-
-Desktop media previews preserve source proportions. Mobile keeps compact 4:3 cards; tap the main photo or video to open an accessible dialog showing the full media. Videos have a centred transparent play control and native playback controls. Preparation is on demand, uses the existing bounded queue, supports byte-range seeking and does not increase download or delivery totals. Closing by button, backdrop or Escape preserves the current result and scroll position. `npm run test:preview` checks partial responses, attachment compatibility and error recognition across route-module reloads.
-
-The profile tool can save an avatar already exposed by Instagram's unauthenticated public response, including an avatar belonging to a private account. It does not access private posts or restricted pictures, infer unavailable dimensions or promise HD. The supplied `@ama_shaa_` profile downloaded a valid 2,579-byte JPEG on 26 October 2026. The supplied `sula_dewmini/4016120619302180887` story returned `403 LOGIN_REQUIRED` on the fresh production preview. See `reports/media-live-2026-10-26.json` for the results.
-
-## Private administration
-
-Use Node.js 24+, run `npm run admin:setup` to choose your administrator password privately, then open `/admin/login`. There are no default credentials. The dashboard and its APIs require server-side authentication, and admin URLs are excluded from indexing and the sitemap. Local admin setup email is configured in ignored `.env.local`; it does not change the public support email.
-
-Read [ADMIN_SETUP.md](ADMIN_SETUP.md) for local preview, HTTPS hosting, persistent data, backups, optional two-factor authentication and recovery. [ADMIN_IMPLEMENTATION_REPORT.md](ADMIN_IMPLEMENTATION_REPORT.md) records the implementation, checks and limitations.
-
-## Final audit and hosting
-
-Read `FINAL_AUDIT_REPORT.md` and `DEPLOYMENT_CHECKLIST.md` before deployment. The final audit supersedes earlier readiness statements; historical reports are preserved.
-
-`npm run lint` runs ESLint without interactive setup. `npm test` includes security, queue/cleanup, local photo/profile fixtures and CLI recovery checks. `npm run test:runtime` verifies the installed binaries and creates only disposable local media for real FFmpeg mux/audio checks. Instagram network access is a separate test: a valid story URL can still return `LOGIN_REQUIRED`. No authenticated Instagram connection or paid provider is configured.
-
-The system-failure score and chart count confirmed internal errors only: INTERNAL_ERROR, YTDLP_NOT_INSTALLED, FFMPEG_ERROR, INSUFFICIENT_DISK_SPACE, PROCESS_RESTARTED and DELIVERY_STREAM_ERROR. Instagram access restrictions, ambiguous upstream extraction failures/timeouts, invalid input, configured size/rate limits and visitor cancellations remain in recent issue history and are excluded from that score. Preparation totals remain separate lifecycle metrics. Requests rejected by the rate limiter are not written as individual analytics events.
-
-Metadata work is coalesced per link with at most three simultaneous inspections. Successful metadata, including public photos and profile pictures, is retained for two minutes in an eight-entry memory cache. Downloads default to three active jobs, with a maximum of twenty waiting jobs; use `MAX_CONCURRENT_DOWNLOADS=1` or `2` for a small VPS and measure actual load. ZIPs stream in bounded chunks and are size checked before packaging. No external cleanup cron is required, and active jobs are not removed by the retention sweep.
+TikTok Sans is self-hosted from Google Fonts. The font is released by TikTok under the SIL Open Font License; the license is included at `src/app/fonts/tiktok-sans-OFL.txt`. References: [TikTok Sans](https://github.com/tiktok/TikTokSans) and [TikTok developer design guidance](https://developers.tiktok.com/docs/en/getting-started-design-guidelines). TikSaveMP4 retains its own name and an independently drawn mark.

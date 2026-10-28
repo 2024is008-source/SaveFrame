@@ -1,4 +1,4 @@
-export const toolPaths: Record<string, string> = { photo: '/photo-downloader', reels: '/reels-downloader', video: '/video-downloader', carousel: '/carousel-downloader', audio: '/audio-downloader', profile: '/profile-viewer' };
+export const toolPaths: Record<string, string> = { photo: '/photo-downloader', video: '/video-downloader', carousel: '/photo-downloader' };
 export const infoPaths: Record<string, string> = { privacy: '/privacy', terms: '/terms', contact: '/contact' };
 export function crawlableNavigation(markup: string, home = '/') {
   const linked = markup.replace(/<button\b([^>]*)>([\s\S]*?)<\/button>/g, (full, attrs, content) => {
@@ -10,5 +10,5 @@ export function crawlableNavigation(markup: string, home = '/') {
     // These are navigation disclosures, not application menus. Keep native
     // anchor/Tab behavior without promising ARIA menu-item arrow semantics.
     .replace(/(id="nav-(downloader|viewer)-menu"\s*)role="menu"/g, '$1role="group" aria-labelledby="nav-$2-btn"');
-  return linked.replace(/(<footer\b[\s\S]*)(<\/ul>)/, '$1<li><a href="/about" class="hover:text-ink hover:underline">About SaveFrame</a></li><li><a href="/copyright" class="hover:text-ink hover:underline">Copyright</a></li>$2');
+  return linked.replace(/(<footer\b[\s\S]*)(<\/ul>)/, '$1<li><a href="/about" class="hover:text-ink hover:underline">About TikSaveMP4</a></li><li><a href="/copyright" class="hover:text-ink hover:underline">Copyright</a></li>$2');
 }

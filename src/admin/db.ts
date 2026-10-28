@@ -82,9 +82,9 @@ export function audit(actor: string | null, action: string, target: string, deta
   db().prepare('INSERT INTO admin_audit_events(actor_id,action,target,detail,created_at) VALUES(?,?,?,?,?)').run(actor, action.slice(0,80), target.slice(0,200), detail.slice(0,500), Date.now());
 }
 export const settingDefaults: Record<string, string> = {
-  site_name: 'SaveFrame', contact_email: process.env.SAVEFRAME_SUPPORT_EMAIL || 'backbencherz@gmail.com',
-  default_description: 'Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link.',
-  default_social_image: '/social/saveframe.png', analytics_retention_days: '30', default_tool: 'photo',
+  site_name: 'TikSaveMP4', contact_email: process.env.SAVEFRAME_SUPPORT_EMAIL || 'backbencherz@gmail.com',
+  default_description: 'Download public TikTok videos and photo slideshows with a simple link.',
+  default_social_image: '/social/tiksave.png', analytics_retention_days: '30', default_tool: 'photo',
 };
 export function settings(): Record<string, string> {
   const result = { ...settingDefaults };

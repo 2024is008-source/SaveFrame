@@ -9,24 +9,25 @@ import { DownloaderAppError } from '../types/media.types';
 
 export interface InstagramRequestOptions { signal?: AbortSignal; timeoutMs: number; cookie?: string }
 export type StoryMime = 'image/jpeg' | 'image/webp' | 'video/mp4';
-const failure = (message = 'Instagram did not provide accessible story media.') => new DownloaderAppError('EXTRACTOR_FAILURE', message, 502, true);
+const failure = (message = 'Media did not provide accessible media.') => new DownloaderAppError('EXTRACTOR_FAILURE', message, 502, true);
 
 /** Shared, bounded transport for story metadata and media. Redirects never follow. */
 export class InstagramHttpClient {
+  protected followRedirects = false;
   validateUrl(value: string, media = false): URL {
     let url: URL;
-    try { url = new URL(value); } catch { throw new DownloaderAppError('SSRF_BLOCKED', 'Invalid Instagram media URL.', 403); }
+    try { url = new URL(value); } catch { throw new DownloaderAppError('SSRF_BLOCKED', 'Invalid Media media URL.', 403); }
     if(url.username||url.password)throw new DownloaderAppError('SSRF_BLOCKED','Embedded credentials are not accepted in media URLs.',403);
     const fixture = process.env.NODE_ENV === 'test' && process.env.SAVEFRAME_FIXTURE_ORIGIN === url.origin;
     const domains = media ? ['cdninstagram.com', 'fbcdn.net'] : ['instagram.com'];
     const allowed = domains.some(domain => url.hostname === domain || url.hostname.endsWith('.' + domain));
     if (!fixture && (!allowed || url.protocol !== 'https:' || url.username || url.password || (url.port && url.port !== '443'))) {
-      throw new DownloaderAppError('SSRF_BLOCKED', 'Story media must use an approved Instagram host.', 403);
+      throw new DownloaderAppError('SSRF_BLOCKED', 'Media must use an approved Media host.', 403);
     }
     return url;
   }
 
-  private async open(value: string, media: boolean, options: InstagramRequestOptions, range?: string) {
+  protected async open(value: string, media: boolean, options: InstagramRequestOptions, range?: string, hops = 0): Promise<{ response: http.IncomingMessage; signal: AbortSignal; url: URL }> {
     const url = this.validateUrl(value, media);
     const timeout = Math.max(1, Math.min(options.timeoutMs, 120000));
     const signal = options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(timeout)]) : AbortSignal.timeout(timeout);
@@ -38,13 +39,13 @@ export class InstagramHttpClient {
         ...(!fixture ? { lookup: ((host: string, lookupOptions: any, callback: any) => {
           dns.lookup(host, { all: true }, (error, records) => {
             if (error) return callback(error);
-            if (!records.length || records.some(record => isPrivateOrReservedIp(record.address))) return callback(new DownloaderAppError('SSRF_BLOCKED', 'Instagram host resolved to a restricted address.', 403));
+            if (!records.length || records.some(record => isPrivateOrReservedIp(record.address))) return callback(new DownloaderAppError('SSRF_BLOCKED', 'Media host resolved to a restricted address.', 403));
             if (lookupOptions?.all) callback(null, records);
             else callback(null, records[0].address, records[0].family);
           });
         }) as any } : {}),
         headers: {
-          'User-Agent': 'SaveFrameMediaUtility/1.0 (+https://saveframe.site)',
+          'User-Agent': 'TikSaveMP4/1.0 (+https://tiksavemp4.online)',
           'Accept-Encoding': 'identity', Accept: media ? 'image/jpeg,image/webp,video/mp4' : 'text/html,application/json',
           ...(range ? { Range: range } : {}),
           // Account credentials never accompany CDN requests.
@@ -57,29 +58,34 @@ export class InstagramHttpClient {
     const status = response.statusCode || 500;
     try {
       if (status >= 300 && status < 400) {
+        if (this.followRedirects && response.headers.location && hops < 4) {
+          const next = this.validateUrl(new URL(response.headers.location, url).href, media);
+          response.destroy();
+          return await this.open(next.href, media, { ...options, signal }, range, hops + 1);
+        }
         if (response.headers.location) {
           let destination:URL;
-          try{destination=this.validateUrl(new URL(response.headers.location, url).href, media);}catch(error){if(error instanceof DownloaderAppError)throw error;throw failure('Instagram returned an invalid redirect.');}
-          if (/\/(accounts\/login|challenge)(?:\/|$)/.test(destination.pathname)) throw new DownloaderAppError('LOGIN_REQUIRED', 'Instagram requires login to access this story.', 403);
+          try{destination=this.validateUrl(new URL(response.headers.location, url).href, media);}catch(error){if(error instanceof DownloaderAppError)throw error;throw failure('Media returned an invalid redirect.');}
+          if (/\/(accounts\/login|challenge)(?:\/|$)/.test(destination.pathname)) throw new DownloaderAppError('LOGIN_REQUIRED', 'Media requires login to access this post.', 403);
         }
-        throw failure('Instagram redirected this story request; redirects are not followed.');
+        throw failure('Media redirected this media request; redirects are not followed.');
       }
-      if (status === 401) throw new DownloaderAppError('LOGIN_REQUIRED', 'Instagram requires login to access this story.', 403);
-      if (status === 403) throw new DownloaderAppError('PRIVATE_CONTENT', 'Instagram denied access to this story.', 403);
+      if (status === 401) throw new DownloaderAppError('LOGIN_REQUIRED', 'Media requires login to access this post.', 403);
+      if (status === 403) throw new DownloaderAppError('PRIVATE_CONTENT', 'Media denied access to this post.', 403);
       if (status === 404 || status === 410) throw new DownloaderAppError('DELETED_CONTENT', 'This story is unavailable or no longer exists.', 404);
-      if (status === 429) throw new DownloaderAppError('RATE_LIMITED', 'Instagram is limiting requests. Please try again later.', 429, true);
+      if (status === 429) throw new DownloaderAppError('RATE_LIMITED', 'Media is limiting requests. Please try again later.', 429, true);
       if (status < 200 || status >= 300) throw failure();
-      if (response.headers['content-encoding'] && response.headers['content-encoding'] !== 'identity') throw failure('Compressed story responses are not accepted.');
+      if (response.headers['content-encoding'] && response.headers['content-encoding'] !== 'identity') throw failure('Compressed media responses are not accepted.');
     } catch (error) { response.destroy(); throw error; }
-    return { response, signal };
+    return { response, signal, url };
   }
 
   private mapError(error: unknown, signal: AbortSignal): DownloaderAppError {
     if (error instanceof DownloaderAppError) return error;
     if (signal.aborted) return signal.reason?.name === 'TimeoutError'
-      ? new DownloaderAppError('DOWNLOAD_TIMEOUT', 'Story media request timed out.', 504, true)
+      ? new DownloaderAppError('DOWNLOAD_TIMEOUT', 'Media request timed out.', 504, true)
       : new DownloaderAppError('JOB_CANCELLED', 'Story request was cancelled.', 499);
-    return failure('Unable to fetch Instagram story media.');
+    return failure('Unable to fetch Media media.');
   }
 
   async metadata(url: string, options: InstagramRequestOptions): Promise<string> {
@@ -88,7 +94,7 @@ export class InstagramHttpClient {
     const chunks: Buffer[] = []; let bytes = 0;
     try {
       if (Number(response.headers['content-length']) > maximum) throw new DownloaderAppError('FILE_TOO_LARGE', 'Story metadata response is too large.', 413);
-      if (!/^(text\/html|application\/json)(?:;|$)/i.test(String(response.headers['content-type'] || ''))) throw failure('Instagram returned an unsupported story response.');
+      if (!/^(text\/html|application\/json)(?:;|$)/i.test(String(response.headers['content-type'] || ''))) throw failure('Media returned an unsupported story response.');
       for await (const chunk of response) {
         bytes += chunk.length;
         if (bytes > maximum) throw new DownloaderAppError('FILE_TOO_LARGE', 'Story metadata response is too large.', 413);
@@ -100,7 +106,7 @@ export class InstagramHttpClient {
 
   mime(headers: http.IncomingHttpHeaders): StoryMime {
     const mime = String(headers['content-type'] || '').split(';')[0].trim().toLowerCase();
-    if (!['image/jpeg', 'image/webp', 'video/mp4'].includes(mime)) throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'Instagram returned unsupported story media.', 422);
+    if (!['image/jpeg', 'image/webp', 'video/mp4'].includes(mime)) throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'Media returned unsupported media.', 422);
     return mime as StoryMime;
   }
 
@@ -108,7 +114,7 @@ export class InstagramHttpClient {
     const valid = prefix.length>=12 && (mime === 'image/jpeg' ? prefix[0] === 0xff && prefix[1] === 0xd8 && prefix[2] === 0xff
       : mime === 'image/webp' ? prefix.toString('ascii', 0, 4) === 'RIFF' && prefix.toString('ascii', 8, 12) === 'WEBP'
       : prefix.toString('ascii', 4, 8) === 'ftyp');
-    if (!valid) throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'Story media does not match its declared format.', 422);
+    if (!valid) throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'Media does not match its declared format.', 422);
   }
 
   async probe(url: string, options: InstagramRequestOptions): Promise<{ mime: StoryMime; bytes?: number }> {
@@ -134,15 +140,15 @@ export class InstagramHttpClient {
     let created = false, bytes = 0;
     try {
       const mime = this.mime(response.headers);
-      if (mime !== expected) throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'Story media format changed. Inspect this link again.', 422);
-      if (Number(response.headers['content-length']) > maximum) throw new DownloaderAppError('FILE_TOO_LARGE', 'Story media exceeds the download size limit.', 413);
+      if (mime !== expected) throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'Media format changed. Inspect this link again.', 422);
+      if (Number(response.headers['content-length']) > maximum) throw new DownloaderAppError('FILE_TOO_LARGE', 'Media exceeds the download size limit.', 413);
       let prefix = Buffer.alloc(0), verified = false;
       const client = this;
       const guard = new Transform({
         transform(chunk: Buffer, _encoding, callback) {
           try {
             bytes += chunk.length;
-            if (bytes > maximum) throw new DownloaderAppError('FILE_TOO_LARGE', 'Story media exceeds the download size limit.', 413);
+            if (bytes > maximum) throw new DownloaderAppError('FILE_TOO_LARGE', 'Media exceeds the download size limit.', 413);
             if (!verified) {
               prefix = Buffer.concat([prefix, chunk]);
               if (prefix.length < 12) return callback();
@@ -151,7 +157,7 @@ export class InstagramHttpClient {
             progress?.(bytes); callback();
           } catch (error) { callback(error as Error); }
         },
-        flush(callback) { callback(verified ? undefined : new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'Story media is empty or incomplete.', 422)); },
+        flush(callback) { callback(verified ? undefined : new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'Media is empty or incomplete.', 422)); },
       });
       const output = fs.createWriteStream(destination, { flags: 'wx', mode: 0o600, highWaterMark: 65536 });
       output.once('open', () => { created = true; });

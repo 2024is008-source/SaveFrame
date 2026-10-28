@@ -12,22 +12,22 @@ upstream saveframe_backend {
 
 server {
     listen 80;
-    server_name saveframe.site www.saveframe.site;
+    server_name tiksavemp4.online www.tiksavemp4.online;
     location ^~ /.well-known/acme-challenge/ { root /var/www/letsencrypt; }
-    location / { return 308 https://saveframe.site$request_uri; }
+    location / { return 308 https://tiksavemp4.online$request_uri; }
 }
 server {
     listen 443 ssl;
-    server_name www.saveframe.site;
-    ssl_certificate /etc/letsencrypt/live/saveframe.site/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/saveframe.site/privkey.pem;
-    return 308 https://saveframe.site$request_uri;
+    server_name www.tiksavemp4.online;
+    ssl_certificate /etc/letsencrypt/live/tiksavemp4.online/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/tiksavemp4.online/privkey.pem;
+    return 308 https://tiksavemp4.online$request_uri;
 }
 server {
     listen 443 ssl;
-    server_name saveframe.site;
-    ssl_certificate /etc/letsencrypt/live/saveframe.site/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/saveframe.site/privkey.pem;
+    server_name tiksavemp4.online;
+    ssl_certificate /etc/letsencrypt/live/tiksavemp4.online/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/tiksavemp4.online/privkey.pem;
 
     # Security Headers
     add_header X-Frame-Options "DENY" always;

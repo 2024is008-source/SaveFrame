@@ -1,0 +1,86 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const ts = require('typescript');
+process.env.NODE_ENV = 'test';
+process.env.SAVEFRAME_ANALYTICS_DISABLED = '1';
+require.extensions['.ts'] = (module, filename) => module._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText, filename);
+const validation = require('../src/security/url-validator.ts');
+const { TikTokHttpClient, parseTikTokPhotos } = require('../src/services/tiktok.service.ts');
+const { YtDlpService } = require('../src/services/yt-dlp.service.ts');
+const { DownloadManagerService } = require('../src/services/download-manager.service.ts');
+const id = '7170520270497680683';
+const videoUrl = `https://www.tiktok.com/@creator/video/${id}`;
+const photoUrl = `https://www.tiktok.com/@creator/photo/${id}`;
+const photoItem = {id,desc:'A public photo post',author:{uniqueId:'creator',nickname:'Creator'},imagePost:{images:[1,2].map(n=>({imageURL:{urlList:[`https://p16.tiktokcdn.com/slide-${n}.jpg`]},imageWidth:1080,imageHeight:1440}))}};
+const html = `<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__" type="application/json">${JSON.stringify({__DEFAULT_SCOPE__:{'webapp.video-detail':{itemInfo:{itemStruct:photoItem}}}})}</script>`;
+async function main() {
+  assert.equal(validation.validateTikTokUrl(videoUrl+'?tracking=removed').canonicalUrl,videoUrl);
+  assert.equal(validation.validateTikTokUrl(photoUrl).category,'photo');
+  for(const link of ['https://vm.tiktok.com/ZTR45GpSF/','https://vt.tiktok.com/ZSe4FqkKd','https://www.tiktok.com/t/ZTRC5xgJp']) assert.equal(validation.validateTikTokUrl(link).category,'video');
+  for(const link of ['https://instagram.com/p/ABC123/','https://tiktok.com.evil.test/@creator/video/'+id,'https://127.0.0.1/','https://user:pass@tiktok.com/@creator/video/'+id,'https://tiktok.com:8443/@creator/video/'+id,'http://www.tiktok.com/@creator/video/'+id,'https://www.tiktok.com/@creator','https://www.tiktok.com/@creator/live','--exec calc','https://vt.tiktok.com/@creator/photo/'+id,'https://www.tiktok.com\\@evil.test']) assert.throws(()=>validation.validatePublicMediaInput(link));
+  assert.throws(()=>validation.validatePublicMediaInput(videoUrl,'profile'));
+  const client = new TikTokHttpClient();
+  for(const link of ['https://evil.test/a.jpg','https://tiktokcdn.com.evil.test/a.jpg','http://p16.tiktokcdn.com/a.jpg','https://user:pass@p16.tiktokcdn.com/a.jpg','https://127.0.0.1/a.jpg']) assert.throws(()=>client.validateUrl(link,true));
+  assert.equal(client.validateUrl('https://p16.tiktokcdn.com/a.jpg',true).hostname,'p16.tiktokcdn.com');
+  for(const address of ['127.0.0.1','10.0.0.1','169.254.169.254','::1','::ffff:127.0.0.1']) assert.equal(validation.isPrivateOrReservedIp(address),true);
+  const photos = parseTikTokPhotos(html,photoUrl);
+  assert.throws(()=>parseTikTokPhotos(html.replace('"imagePost"','"privateItem":true,"imagePost"'),photoUrl),error=>error.code==='PRIVATE_CONTENT');
+  assert.throws(()=>parseTikTokPhotos(html.replace('"imagePost"','"forFriend":true,"imagePost"'),photoUrl),error=>error.code==='PRIVATE_CONTENT');
+  assert.equal(photos.itemCount,2); assert.equal(photos.supportsZipDownload,true);
+  assert.equal(photos.items[1].formats[0].directUrl,'https://p16.tiktokcdn.com/slide-2.jpg');
+  assert.throws(()=>parseTikTokPhotos(html.replace(id,'9999999999999999999'),photoUrl));
+  assert.throws(()=>parseTikTokPhotos('<html>Challenge or unavailable</html>',photoUrl));
+  assert.throws(()=>parseTikTokPhotos(html.replaceAll('p16.tiktokcdn.com','127.0.0.1'),photoUrl));
+  const sigi = `<script id="SIGI_STATE">${JSON.stringify({ItemModule:{[id]:photoItem}})}</script>`;
+  assert.equal(parseTikTokPhotos(sigi,photoUrl).itemCount,2);
+  validation.assertSafeHostResolution = async()=>{};
+  const raw = {id,title:'Public TikTok video',uploader:'creator',formats:[{format_id:'video',url:'https://v16.tiktokcdn.com/source.mp4',width:720,height:1280,vcodec:'h264',acodec:'aac'}]};
+  const service = new YtDlpService();
+  let inspected=0;
+  service.runSubprocess=async(_binary,args)=>{
+    if(args.includes('--dump-single-json')){inspected++;assert.equal(args.at(-2),'--');assert.equal(args.at(-1),videoUrl);return{stdout:JSON.stringify(raw),stderr:'',exitCode:0};}
+    assert.ok(args.includes('--load-info-json')); assert.equal(args.includes('--exec'),false);
+    fs.writeFileSync(args[args.indexOf('-o')+1],Buffer.from('fixture-mp4-file'));
+    return{stdout:'',stderr:'',exitCode:0};
+  };
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'tiksave-test-'));
+  const originalMetadata=TikTokHttpClient.prototype.metadata;
+  const originalResolve=TikTokHttpClient.prototype.resolveUrl;
+  const originalDownload=TikTokHttpClient.prototype.download;
+  try {
+    const media=await service.extractMetadata(videoUrl);
+    assert.equal(media.items[0].formats.length,1,'Only video formats should be exposed');
+    assert.equal(media.items[0].mediaType,'video');
+    const artifact=await service.downloadMedia(videoUrl,{jobId:'video-test',outputDir:directory});
+    assert.equal(artifact.mimeType,'video/mp4');assert.equal(inspected,1,'Reuse server-only metadata for download');
+    assert.equal(fs.readFileSync(artifact.filePath,'utf8'),'fixture-mp4-file');
+    TikTokHttpClient.prototype.metadata=async()=>html;
+    TikTokHttpClient.prototype.resolveUrl=async()=>photoUrl;
+    TikTokHttpClient.prototype.download=async function(url,destination,expected,maximum){this.validateUrl(url,true);assert.equal(expected,'image/jpeg');assert.ok(maximum>0);const bytes=Buffer.from([255,216,255,224,0,16,74,70,73,70,0,1]);fs.writeFileSync(destination,bytes);return{bytesWritten:bytes.length,mimeType:expected};};
+    const shortPhotos=await service.extractMetadata('https://vm.tiktok.com/ZTR45GpSF/');
+    assert.equal(shortPhotos.canonicalUrl,photoUrl);assert.equal(shortPhotos.itemCount,2);
+    const inspectedPages=[];
+    TikTokHttpClient.prototype.metadata=async url=>{
+      inspectedPages.push(url);
+      return url.includes('/photo/')?'<html>No hydration on this representation</html>':html;
+    };
+    const fallback=await new YtDlpService().extractMetadata(photoUrl);
+    assert.equal(fallback.itemCount,2);
+    assert.equal(fallback.canonicalUrl,photoUrl);
+    assert.deepEqual(inspectedPages,[photoUrl,videoUrl],'Use only the same public post ID for the alternate representation');
+    TikTokHttpClient.prototype.metadata=async()=>html;
+    const image=await service.downloadMedia(photoUrl,{jobId:'photo-test',itemIndex:1,outputDir:directory});
+    assert.equal(image.mimeType,'image/jpeg');assert.ok(image.safeFilename.endsWith('.jpg'));
+    const manager=new DownloadManagerService(service,{tempDir:path.join(directory,'jobs'),minFreeDiskBytes:1});
+    const job=await manager.createJob({url:photoUrl,zipCarousel:true,trackAnalytics:false});
+    const deadline=Date.now()+10000;
+    while(!['completed','failed'].includes(job.status)&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,25));
+    assert.equal(job.status,'completed',JSON.stringify(job.error));assert.equal(job.mimeType,'application/zip');
+    const zip=fs.readFileSync(job.outputFilePath);assert.equal(zip.readUInt32LE(0),0x04034b50);assert.ok(zip.includes(Buffer.from('01_')));assert.ok(zip.includes(Buffer.from('02_')));
+    await assert.rejects(()=>service.downloadMedia(photoUrl,{jobId:'bad-item',itemIndex:100,outputDir:directory}));
+    console.log('PASS: TikTok links, unsupported hosts, private IPs, both photo schemas, unavailable posts, short photo links, cached video download, individual images, ZIP order, invalid item selection.');
+  } finally {TikTokHttpClient.prototype.metadata=originalMetadata;TikTokHttpClient.prototype.resolveUrl=originalResolve;TikTokHttpClient.prototype.download=originalDownload;fs.rmSync(directory,{recursive:true,force:true});}
+}
+main().catch(error=>{console.error(error);process.exitCode=1;});

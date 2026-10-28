@@ -42,6 +42,11 @@ const PROFILE_REGEX = /^\/([A-Za-z0-9._]{2,30})\/?$/;
 
 /** Direct story items only. Do not turn a profile URL into a bulk story request. */
 export function validateMediaInput(rawUrl: string, tool?: string): ValidatedInstagramUrl {
+  if (tool && !['video', 'photo', 'carousel'].includes(tool)) throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'Choose TikTok videos or photos.', 400);
+  return validateTikTokUrl(rawUrl);
+}
+
+export function validateLegacyMediaInput(rawUrl: string, tool?: string): ValidatedInstagramUrl {
   const validated = validateInstagramUrl(rawUrl);
   if (tool === 'audio' && !['reel','video','photo'].includes(validated.category)) throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'Paste a public Instagram Reel or video post link for MP3 extraction.', 400);
   if ((tool === 'story' && validated.category !== 'story') ||
@@ -51,6 +56,23 @@ export function validateMediaInput(rawUrl: string, tool?: string): ValidatedInst
     throw new DownloaderAppError('INVALID_STORY_LINK', 'Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.', 400);
   }
   return validated;
+}
+
+/** Only public TikTok posts and official short share links are accepted. */
+export function validateTikTokUrl(rawInput: string): ValidatedInstagramUrl {
+  const invalid = () => new DownloaderAppError('INVALID_URL', 'Paste a TikTok video, photo post, or share link.', 400);
+  if (typeof rawInput !== 'string' || !rawInput.trim() || rawInput.length > 2048 || /[\s\\]/.test(rawInput.trim())) throw invalid();
+  let url: URL;
+  try { url = new URL(/^https?:\/\//i.test(rawInput.trim()) ? rawInput.trim() : `https://${rawInput.trim()}`); } catch { throw invalid(); }
+  if (url.protocol !== 'https:' || url.username || url.password || url.port) throw invalid();
+  const host = url.hostname.toLowerCase();
+  if (!['tiktok.com', 'www.tiktok.com', 'm.tiktok.com', 'vm.tiktok.com', 'vt.tiktok.com'].includes(host)) throw new DownloaderAppError('UNSUPPORTED_DOMAIN', 'Only official TikTok links are supported.', 400);
+  const short = ['vm.tiktok.com', 'vt.tiktok.com'].includes(host) ? url.pathname.match(/^\/([A-Za-z0-9]{4,80})\/?$/) : url.pathname.match(/^\/t\/([A-Za-z0-9]{4,80})\/?$/);
+  if (short) return { canonicalUrl: `https://${host}${host.startsWith('v') ? '/' : '/t/'}${short[1]}/`, category: 'video', shortcode: short[1] };
+  if (host.startsWith('v')) throw invalid();
+  const post = url.pathname.match(/^\/@([A-Za-z0-9._]{1,30})\/(video|photo)\/([0-9]{10,25})\/?$/);
+  if (!post) throw invalid();
+  return { canonicalUrl: `https://www.tiktok.com/@${post[1]}/${post[2]}/${post[3]}`, category: post[2] === 'photo' ? 'photo' : 'video', shortcode: post[3], username: post[1] };
 }
 
 /** Public tools no longer expose story extraction; operator workflows stay separate. */

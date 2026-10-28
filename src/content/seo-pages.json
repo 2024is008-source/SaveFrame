@@ -1,0 +1,14 @@
+{
+  "/": {
+    "title": "Download TikTok Videos & Photos | TikSaveMP4",
+    "description": "Download public TikTok videos as MP4 or save photo slideshows as individual images and ZIP files. Paste a post link to see available formats."
+  },
+  "/video-downloader": {
+    "title": "Download TikTok Videos as MP4 | TikSaveMP4",
+    "description": "Paste a public TikTok video link, preview available formats, and download an MP4 to your phone or computer. No TikTok login required."
+  },
+  "/photo-downloader": {
+    "title": "Download TikTok Photos & Slideshows | TikSaveMP4",
+    "description": "Download images from public TikTok photo posts. Preview the slideshow, save individual photos, or download the available images together as an ordered ZIP."
+  }
+}
