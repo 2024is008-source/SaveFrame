@@ -6,6 +6,13 @@ const config: NextConfig = {
   // Runtime state must never be copied into a release/standalone artifact.
   outputFileTracingExcludes: { '/**': ['./.data/**/*', './.env*', './.runtime/downloads/**/*', './**/saveframe-story-session-*/**/*'] },
   images: { deviceSizes: [360, 480, 640, 768, 960, 1200], imageSizes: [48, 96, 160, 240] },
+  async redirects() {
+    return [
+      { source: '/blog/how-to-convert-tiktok-to-mp4', destination: '/blog/how-to-download-tiktok-videos-mp4', statusCode: 301 },
+      { source: '/blog/how-to-download-tiktok-images', destination: '/blog/download-tiktok-photo-slideshows', statusCode: 301 },
+      { source: '/blog/how-to-download-tiktok-videos-on-pc', destination: '/blog/download-tiktok-videos-pc-mac', statusCode: 301 },
+    ];
+  },
   async headers() {
     return [
       { source: '/admin/:path*', headers: [{key:'X-Robots-Tag',value:'noindex, nofollow, nosnippet'},{key:'Cache-Control',value:'private, no-store, max-age=0'},{key:'X-Frame-Options',value:'DENY'},{key:'Content-Security-Policy',value:"frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"},{key:'Referrer-Policy',value:'no-referrer'},{key:'X-Content-Type-Options',value:'nosniff'}] },

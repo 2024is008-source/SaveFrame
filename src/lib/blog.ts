@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import records from '../content/blog/posts.json';
+import legacyRecords from '../content/blog/legacy-posts.json';
 import cardAssets from '../ui/card-assets.json';
 import { pageDescription } from '../admin/public-seo';
 
@@ -12,14 +13,17 @@ export interface BlogPost {
   cover: string; coverAlt: string; tool: string; content: string; wordCount: number; readingMinutes: number;
 }
 const contentRoot = path.join(process.cwd(), 'src/content/blog');
-export function getPublishedPosts(): BlogPost[] {
-  return records.filter(post => post.published).map(post => {
-    const content = fs.readFileSync(path.join(contentRoot, `${post.slug}.md`), 'utf8');
-    const wordCount = content.trim().split(/\s+/).length;
-    return { ...post, description:pageDescription('/blog/'+post.slug,post.description), content, wordCount, readingMinutes: Math.max(1, Math.ceil(wordCount / 220)) };
-  }).sort((a, b) => b.publishedAt.localeCompare(a.publishedAt) || records.findIndex(p => p.slug === a.slug) - records.findIndex(p => p.slug === b.slug));
+function readPost(post: typeof records[number]): BlogPost {
+  const content = fs.readFileSync(path.join(contentRoot, `${post.slug}.md`), 'utf8');
+  const wordCount = content.trim().split(/\s+/).length;
+  return { ...post, description:pageDescription('/blog/'+post.slug,post.description), content, wordCount, readingMinutes: Math.max(1, Math.ceil(wordCount / 220)) };
 }
-export function getPost(slug: string) { return getPublishedPosts().find(post => post.slug === slug); }
+export function getPublishedPosts(): BlogPost[] {
+  return records.filter(post => post.published).map(readPost).sort((a, b) => b.publishedAt.localeCompare(a.publishedAt) || records.findIndex(p => p.slug === a.slug) - records.findIndex(p => p.slug === b.slug));
+}
+// Preserve indexed editorial pages without changing the current 12-guide catalog.
+export function getLegacyPosts(): BlogPost[] { return legacyRecords.filter(post => post.published).map(readPost); }
+export function getPost(slug: string) { return getPublishedPosts().find(post => post.slug === slug) ?? getLegacyPosts().find(post => post.slug === slug); }
 export function relatedPosts(post: BlogPost) {
   return getPublishedPosts().filter(item => item.slug !== post.slug)
     .sort((a, b) => Number(b.category === post.category) - Number(a.category === post.category)).slice(0, 3);

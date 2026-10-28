@@ -5,14 +5,14 @@ import { notFound } from 'next/navigation';
 import { BlogShell } from '../../../components/blog/BlogShell';
 import { ArticleCard } from '../../../components/blog/ArticleCard';
 import { Markdown } from '../../../components/blog/Markdown';
-import { formatDate, getPost, getPublishedPosts, relatedPosts, tableOfContents } from '../../../lib/blog';
+import { formatDate, getPost, getPublishedPosts, getLegacyPosts, relatedPosts, tableOfContents } from '../../../lib/blog';
 import { absoluteUrl, hasPublicSiteUrl } from '../../../lib/site';
 import { toolPaths } from '../../../lib/navigation';
 import { applySeo } from '../../../admin/public-seo';
 export const dynamic='force-dynamic';
 
 export const dynamicParams = false;
-export function generateStaticParams() { return getPublishedPosts().map(post => ({ slug: post.slug })); }
+export function generateStaticParams() { return [...getPublishedPosts(), ...getLegacyPosts()].map(post => ({ slug: post.slug })); }
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const post = getPost((await params).slug);
   if (!post) return { title: 'Guide not found | TikSaveMP4', robots: { index: false, follow: false } };
