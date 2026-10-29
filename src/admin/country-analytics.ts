@@ -1,4 +1,4 @@
-import {db, cleanup} from './db';
+import {db, cleanupBestEffort} from './db';
 import {AdminError} from './auth';
 import {countryCode, countryName, countryCodes} from '../lib/country';
 
@@ -38,7 +38,7 @@ function selection(input: CountryFilter) {
 }
 
 export function countryReports(input: CountryFilter = {}) {
-  cleanup();
+  cleanupBestEffort();
   const {range, where, values} = selection(input), connection = db();
   const sums = 'SUM(requests) requests,SUM(prepared) prepared,SUM(delivered) delivered,SUM(failed) failed';
   const totals = connection.prepare(`SELECT COALESCE(SUM(requests),0) requests,COALESCE(SUM(prepared),0) prepared,COALESCE(SUM(delivered),0) delivered,COALESCE(SUM(failed),0) failed FROM daily_country_statistics WHERE ${where}`).get(...values) as any;
@@ -52,7 +52,7 @@ export function countryReports(input: CountryFilter = {}) {
 }
 
 export function countryCsv(input: CountryFilter = {}) {
-  cleanup();
+  cleanupBestEffort();
   const {where, values} = selection(input);
   const rows = db().prepare(`SELECT day,country_code,media_type,requests,prepared,delivered,failed FROM daily_country_statistics WHERE ${where} ORDER BY day,country_code,media_type`).all(...values);
   const quote = (value: unknown) => '"' + String(value).replace(/"/g, '""') + '"';

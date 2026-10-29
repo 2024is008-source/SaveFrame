@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
-import { db, transaction, cleanup } from './db';
+import { db, transaction, cleanupBestEffort } from './db';
+import { analyticsFailure } from './analytics-failure';
 import { AdminError } from './auth';
 import { countryCode } from '../lib/country';
 import { rebuildCountryDay } from './country-analytics';
@@ -38,10 +39,10 @@ export function recordEvent(id: string, event: string, type='unknown', jobId: st
     rebuildCountryDay(request.requested_at);
   });
 }
-let warned=false;
-function bestEffort(operation:()=>void) {
+function bestEffort(operation:()=>void, name: 'record_event' | 'attach_job' | 'recover_interrupted_jobs' = 'record_event') {
   if(process.env.SAVEFRAME_ANALYTICS_DISABLED==='1' || process.env.NODE_ENV==='test') return;
-  try { operation(); cleanup(); } catch { if(!warned) { warned=true; console.warn('[SaveFrame] Operational analytics storage is unavailable.'); } }
+  try { operation(); } catch (error) { analyticsFailure(name, error); return; }
+  cleanupBestEffort();
 }
 export function beginDownload(type='unknown', country='XX', zip=false) { const id=crypto.randomUUID(); bestEffort(()=>recordEvent(id,'download_requested',type,null,null,null,country,zip)); return id; }
 export function beginResolution(country='XX') { const id=crypto.randomUUID(); bestEffort(()=>{recordEvent(id,'request_received','unknown',null,null,null,country);recordEvent(id,'media_resolution_started');}); return id; }
@@ -66,14 +67,14 @@ export function attachJob(id: string, jobId: string, type: string, zip?: boolean
     if(zip !== undefined) db().prepare('UPDATE download_requests SET is_zip=? WHERE id=?').run(zip?1:0,id);
     rebuildDay(row.requested_at);
     rebuildCountryDay(row.requested_at);
-  }));
+  }), 'attach_job');
 }
 export function jobEvent(id: string|undefined, event: string, jobId: string|null, type: string, code?: string, duration?: number) { if(id) bestEffort(()=>recordEvent(id,event,type,jobId,code || null,duration ?? null)); }
 export function recoverInterruptedJobs() {
   bestEffort(()=> {
     const interrupted=db().prepare("SELECT id,job_id,media_type FROM download_requests WHERE status IN ('queued','processing') AND runtime_id<>?").all(runtime()) as any[];
     for(const row of interrupted) recordEvent(row.id,'download_failed',row.media_type,row.job_id,'PROCESS_RESTARTED');
-  });
+  }, 'recover_interrupted_jobs');
 }
 export interface ReportFilter { from?:string; to?:string; type?:string; status?:string; page?:string|number }
 export function reportRange(input: ReportFilter={}) {
@@ -86,7 +87,7 @@ export function reportRange(input: ReportFilter={}) {
   return {from,to,start:Date.parse(from),end:Date.parse(to)+86400000,type:input.type || '',status:input.status || '',page:Math.min(100000,Math.max(1,parseInt(String(input.page || 1)) || 1))};
 }
 export function reports(input: ReportFilter={}) {
-  cleanup(); const range=reportRange(input), connection=db();
+  cleanupBestEffort(); const range=reportRange(input), connection=db();
   const filter=range.type ? ' AND media_type=?' : '', values:any[]=[range.from,range.to,...(range.type?[range.type]:[])];
   const totals=connection.prepare(`SELECT COALESCE(SUM(requests),0) requests,COALESCE(SUM(prepared),0) prepared,COALESCE(SUM(failed),0) failed,COALESCE(SUM(delivered),0) delivered,COALESCE(SUM(processing_ms),0) processing_ms,COALESCE(SUM(processing_samples),0) samples FROM daily_statistics WHERE day>=? AND day<=?${filter}`).get(...values) as any;
   const daily=connection.prepare(`SELECT day,SUM(requests) requests,SUM(prepared) prepared,SUM(failed) failed FROM daily_statistics WHERE day>=? AND day<=?${filter} GROUP BY day ORDER BY day`).all(...values) as any[];

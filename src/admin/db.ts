@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
+import { analyticsFailure } from './analytics-failure';
 
 declare global { var __saveframeAdminDbs: Map<string, DatabaseSync> | undefined; }
 export function dataDirectory() {
@@ -21,7 +22,7 @@ export function db(): DatabaseSync {
   if (global.__saveframeAdminDbs.has(filename)) return global.__saveframeAdminDbs.get(filename)!;
   if (fs.existsSync(filename) && fs.lstatSync(filename).isSymbolicLink()) throw Error('Database cannot be a symlink');
   const connection = new DatabaseSync(filename);
-  connection.exec('PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; PRAGMA synchronous=NORMAL;');
+  connection.exec('PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA synchronous=NORMAL;');
   connection.exec('CREATE TABLE IF NOT EXISTS schema_migrations(version INTEGER PRIMARY KEY, applied_at INTEGER NOT NULL)');
   if (!connection.prepare('SELECT version FROM schema_migrations WHERE version=1').get()) {
     connection.exec('BEGIN IMMEDIATE');
@@ -60,7 +61,11 @@ export function db(): DatabaseSync {
 export function transaction<T>(operation: () => T): T {
   const connection = db(); connection.exec('BEGIN IMMEDIATE');
   try { const result = operation(); connection.exec('COMMIT'); return result; }
-  catch (error) { connection.exec('ROLLBACK'); throw error; }
+  catch (error) {
+    // Some SQLite failures already roll back the transaction. Preserve the cause.
+    try { connection.exec('ROLLBACK'); } catch { /* No active transaction. */ }
+    throw error;
+  }
 }
 export function serverKey(): Buffer {
   const configured = process.env.SAVEFRAME_ADMIN_SECRET;
@@ -96,11 +101,13 @@ export function publicSettings() {
   try { const value = settings(); return { siteName: value.site_name, contactEmail: value.contact_email, defaultTool: value.default_tool, defaultDescription: value.default_description, defaultSocialImage: value.default_social_image }; }
   catch { return { siteName: settingDefaults.site_name, contactEmail: settingDefaults.contact_email, defaultTool: 'photo', defaultDescription: settingDefaults.default_description, defaultSocialImage: settingDefaults.default_social_image }; }
 }
-let lastCleanup = 0;
+// Scope scheduling to each connection; retry failed maintenance after one minute.
+const cleanupSchedule = new WeakMap<DatabaseSync, number>();
 export function cleanup(force = false) {
   const now = Date.now();
-  if (!force && now - lastCleanup < 3600000) return;
-  lastCleanup = now;
+  const connection = db();
+  if (!force && now < (cleanupSchedule.get(connection) || 0)) return;
+  try {
   const retention = Math.min(180, Math.max(7, Number(settings().analytics_retention_days) || 30));
   transaction(() => {
     const cutoff = now - retention * 86400000;
@@ -114,4 +121,12 @@ export function cleanup(force = false) {
     db().prepare('DELETE FROM admin_audit_events WHERE created_at < ?').run(now - 180 * 86400000);
     db().exec('DELETE FROM seo_revisions WHERE id NOT IN (SELECT id FROM (SELECT id, ROW_NUMBER() OVER(PARTITION BY route ORDER BY id DESC) AS n FROM seo_revisions) WHERE n <= 100)');
   });
+    cleanupSchedule.set(connection, now + 3600000);
+  } catch (error) {
+    cleanupSchedule.set(connection, now + 60000);
+    throw error;
+  }
+}
+export function cleanupBestEffort() {
+  try { cleanup(); } catch (error) { analyticsFailure('cleanup', error); }
 }

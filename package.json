@@ -16,7 +16,7 @@
     "test:audio": "node scripts/check-audio.cjs",
     "test:audio:browser": "node scripts/check-audio-browser.cjs",
     "test:sitelinks:browser": "node scripts/check-sitelinks-browser.cjs",
-    "test:analytics": "node scripts/check-analytics.cjs && node scripts/check-download-analytics.cjs",
+    "test:analytics": "node scripts/check-analytics.cjs && node scripts/check-download-analytics.cjs && node scripts/check-operational-analytics.cjs",
     "test:security": "node scripts/check-security.cjs && node scripts/check-audit-regressions.cjs",
     "test:runtime": "node scripts/check-runtime.cjs",
     "test:styles": "node scripts/check-styles.cjs",
