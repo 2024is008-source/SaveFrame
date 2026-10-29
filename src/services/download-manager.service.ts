@@ -10,6 +10,7 @@ import { validateMediaInput, sanitizeFilename } from '../security/url-validator'
 import { YtDlpService } from './yt-dlp.service';
 import { beginDownload, attachJob, jobEvent, recoverInterruptedJobs } from '../admin/analytics';
 import {isMp3Format} from './audio';
+import {mediaFailure, mediaStage, withMediaTiming} from './media-timing';
 
 export interface DownloadManagerConfig {
   tempDir?: string;
@@ -350,7 +351,7 @@ export class DownloadManagerService {
       if (!job || job.status !== 'queued') continue;
 
       this.activeCount += 1;
-      this.executeJob(job)
+      withMediaTiming(()=>mediaStage('download_preparation',()=>this.executeJob(job)), 'download')
         .catch(() => {})
         .finally(() => {
           this.activeCount = Math.max(0, this.activeCount - 1);
@@ -496,6 +497,7 @@ export class DownloadManagerService {
       job.expiresAt = Date.now() + this.retentionMs;
       jobEvent(job.analyticsId,'media_prepared',job.jobId,job.category,undefined,Date.now()-processingStarted);
     } catch (err: any) {
+      mediaFailure();
       if ((job.status as string) === 'cancelled' || err?.code === 'JOB_CANCELLED') {
         job.status = 'cancelled';
         job.error = {

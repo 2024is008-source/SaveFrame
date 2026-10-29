@@ -17,9 +17,11 @@ import {
   sanitizeFilename,
 } from '../security/url-validator';
 import { InstagramAuthorizedAdapters } from './instagram-adapters.service';
-import { InstagramHttpClient } from './instagram-http.service';
+import { InstagramHttpClient, InstagramRequestOptions } from './instagram-http.service';
 import { AuthorizedInstagrapiAccess, InstagrapiService, instagrapiEligible } from './instagrapi.service';
 import {audioMetadata, encodeMp3, isMp3Format} from './audio';
+import {mediaCount, mediaDuration, mediaStage, mediaStageSync} from './media-timing';
+import {metadataCachePolicy} from './metadata-cache-policy';
 
 export interface YtDlpServiceConfig {
   ytDlpBinaryPath?: string;
@@ -78,15 +80,53 @@ export class YtDlpService {
   private readonly cancelledJobIds = new Set<string>();
   private readonly adapters: InstagramAuthorizedAdapters;
   private readonly http = new InstagramHttpClient();
+  private readonly directHeaders = new WeakMap<NormalizedFormat, Pick<InstagramRequestOptions, 'mediaUserAgent' | 'mediaReferer'>>();
   private readonly instagrapi: InstagrapiService;
   private readonly activeTransfers = new Map<string, AbortController>();
   private readonly metadataWaiters = new Map<string, { controller: AbortController; count: number; done: boolean }>();
-  private readonly metadataCache = new Map<string, { data: NormalizedMediaResult; raw: any; expiresAt: number }>();
+  private readonly metadataCache = new Map<string, { data: NormalizedMediaResult; raw: any; expiresAt: number; bytes: number }>();
   private readonly pendingMetadata = new Map<string, Promise<NormalizedMediaResult>>();
+  private metadataCacheBytes = 0;
+  private metadataCacheTimer?: NodeJS.Timeout;
+  private cacheLimit(name: string, fallback: number, max: number) {
+    const value = Number(process.env[name]);
+    return Number.isSafeInteger(value) && value > 0 && value <= max ? value : fallback;
+  }
+  private removeMetadata(key: string) {
+    const entry = this.metadataCache.get(key);
+    if (entry) this.metadataCacheBytes -= entry.bytes;
+    this.metadataCache.delete(key);
+  }
+  private cachedMetadata(key: string) {
+    const entry = this.metadataCache.get(key);
+    if (!entry) return;
+    if (entry.expiresAt <= Date.now()) { this.removeMetadata(key); return; }
+    // LRU: actively used previews/downloads survive unrelated visitors.
+    this.metadataCache.delete(key); this.metadataCache.set(key, entry);
+    return entry;
+  }
+  private scheduleMetadataExpiry() {
+    if (this.metadataCacheTimer) clearTimeout(this.metadataCacheTimer);
+    if (!this.metadataCache.size) return;
+    const next = Math.min(...Array.from(this.metadataCache.values(), entry => entry.expiresAt));
+    this.metadataCacheTimer = setTimeout(() => {
+      for (const [key, entry] of this.metadataCache) if (entry.expiresAt <= Date.now()) this.removeMetadata(key);
+      this.scheduleMetadataExpiry();
+    }, Math.max(1, next - Date.now()));
+    this.metadataCacheTimer.unref();
+  }
   private rememberMetadata(url:string,data:NormalizedMediaResult,raw:any=null){
-    for(const [key,value]of this.metadataCache)if(value.expiresAt<=Date.now())this.metadataCache.delete(key);
-    if(this.metadataCache.size>=8)this.metadataCache.delete(this.metadataCache.keys().next().value!);
-    this.metadataCache.set(url,{data,raw,expiresAt:Date.now()+120000});return data;
+    const now = Date.now(), ttl = this.cacheLimit('METADATA_CACHE_TTL_MS', 60000, 120000);
+    const policy = metadataCachePolicy(data, raw, ttl, now);
+    const bytes = Buffer.byteLength(JSON.stringify({data, raw}));
+    const maxBytes = this.cacheLimit('METADATA_CACHE_MAX_BYTES', 16 * 1024 * 1024, 64 * 1024 * 1024);
+    this.removeMetadata(url);
+    for(const [key,value]of this.metadataCache)if(value.expiresAt<=now)this.removeMetadata(key);
+    if (!policy.eligible || bytes > Math.min(maxBytes, 2 * 1024 * 1024)) return data;
+    const maxEntries = this.cacheLimit('METADATA_CACHE_MAX_ENTRIES', 64, 256);
+    while(this.metadataCache.size >= maxEntries || this.metadataCacheBytes + bytes > maxBytes) this.removeMetadata(this.metadataCache.keys().next().value!);
+    this.metadataCache.set(url,{data,raw,expiresAt:policy.expiresAt,bytes});
+    this.metadataCacheBytes += bytes; this.scheduleMetadataExpiry(); return data;
   }
 
   constructor(config?: YtDlpServiceConfig, adapters?: InstagramAuthorizedAdapters) {
@@ -156,6 +196,7 @@ export class YtDlpService {
       const execArgs = isNodeScript ? [binary, ...args] : args;
 
       let child: ChildProcess;
+      const spawning = performance.now();
       try {
         child = spawn(execBin, execArgs, {
           shell: false,
@@ -191,6 +232,7 @@ export class YtDlpService {
         return;
       }
 
+      child.once('spawn',()=>mediaDuration('subprocess_startup',performance.now()-spawning));
       if (jobId) {
         this.activeProcesses.set(jobId, child);
       }
@@ -323,17 +365,24 @@ export class YtDlpService {
    */
   public async extractMetadata(rawUrl: string, tool?: string, signal?: AbortSignal): Promise<NormalizedMediaResult> {
     if(signal?.aborted)throw new DownloaderAppError('JOB_CANCELLED','Media inspection was cancelled.',499);
-    const validated=validateMediaInput(rawUrl,tool);
+    const validated=mediaStageSync('validation',()=>validateMediaInput(rawUrl,tool));
     if(tool==='audio') return audioMetadata(await this.extractMetadata(rawUrl, undefined, signal));
-    const cached=this.metadataCache.get(validated.canonicalUrl);
-    if(cached&&cached.expiresAt>Date.now())return cached.data;
-    const key=validated.canonicalUrl+':'+(tool||'');
-    const pending=this.pendingMetadata.get(key);if(pending)return this.awaitMetadata(key,pending,signal);
+    const cached=this.cachedMetadata(validated.canonicalUrl);
+    if(cached&&cached.expiresAt>Date.now()){mediaCount('cache_hit');return cached.data;}
+    mediaCount('cache_miss');
+    const key=validated.canonicalUrl;
+    const pending=this.pendingMetadata.get(key);
+    if(pending){
+      // A replacement must not join work cancelled by its last subscriber.
+      if(this.metadataWaiters.get(key)!.controller.signal.aborted){
+        await pending.catch(()=>{});
+        return this.extractMetadata(rawUrl,tool,signal);
+      }
+      mediaCount('shared');return mediaStage('shared_wait',()=>this.awaitMetadata(key,pending,signal));
+    }
     if(this.pendingMetadata.size>=3)throw new DownloaderAppError('RATE_LIMITED','Media inspection is busy. Try again shortly.',429,true);
     const waiter={controller:new AbortController(),count:0,done:false};this.metadataWaiters.set(key,waiter);
-    const operation=this.extractMetadataInternal(rawUrl,tool,waiter.controller.signal).catch(error=>{
-      throw error;
-    }).finally(()=>{waiter.done=true;this.pendingMetadata.delete(key);this.metadataWaiters.delete(key);});
+    const operation=this.extractMetadataInternal(validated.canonicalUrl,undefined,waiter.controller.signal).finally(()=>{waiter.done=true;this.pendingMetadata.delete(key);this.metadataWaiters.delete(key);});
     this.pendingMetadata.set(key,operation);return this.awaitMetadata(key,operation,signal);
   }
 
@@ -351,14 +400,17 @@ export class YtDlpService {
 
   private async extractMetadataInternal(rawUrl: string, tool?: string, signal?: AbortSignal, access?: AuthorizedInstagrapiAccess): Promise<NormalizedMediaResult> {
     const validated = validateMediaInput(rawUrl, tool);
-    try { return await this.extractPrimaryMetadata(rawUrl, tool, signal); }
+    try { return await mediaStage('extraction',()=>this.extractPrimaryMetadata(rawUrl, tool, signal, !access)); }
     catch (primaryError) {
       let error = primaryError;
       if (validated.category === 'photo' && instagrapiEligible(error)) {
-        try { return this.rememberMetadata(validated.canonicalUrl, await this.adapters.extractPublicPhotoPost(validated, undefined, signal)); }
+        try { mediaCount('fallback'); const data = await mediaStage('fallback',()=>this.adapters.extractPublicPhotoPost(validated, undefined, signal)); return access ? data : this.rememberMetadata(validated.canonicalUrl, data); }
         catch (adapterError) { error = adapterError; }
       }
-      const data = await this.instagrapi.afterPrimaryFailure(validated, error, signal, access);
+      const enabled = process.env.INSTAGRAPI_FALLBACK_ENABLED === '1' && instagrapiEligible(error);
+      if (enabled) mediaCount('fallback');
+      const data = enabled ? await mediaStage('fallback',()=>this.instagrapi.afterPrimaryFailure(validated, error, signal, access))
+        : await this.instagrapi.afterPrimaryFailure(validated, error, signal, access);
       return access ? data : this.rememberMetadata(validated.canonicalUrl, data);
     }
   }
@@ -369,18 +421,19 @@ export class YtDlpService {
     return this.extractMetadataInternal(rawUrl, undefined, signal, access);
   }
 
-  private async extractPrimaryMetadata(rawUrl: string, tool?: string, signal?: AbortSignal): Promise<NormalizedMediaResult> {
+  private async extractPrimaryMetadata(rawUrl: string, tool?: string, signal?: AbortSignal, cachePublic = true): Promise<NormalizedMediaResult> {
     const validated = validateMediaInput(rawUrl, tool);
-    const cached = this.metadataCache.get(validated.canonicalUrl);
+    const cached = cachePublic ? this.cachedMetadata(validated.canonicalUrl) : undefined;
     if (cached && cached.expiresAt > Date.now()) return cached.data;
-    this.metadataCache.delete(validated.canonicalUrl);
-    await assertSafeHostResolution('www.instagram.com');
 
     // Profile URLs are handled by our dedicated Profile Metadata Adapter
     // because yt-dlp's InstagramUserIE is marked _WORKING = False and bulk profile downloads are prohibited.
     if (validated.category === 'profile') {
-      return this.rememberMetadata(validated.canonicalUrl,await this.adapters.extractPublicProfileMetadata(validated,undefined,signal));
+      const data = await this.adapters.extractPublicProfileMetadata(validated,undefined,signal);
+      return cachePublic ? this.rememberMetadata(validated.canonicalUrl,data) : data;
     }
+    // HTTP adapters check DNS at the actual connection; subprocesses retain preflight.
+    await mediaStage('dns',()=>assertSafeHostResolution('www.instagram.com'));
 
     const args = [
       '--dump-single-json',
@@ -396,11 +449,11 @@ export class YtDlpService {
       validated.canonicalUrl,
     ];
 
-    const { stdout, stderr, exitCode } = await this.runSubprocess(
+    const { stdout, stderr, exitCode } = await mediaStage('subprocess',()=>this.runSubprocess(
       this.ytDlpPath,
       args,
       this.metadataTimeoutMs, undefined, undefined, signal
-    );
+    ));
 
     if (exitCode !== 0) {
       // Check if yt-dlp reported "There is no video in this post" on a single photo post (/p/...)
@@ -426,8 +479,8 @@ export class YtDlpService {
       );
     }
 
-    const data = this.normalizeYtDlpOutput(rawJson, validated);
-    return this.rememberMetadata(validated.canonicalUrl,data,rawJson);
+    const data = mediaStageSync('normalization',()=>this.normalizeYtDlpOutput(rawJson, validated));
+    return cachePublic ? this.rememberMetadata(validated.canonicalUrl,data,rawJson) : data;
   }
 
   /**
@@ -469,7 +522,7 @@ export class YtDlpService {
         finally{if(sourceOwned)await fs.promises.rm(source,{force:true});if(outputOwned&&!complete)await fs.promises.rm(destination,{force:true});}
       }
       const mime=format.ext==='mp4'?'video/mp4':format.ext==='webp'?'image/webp':'image/jpeg';
-      const result=await this.http.download(format.directUrl,destination,mime,this.maxFileSizeBytes,{signal:controller.signal,timeoutMs:this.downloadTimeoutMs},bytes=>options.onProgress?.({percent:format.filesizeBytes?Math.min(99,bytes/format.filesizeBytes*100):50,downloadedBytes:bytes,totalBytes:format.filesizeBytes,stage:'processing'}));
+      const result=await this.http.download(format.directUrl,destination,mime,this.maxFileSizeBytes,{...this.directHeaders.get(format),signal:controller.signal,timeoutMs:this.downloadTimeoutMs},bytes=>options.onProgress?.({percent:format.filesizeBytes?Math.min(99,bytes/format.filesizeBytes*100):50,downloadedBytes:bytes,totalBytes:format.filesizeBytes,stage:'processing'}));
       options.onProgress?.({percent:100,downloadedBytes:result.bytesWritten,totalBytes:result.bytesWritten,stage:'processing'});
       return {filePath:destination,safeFilename:filename,mimeType:result.mimeType,filesizeBytes:result.bytesWritten};
     }finally{this.activeTransfers.delete(options.jobId);}
@@ -539,6 +592,21 @@ export class YtDlpService {
       }, controller);
     }
 
+    // A complete public MP4 needs no extractor process or FFmpeg. The exact
+    // selected stream still passes pinned DNS, MIME/signature and size checks.
+    if (item.mediaType === 'video' && selectedFormat.ext === 'mp4' && selectedFormat.directUrl && !selectedFormat.needsMerge) {
+      try {
+        return await this.downloadDirectMediaFile({...metadata, items: [item]}, {
+          ...options, itemIndex: 0, filenamePrefix: prefix + itemSuffix,
+        }, controller);
+      } catch (error) {
+        if (!(error instanceof DownloaderAppError) || error.code !== 'EXTRACTOR_FAILURE') throw error;
+        // Restriction/cancellation/size errors must never trigger a retry.
+        this.activeTransfers.set(options.jobId,controller);
+        mediaCount('fallback');
+      }
+    }
+
     // Case A: Photo item (either single photo, carousel image slide, or profile HD avatar)
     if (item.mediaType === 'photo' && selectedFormat.directUrl) {
       if (options.onProgress) {
@@ -603,8 +671,8 @@ export class YtDlpService {
 
     // Reuse the server-only extraction result, including its stream URLs, so a
     // click does not make Instagram resolve the same post a second time.
-    const cachedMetadata = this.metadataCache.get(validated.canonicalUrl);
-    const infoPath = cachedMetadata && cachedMetadata.expiresAt > Date.now()
+    const cachedMetadata = this.cachedMetadata(validated.canonicalUrl);
+    const infoPath = cachedMetadata?.raw && cachedMetadata.expiresAt > Date.now()
       ? path.join(options.outputDir, `${options.jobId}.info.json`)
       : undefined;
     if (infoPath) {
@@ -845,14 +913,11 @@ export class YtDlpService {
 
       // Determine if this entry is a video or an image slide inside a carousel
       if (rawFormats.length > 0) {
-        const normalizedFormats = this.normalizeVideoFormats(rawFormats);
+        const normalizedFormats = this.normalizeVideoFormats(rawFormats, {...raw.http_headers, ...entry.http_headers});
         const bestFmt = normalizedFormats[0];
         const w = bestFmt?.width || entry.width || 1080;
         const h = bestFmt?.height || entry.height || 1920;
-        const thumbUrl =
-          rawThumbnails[rawThumbnails.length - 1]?.url ||
-          entry.thumbnail ||
-          '';
+        const previews = imagePreviews([...rawThumbnails].reverse().sort((a,b)=>(b.width||0)*(b.height||0)-(a.width||0)*(a.height||0)));
 
         return {
           index: idx,
@@ -860,7 +925,8 @@ export class YtDlpService {
           shortcode: itemShortcode,
           mediaType: 'video',
           title: entry.title || `Video ${idx + 1} by @${uploaderUsername}`,
-          thumbnailUrl: thumbUrl,
+          thumbnailUrl: previews.thumbnailUrl || entry.thumbnail || '',
+          ...previews,
           width: w,
           height: h,
           aspectRatio: this.computeAspectRatio(w, h),
@@ -958,7 +1024,28 @@ export class YtDlpService {
     };
   }
 
-  private normalizeVideoFormats(rawFormats: any[]): NormalizedFormat[] {
+  private isPublicCdnUrl(value: string): boolean {
+    try { this.http.validateUrl(value, true); return true; } catch { return false; }
+  }
+
+  private publicMediaHeaders(value: unknown) {
+    const result: Pick<InstagramRequestOptions, 'mediaUserAgent' | 'mediaReferer'> = {};
+    if (!value || typeof value !== 'object') return result;
+    for (const [name, header] of Object.entries(value)) {
+      if (/^(cookie|authorization|proxy-authorization)$/i.test(name)) return undefined;
+      if (name.toLowerCase() === 'user-agent') {
+        if(typeof header !== 'string' || header.length > 512 || /[\r\n]/.test(header)) return undefined;
+        result.mediaUserAgent = header;
+      }
+      if (name.toLowerCase() === 'referer') {
+        if(typeof header !== 'string') return undefined;
+        try { result.mediaReferer = this.http.validateUrl(header).href; } catch { return undefined; }
+      }
+    }
+    return result;
+  }
+
+  private normalizeVideoFormats(rawFormats: any[], inheritedHeaders?: Record<string, unknown>): NormalizedFormat[] {
     const videoFormats: NormalizedFormat[] = [];
     const audioFormats: NormalizedFormat[] = [];
 
@@ -980,7 +1067,8 @@ export class YtDlpService {
       if (hasVideo) {
         const needsMerge = !hasAudio;
         const heightLabel = height ? `${height}p` : 'HD';
-        videoFormats.push({
+        const headers = this.publicMediaHeaders({...inheritedHeaders, ...f.http_headers});
+        const normalized: NormalizedFormat = {
           formatId: String(f.format_id || 'best'),
           label: `${
             width && height && Math.min(width, height) >= 1080 ? 'Full HD' : 'HD'
@@ -998,7 +1086,11 @@ export class YtDlpService {
           needsMerge,
           filesizeBytes,
           filesizeFormatted: this.formatBytes(filesizeBytes) || 'Size unavailable',
-        });
+          ...(headers && f.ext === 'mp4' && !needsMerge && ['https', 'http', undefined].includes(f.protocol) &&
+            typeof f.url === 'string' && this.isPublicCdnUrl(f.url) ? {directUrl: f.url} : {}),
+        };
+        if (headers && normalized.directUrl) this.directHeaders.set(normalized, headers);
+        videoFormats.push(normalized);
       } else if (hasAudio && !hasVideo) {
         audioFormats.push({
           formatId: String(f.format_id || 'bestaudio'),

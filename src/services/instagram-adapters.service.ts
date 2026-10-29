@@ -10,6 +10,8 @@ import {
   NormalizedMediaResult,
 } from '../types/media.types';
 import { ValidatedInstagramUrl, isPrivateOrReservedIp } from '../security/url-validator';
+import {instagramAgent, resetActiveSocketTimeout} from './instagram-agents';
+import {mediaDuration, mediaStage} from './media-timing';
 
 export interface ImageAdapterFetchOptions {
   timeoutMs?: number;
@@ -47,7 +49,8 @@ export class InstagramAuthorizedAdapters {
     headers: http.IncomingHttpHeaders;
     body: Buffer;
   }> {
-    return new Promise((resolve, reject) => {
+    return mediaStage('upstream_body',()=>new Promise((resolve, reject) => {
+      const connected = performance.now();
       const deadline=AbortSignal.timeout(timeoutMs);
       const signal=callerSignal?AbortSignal.any([callerSignal,deadline]):deadline;
       const failure=(error:Error)=>signal.aborted
@@ -65,6 +68,7 @@ export class InstagramAuthorizedAdapters {
         parsed,
         {
           method: 'GET',
+          agent: instagramAgent(parsed.protocol),
           signal,
           // Check the actual connection's DNS result, avoiding a lookup/connect race.
           ...(!fixture?{lookup:((hostname:string,options:any,callback:any)=>{dns.lookup(hostname,{all:true},(error,records)=>{if(error)return callback(error);if(!records.length||records.some(record=>isPrivateOrReservedIp(record.address)))return callback(new DownloaderAppError('SSRF_BLOCKED','Media host resolved to a restricted address.',403));if(options?.all)callback(null,records);else callback(null,records[0].address,records[0].family);});}) as any}:{}),
@@ -75,6 +79,8 @@ export class InstagramAuthorizedAdapters {
           },
         },
         (res) => {
+          // Connection includes DNS/TLS and time to first response headers.
+          mediaDuration('upstream_connection',performance.now() - connected);
           const statusCode = res.statusCode || 500;
           const chunks: Buffer[] = [];
           let received = 0;
@@ -114,8 +120,9 @@ export class InstagramAuthorizedAdapters {
         reject(failure(err));
       });
 
+      resetActiveSocketTimeout(req);
       req.end();
-    });
+    }));
   }
 
   /**
@@ -153,6 +160,10 @@ export class InstagramAuthorizedAdapters {
     }
 
     const html = response.body.toString('utf8');
+
+    if (response.statusCode === 401 || /\/(?:accounts\/login|challenge)\//.test(String(response.headers.location || ''))) throw new DownloaderAppError('LOGIN_REQUIRED', 'Instagram requires login to access this media.', 403);
+    if (response.statusCode === 403) throw new DownloaderAppError('PRIVATE_CONTENT', 'Instagram denied access to this media.', 403);
+    if (response.statusCode < 200 || response.statusCode >= 300) throw new DownloaderAppError('EXTRACTOR_FAILURE', 'Instagram did not return public photo metadata.', 502, true);
 
     if (
       html.includes('loginPage') ||

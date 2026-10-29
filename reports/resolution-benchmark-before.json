@@ -1,0 +1,2351 @@
+{
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "win32",
+    "fixtureSubprocessDelayMs": 60,
+    "fixtureHttpDelayMs": 20,
+    "liveInstagram": false
+  },
+  "summaries": [
+    {
+      "scenario": "cold",
+      "type": "photo",
+      "samples": 10,
+      "p50Ms": 173.93,
+      "p95Ms": 203.75,
+      "successRate": 1,
+      "cacheHitRate": 0,
+      "fallbackFrequency": 1,
+      "meanStagesMs": {
+        "validation": 0.18,
+        "dns": 0.02,
+        "subprocess": 148.26,
+        "extraction": 148.36,
+        "fallback": 32.02
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "reel",
+      "samples": 10,
+      "p50Ms": 126.22,
+      "p95Ms": 142.9,
+      "successRate": 1,
+      "cacheHitRate": 0,
+      "fallbackFrequency": 0,
+      "meanStagesMs": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 132.33,
+        "normalization": 0.13,
+        "extraction": 132.51
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "video",
+      "samples": 10,
+      "p50Ms": 138.88,
+      "p95Ms": 144.36,
+      "successRate": 1,
+      "cacheHitRate": 0,
+      "fallbackFrequency": 0,
+      "meanStagesMs": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 135.66,
+        "normalization": 0.06,
+        "extraction": 135.77
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "carousel",
+      "samples": 10,
+      "p50Ms": 137.48,
+      "p95Ms": 146.06,
+      "successRate": 1,
+      "cacheHitRate": 0,
+      "fallbackFrequency": 0,
+      "meanStagesMs": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 135.51,
+        "normalization": 0.09,
+        "extraction": 135.65
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "audio",
+      "samples": 10,
+      "p50Ms": 138.77,
+      "p95Ms": 143.19,
+      "successRate": 1,
+      "cacheHitRate": 0,
+      "fallbackFrequency": 0,
+      "meanStagesMs": {
+        "validation": 0.04,
+        "dns": 0.02,
+        "subprocess": 138.34,
+        "normalization": 0.04,
+        "extraction": 138.43
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "profile",
+      "samples": 10,
+      "p50Ms": 30.65,
+      "p95Ms": 33.33,
+      "successRate": 1,
+      "cacheHitRate": 0,
+      "fallbackFrequency": 0,
+      "meanStagesMs": {
+        "validation": 0.07,
+        "dns": 0.01,
+        "extraction": 30.96
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "photo",
+      "samples": 12,
+      "p50Ms": 172.26,
+      "p95Ms": 203.03,
+      "successRate": 1,
+      "cacheHitRate": 0,
+      "fallbackFrequency": 1,
+      "meanStagesMs": {
+        "validation": 0.06,
+        "dns": 0.01,
+        "subprocess": 144.84,
+        "extraction": 144.92,
+        "fallback": 34.93
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "reel",
+      "samples": 12,
+      "p50Ms": 137.18,
+      "p95Ms": 167.86,
+      "successRate": 1,
+      "cacheHitRate": 0,
+      "fallbackFrequency": 0,
+      "meanStagesMs": {
+        "validation": 0.06,
+        "dns": 0.01,
+        "subprocess": 142.27,
+        "normalization": 0.02,
+        "extraction": 142.35
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "video",
+      "samples": 12,
+      "p50Ms": 128.18,
+      "p95Ms": 140.46,
+      "successRate": 1,
+      "cacheHitRate": 0,
+      "fallbackFrequency": 0,
+      "meanStagesMs": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 130.01,
+        "normalization": 0.02,
+        "extraction": 130.09
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "carousel",
+      "samples": 12,
+      "p50Ms": 137.95,
+      "p95Ms": 144.79,
+      "successRate": 1,
+      "cacheHitRate": 0,
+      "fallbackFrequency": 0,
+      "meanStagesMs": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 135.51,
+        "normalization": 0.05,
+        "extraction": 135.61
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "audio",
+      "samples": 12,
+      "p50Ms": 136.6,
+      "p95Ms": 156.93,
+      "successRate": 1,
+      "cacheHitRate": 0,
+      "fallbackFrequency": 0,
+      "meanStagesMs": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 134.85,
+        "normalization": 0.02,
+        "extraction": 134.91
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "profile",
+      "samples": 12,
+      "p50Ms": 35.72,
+      "p95Ms": 37.21,
+      "successRate": 1,
+      "cacheHitRate": 0,
+      "fallbackFrequency": 0,
+      "meanStagesMs": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "extraction": 33.02
+      }
+    }
+  ],
+  "concurrent": [
+    {
+      "type": "photo",
+      "subprocesses": 2,
+      "httpRequests": 2,
+      "shared": 0,
+      "p95Ms": 188.12
+    },
+    {
+      "type": "reel",
+      "subprocesses": 2,
+      "httpRequests": 0,
+      "shared": 0,
+      "p95Ms": 169.29
+    },
+    {
+      "type": "video",
+      "subprocesses": 2,
+      "httpRequests": 0,
+      "shared": 0,
+      "p95Ms": 138.4
+    },
+    {
+      "type": "carousel",
+      "subprocesses": 2,
+      "httpRequests": 0,
+      "shared": 0,
+      "p95Ms": 142.97
+    },
+    {
+      "type": "audio",
+      "subprocesses": 1,
+      "httpRequests": 0,
+      "shared": 1,
+      "p95Ms": 138.4
+    },
+    {
+      "type": "profile",
+      "subprocesses": 0,
+      "httpRequests": 2,
+      "shared": 0,
+      "p95Ms": 35.15
+    }
+  ],
+  "totals": {
+    "httpRequests": 48,
+    "subprocesses": 119
+  },
+  "samples": [
+    {
+      "scenario": "cold",
+      "type": "photo",
+      "success": true,
+      "totalMs": 193.8,
+      "stages": {
+        "validation": 1.26,
+        "dns": 0.07,
+        "subprocess": 151.46,
+        "extraction": 151.76,
+        "fallback": 39.98
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "photo",
+      "success": true,
+      "totalMs": 186.17,
+      "stages": {
+        "validation": 0.08,
+        "dns": 0.01,
+        "subprocess": 149.31,
+        "extraction": 149.38,
+        "fallback": 36.61
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "photo",
+      "success": true,
+      "totalMs": 188.18,
+      "stages": {
+        "validation": 0.07,
+        "dns": 0.01,
+        "subprocess": 150.95,
+        "extraction": 151.03,
+        "fallback": 36.97
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "photo",
+      "success": true,
+      "totalMs": 172.86,
+      "stages": {
+        "validation": 0.08,
+        "dns": 0.01,
+        "subprocess": 150.31,
+        "extraction": 150.39,
+        "fallback": 22.29
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "photo",
+      "success": true,
+      "totalMs": 188.84,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 151.19,
+        "extraction": 151.25,
+        "fallback": 37.47
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "photo",
+      "success": true,
+      "totalMs": 156.89,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 134.95,
+        "extraction": 135.01,
+        "fallback": 21.78
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "photo",
+      "success": true,
+      "totalMs": 171.13,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 135.43,
+        "extraction": 135.49,
+        "fallback": 35.52
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "photo",
+      "success": true,
+      "totalMs": 203.75,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 170.79,
+        "extraction": 170.88,
+        "fallback": 32.74
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "photo",
+      "success": true,
+      "totalMs": 171.6,
+      "stages": {
+        "validation": 0.08,
+        "dns": 0.02,
+        "subprocess": 135.96,
+        "extraction": 136.07,
+        "fallback": 35.35
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "photo",
+      "success": true,
+      "totalMs": 173.93,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.02,
+        "subprocess": 152.21,
+        "extraction": 152.29,
+        "fallback": 21.49
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "reel",
+      "success": true,
+      "totalMs": 136.11,
+      "stages": {
+        "validation": 0.06,
+        "dns": 0.01,
+        "subprocess": 135.25,
+        "normalization": 0.66,
+        "extraction": 135.99
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "reel",
+      "success": true,
+      "totalMs": 125.52,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 125.31,
+        "normalization": 0.1,
+        "extraction": 125.44
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "reel",
+      "success": true,
+      "totalMs": 125.37,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 125.21,
+        "normalization": 0.06,
+        "extraction": 125.31
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "reel",
+      "success": true,
+      "totalMs": 142.9,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 142.72,
+        "normalization": 0.06,
+        "extraction": 142.83
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "reel",
+      "success": true,
+      "totalMs": 126.22,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 126.02,
+        "normalization": 0.1,
+        "extraction": 126.15
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "reel",
+      "success": true,
+      "totalMs": 125.85,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 125.63,
+        "normalization": 0.09,
+        "extraction": 125.76
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "reel",
+      "success": true,
+      "totalMs": 139.37,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 139.2,
+        "normalization": 0.06,
+        "extraction": 139.3
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "reel",
+      "success": true,
+      "totalMs": 125.33,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 125.18,
+        "normalization": 0.05,
+        "extraction": 125.27
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "reel",
+      "success": true,
+      "totalMs": 142.53,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 142.38,
+        "normalization": 0.06,
+        "extraction": 142.47
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "reel",
+      "success": true,
+      "totalMs": 136.61,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 136.42,
+        "normalization": 0.07,
+        "extraction": 136.53
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "video",
+      "success": true,
+      "totalMs": 126.35,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0,
+        "subprocess": 126.21,
+        "normalization": 0.04,
+        "extraction": 126.29
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "video",
+      "success": true,
+      "totalMs": 139.11,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 138.95,
+        "normalization": 0.04,
+        "extraction": 139.04
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "video",
+      "success": true,
+      "totalMs": 144.36,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 144.18,
+        "normalization": 0.07,
+        "extraction": 144.29
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "video",
+      "success": true,
+      "totalMs": 140.89,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 140.73,
+        "normalization": 0.04,
+        "extraction": 140.82
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "video",
+      "success": true,
+      "totalMs": 134.76,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 134.59,
+        "normalization": 0.06,
+        "extraction": 134.69
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "video",
+      "success": true,
+      "totalMs": 124.85,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 124.63,
+        "normalization": 0.07,
+        "extraction": 124.77
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "video",
+      "success": true,
+      "totalMs": 141.51,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 141.17,
+        "normalization": 0.21,
+        "extraction": 141.43
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "video",
+      "success": true,
+      "totalMs": 138.88,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 138.73,
+        "normalization": 0.02,
+        "extraction": 138.79
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "video",
+      "success": true,
+      "totalMs": 125.27,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 125.13,
+        "normalization": 0.03,
+        "extraction": 125.2
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "video",
+      "success": true,
+      "totalMs": 142.43,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 142.3,
+        "normalization": 0.02,
+        "extraction": 142.36
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 139.35,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 139.01,
+        "normalization": 0.22,
+        "extraction": 139.28
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 138.22,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 137.77,
+        "normalization": 0.22,
+        "extraction": 138.05
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 141.89,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 141.68,
+        "normalization": 0.08,
+        "extraction": 141.81
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 125.1,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 124.94,
+        "normalization": 0.05,
+        "extraction": 125.03
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 146.06,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 145.89,
+        "normalization": 0.05,
+        "extraction": 145.98
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 133.79,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 133.62,
+        "normalization": 0.06,
+        "extraction": 133.72
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 126.97,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 126.79,
+        "normalization": 0.05,
+        "extraction": 126.89
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 142.92,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 142.74,
+        "normalization": 0.06,
+        "extraction": 142.84
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 137.48,
+      "stages": {
+        "validation": 0.06,
+        "dns": 0.01,
+        "subprocess": 137.26,
+        "normalization": 0.05,
+        "extraction": 137.36
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 125.6,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 125.44,
+        "normalization": 0.05,
+        "extraction": 125.54
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "audio",
+      "success": true,
+      "totalMs": 138.13,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 137.81,
+        "normalization": 0.02,
+        "extraction": 137.87
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "audio",
+      "success": true,
+      "totalMs": 138.77,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 138.61,
+        "normalization": 0.02,
+        "extraction": 138.67
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "audio",
+      "success": true,
+      "totalMs": 140.79,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 140.63,
+        "normalization": 0.03,
+        "extraction": 140.69
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "audio",
+      "success": true,
+      "totalMs": 138.83,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 138.66,
+        "normalization": 0.03,
+        "extraction": 138.73
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "audio",
+      "success": true,
+      "totalMs": 126.38,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 126.21,
+        "normalization": 0.02,
+        "extraction": 126.28
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "audio",
+      "success": true,
+      "totalMs": 138.72,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 138.57,
+        "normalization": 0.02,
+        "extraction": 138.63
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "audio",
+      "success": true,
+      "totalMs": 143.19,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 143.03,
+        "normalization": 0.03,
+        "extraction": 143.1
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "audio",
+      "success": true,
+      "totalMs": 142.13,
+      "stages": {
+        "validation": 0.06,
+        "dns": 0.12,
+        "subprocess": 141.82,
+        "normalization": 0.03,
+        "extraction": 142.02
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "audio",
+      "success": true,
+      "totalMs": 136.23,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 136.05,
+        "normalization": 0.02,
+        "extraction": 136.11
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "audio",
+      "success": true,
+      "totalMs": 142.33,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 142.03,
+        "normalization": 0.16,
+        "extraction": 142.23
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "profile",
+      "success": true,
+      "totalMs": 33.33,
+      "stages": {
+        "validation": 0.1,
+        "dns": 0.01,
+        "extraction": 33.14
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "profile",
+      "success": true,
+      "totalMs": 32,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "extraction": 31.88
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "profile",
+      "success": true,
+      "totalMs": 29.39,
+      "stages": {
+        "validation": 0.08,
+        "dns": 0.02,
+        "extraction": 29.23
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "profile",
+      "success": true,
+      "totalMs": 31.24,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "extraction": 31.14
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "profile",
+      "success": true,
+      "totalMs": 29.75,
+      "stages": {
+        "validation": 0.06,
+        "dns": 0.01,
+        "extraction": 29.63
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "profile",
+      "success": true,
+      "totalMs": 32.22,
+      "stages": {
+        "validation": 0.06,
+        "dns": 0.01,
+        "extraction": 32.09
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "profile",
+      "success": true,
+      "totalMs": 30.5,
+      "stages": {
+        "validation": 0.08,
+        "dns": 0.02,
+        "extraction": 30.32
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "profile",
+      "success": true,
+      "totalMs": 30.65,
+      "stages": {
+        "validation": 0.08,
+        "dns": 0.02,
+        "extraction": 30.5
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "profile",
+      "success": true,
+      "totalMs": 31.64,
+      "stages": {
+        "validation": 0.06,
+        "dns": 0.01,
+        "extraction": 31.51
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "cold",
+      "type": "profile",
+      "success": true,
+      "totalMs": 30.35,
+      "stages": {
+        "validation": 0.07,
+        "dns": 0.02,
+        "extraction": 30.2
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "photo",
+      "success": true,
+      "totalMs": 187.41,
+      "stages": {
+        "validation": 0.08,
+        "dns": 0.02,
+        "subprocess": 149.67,
+        "extraction": 149.74,
+        "fallback": 37.45
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "reel",
+      "success": true,
+      "totalMs": 167.86,
+      "stages": {
+        "validation": 0.12,
+        "dns": 0.02,
+        "subprocess": 167.55,
+        "normalization": 0.03,
+        "extraction": 167.65
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "video",
+      "success": true,
+      "totalMs": 140.01,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 139.88,
+        "normalization": 0.02,
+        "extraction": 139.94
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 137.86,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 137.67,
+        "normalization": 0.06,
+        "extraction": 137.78
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "audio",
+      "success": true,
+      "totalMs": 137.49,
+      "stages": {
+        "validation": 0.11,
+        "dns": 0.01,
+        "subprocess": 137.28,
+        "normalization": 0.02,
+        "extraction": 137.34
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "profile",
+      "success": true,
+      "totalMs": 35.79,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0,
+        "extraction": 35.72
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "photo",
+      "success": true,
+      "totalMs": 203.03,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 167,
+        "extraction": 167.09,
+        "fallback": 35.82
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "reel",
+      "success": true,
+      "totalMs": 135.52,
+      "stages": {
+        "validation": 0.06,
+        "dns": 0.01,
+        "subprocess": 135.34,
+        "normalization": 0.02,
+        "extraction": 135.42
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "video",
+      "success": true,
+      "totalMs": 126.12,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 125.97,
+        "normalization": 0.03,
+        "extraction": 126.05
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 140.49,
+      "stages": {
+        "validation": 0.09,
+        "dns": 0.01,
+        "subprocess": 140.25,
+        "normalization": 0.05,
+        "extraction": 140.35
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "audio",
+      "success": true,
+      "totalMs": 156.93,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.02,
+        "subprocess": 156.78,
+        "normalization": 0.02,
+        "extraction": 156.86
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "profile",
+      "success": true,
+      "totalMs": 35.97,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "extraction": 35.9
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "photo",
+      "success": true,
+      "totalMs": 186.4,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 152.4,
+        "extraction": 152.5,
+        "fallback": 33.72
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "reel",
+      "success": true,
+      "totalMs": 154.62,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.02,
+        "subprocess": 154.44,
+        "normalization": 0.02,
+        "extraction": 154.53
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "video",
+      "success": true,
+      "totalMs": 137.05,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 136.9,
+        "normalization": 0.02,
+        "extraction": 136.96
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 125.32,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 125.16,
+        "normalization": 0.04,
+        "extraction": 125.24
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "audio",
+      "success": true,
+      "totalMs": 138.62,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 138.46,
+        "normalization": 0.02,
+        "extraction": 138.53
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "profile",
+      "success": true,
+      "totalMs": 21.32,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "extraction": 21.24
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "photo",
+      "success": true,
+      "totalMs": 186.98,
+      "stages": {
+        "validation": 0.03,
+        "dns": 0.01,
+        "subprocess": 152.07,
+        "extraction": 152.12,
+        "fallback": 34.76
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "reel",
+      "success": true,
+      "totalMs": 163.57,
+      "stages": {
+        "validation": 0.07,
+        "dns": 0.02,
+        "subprocess": 163.33,
+        "normalization": 0.02,
+        "extraction": 163.43
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "video",
+      "success": true,
+      "totalMs": 129.25,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 129.1,
+        "normalization": 0.02,
+        "extraction": 129.16
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 139.01,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 138.84,
+        "normalization": 0.05,
+        "extraction": 138.94
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "audio",
+      "success": true,
+      "totalMs": 143.83,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 143.66,
+        "normalization": 0.03,
+        "extraction": 143.74
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "profile",
+      "success": true,
+      "totalMs": 32.27,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "extraction": 32.17
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "photo",
+      "success": true,
+      "totalMs": 170.16,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 133.42,
+        "extraction": 133.48,
+        "fallback": 36.57
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "reel",
+      "success": true,
+      "totalMs": 137.18,
+      "stages": {
+        "validation": 0.06,
+        "dns": 0.01,
+        "subprocess": 136.99,
+        "normalization": 0.02,
+        "extraction": 137.07
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "video",
+      "success": true,
+      "totalMs": 128.18,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 128.02,
+        "normalization": 0.04,
+        "extraction": 128.1
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 138.72,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 138.5,
+        "normalization": 0.07,
+        "extraction": 138.63
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "audio",
+      "success": true,
+      "totalMs": 136.6,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 136.44,
+        "normalization": 0.02,
+        "extraction": 136.51
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "profile",
+      "success": true,
+      "totalMs": 22.27,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "extraction": 22.2
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "photo",
+      "success": true,
+      "totalMs": 170.69,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 135.68,
+        "extraction": 135.74,
+        "fallback": 34.86
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "reel",
+      "success": true,
+      "totalMs": 138.61,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 138.45,
+        "normalization": 0.02,
+        "extraction": 138.52
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "video",
+      "success": true,
+      "totalMs": 138.31,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 138.15,
+        "normalization": 0.03,
+        "extraction": 138.23
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 139.07,
+      "stages": {
+        "validation": 0.06,
+        "dns": 0.01,
+        "subprocess": 138.88,
+        "normalization": 0.04,
+        "extraction": 138.98
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "audio",
+      "success": true,
+      "totalMs": 125.76,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 125.6,
+        "normalization": 0.02,
+        "extraction": 125.67
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "profile",
+      "success": true,
+      "totalMs": 35.88,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "extraction": 35.8
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "photo",
+      "success": true,
+      "totalMs": 184.77,
+      "stages": {
+        "validation": 0.06,
+        "dns": 0.01,
+        "subprocess": 152.76,
+        "extraction": 152.84,
+        "fallback": 31.63
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "reel",
+      "success": true,
+      "totalMs": 135.36,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 135.18,
+        "normalization": 0.02,
+        "extraction": 135.26
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "video",
+      "success": true,
+      "totalMs": 130.39,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 130.24,
+        "normalization": 0.02,
+        "extraction": 130.32
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 134.67,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 134.51,
+        "normalization": 0.04,
+        "extraction": 134.59
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "audio",
+      "success": true,
+      "totalMs": 128.5,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 128.36,
+        "normalization": 0.02,
+        "extraction": 128.42
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "profile",
+      "success": true,
+      "totalMs": 34.53,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "extraction": 34.45
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "photo",
+      "success": true,
+      "totalMs": 172.26,
+      "stages": {
+        "validation": 0.06,
+        "dns": 0.01,
+        "subprocess": 138.09,
+        "extraction": 138.19,
+        "fallback": 33.95
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "reel",
+      "success": true,
+      "totalMs": 134.62,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 134.47,
+        "normalization": 0.02,
+        "extraction": 134.53
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "video",
+      "success": true,
+      "totalMs": 140.46,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 140.31,
+        "normalization": 0.02,
+        "extraction": 140.39
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 140.98,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 140.8,
+        "normalization": 0.04,
+        "extraction": 140.91
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "audio",
+      "success": true,
+      "totalMs": 125.06,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 124.92,
+        "normalization": 0.02,
+        "extraction": 124.98
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "profile",
+      "success": true,
+      "totalMs": 36.21,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "extraction": 36.12
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "photo",
+      "success": true,
+      "totalMs": 185.71,
+      "stages": {
+        "validation": 0.13,
+        "dns": 0.04,
+        "subprocess": 151.25,
+        "extraction": 151.36,
+        "fallback": 33.99
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "reel",
+      "success": true,
+      "totalMs": 137.74,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 137.61,
+        "normalization": 0.02,
+        "extraction": 137.67
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "video",
+      "success": true,
+      "totalMs": 124.73,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 124.59,
+        "normalization": 0.02,
+        "extraction": 124.66
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 137.95,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.04,
+        "subprocess": 137.76,
+        "normalization": 0.04,
+        "extraction": 137.88
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "audio",
+      "success": true,
+      "totalMs": 127.16,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 126.99,
+        "normalization": 0.02,
+        "extraction": 127.07
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "profile",
+      "success": true,
+      "totalMs": 34.39,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "extraction": 34.14
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "photo",
+      "success": true,
+      "totalMs": 172.06,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 135.21,
+        "extraction": 135.29,
+        "fallback": 36.59
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "reel",
+      "success": true,
+      "totalMs": 137.82,
+      "stages": {
+        "validation": 0.06,
+        "dns": 0.01,
+        "subprocess": 137.64,
+        "normalization": 0.02,
+        "extraction": 137.71
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "video",
+      "success": true,
+      "totalMs": 120.49,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 120.3,
+        "normalization": 0.03,
+        "extraction": 120.38
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 126.21,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 126.05,
+        "normalization": 0.04,
+        "extraction": 126.13
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "audio",
+      "success": true,
+      "totalMs": 138.54,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 138.39,
+        "normalization": 0.02,
+        "extraction": 138.45
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "profile",
+      "success": true,
+      "totalMs": 35.83,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "extraction": 35.75
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "photo",
+      "success": true,
+      "totalMs": 168.74,
+      "stages": {
+        "validation": 0.07,
+        "dns": 0.01,
+        "subprocess": 135.01,
+        "extraction": 135.09,
+        "fallback": 33.48
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "reel",
+      "success": true,
+      "totalMs": 134.42,
+      "stages": {
+        "validation": 0.09,
+        "dns": 0.01,
+        "subprocess": 134.17,
+        "normalization": 0.02,
+        "extraction": 134.25
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "video",
+      "success": true,
+      "totalMs": 121.24,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 121.1,
+        "normalization": 0.02,
+        "extraction": 121.17
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 144.79,
+      "stages": {
+        "validation": 0.07,
+        "dns": 0.01,
+        "subprocess": 144.59,
+        "normalization": 0.04,
+        "extraction": 144.68
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "audio",
+      "success": true,
+      "totalMs": 137.2,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 137.04,
+        "normalization": 0.02,
+        "extraction": 137.11
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "profile",
+      "success": true,
+      "totalMs": 35.72,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "extraction": 35.64
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "photo",
+      "success": true,
+      "totalMs": 172.04,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 135.5,
+        "extraction": 135.57,
+        "fallback": 36.31
+      },
+      "counters": {
+        "cache_miss": 1,
+        "fallback": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "reel",
+      "success": true,
+      "totalMs": 132.27,
+      "stages": {
+        "validation": 0.08,
+        "dns": 0.02,
+        "subprocess": 132.04,
+        "normalization": 0.02,
+        "extraction": 132.13
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "video",
+      "success": true,
+      "totalMs": 125.73,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 125.6,
+        "normalization": 0.02,
+        "extraction": 125.66
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "carousel",
+      "success": true,
+      "totalMs": 123.34,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "subprocess": 123.15,
+        "normalization": 0.04,
+        "extraction": 123.23
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "audio",
+      "success": true,
+      "totalMs": 124.37,
+      "stages": {
+        "validation": 0.05,
+        "dns": 0.01,
+        "subprocess": 124.23,
+        "normalization": 0.02,
+        "extraction": 124.29
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    },
+    {
+      "scenario": "working_set_24",
+      "type": "profile",
+      "success": true,
+      "totalMs": 37.21,
+      "stages": {
+        "validation": 0.04,
+        "dns": 0.01,
+        "extraction": 37.13
+      },
+      "counters": {
+        "cache_miss": 1
+      }
+    }
+  ]
+}

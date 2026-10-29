@@ -6,8 +6,10 @@ import { Transform } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { isPrivateOrReservedIp } from '../security/url-validator';
 import { DownloaderAppError } from '../types/media.types';
+import {instagramAgent, resetActiveSocketTimeout} from './instagram-agents';
+import {mediaStage} from './media-timing';
 
-export interface InstagramRequestOptions { signal?: AbortSignal; timeoutMs: number; cookie?: string }
+export interface InstagramRequestOptions { signal?: AbortSignal; timeoutMs: number; cookie?: string; mediaUserAgent?: string; mediaReferer?: string }
 export type StoryMime = 'image/jpeg' | 'image/webp' | 'video/mp4';
 const failure = (message = 'Instagram did not provide accessible media media.') => new DownloaderAppError('EXTRACTOR_FAILURE', message, 502, true);
 
@@ -28,12 +30,14 @@ export class InstagramHttpClient {
 
   private async open(value: string, media: boolean, options: InstagramRequestOptions, range?: string) {
     const url = this.validateUrl(value, media);
+    const userAgent = media && options.mediaUserAgent && options.mediaUserAgent.length <= 512 && !/[\r\n]/.test(options.mediaUserAgent) ? options.mediaUserAgent : 'SaveFrameMediaUtility/1.0 (+https://saveframe.site)';
+    const referer = media && options.mediaReferer ? this.validateUrl(options.mediaReferer).href : undefined;
     const timeout = Math.max(1, Math.min(options.timeoutMs, 120000));
     const signal = options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(timeout)]) : AbortSignal.timeout(timeout);
     const fixture = process.env.NODE_ENV === 'test' && process.env.SAVEFRAME_FIXTURE_ORIGIN === url.origin;
-    const response = await new Promise<http.IncomingMessage>((resolve, reject) => {
+    const response = await mediaStage('upstream_connection',()=>new Promise<http.IncomingMessage>((resolve, reject) => {
       const request = (url.protocol === 'https:' ? https : http).request(url, {
-        method: 'GET', signal,
+        method: 'GET', signal, agent: instagramAgent(url.protocol),
         // Pin the actual connection to checked DNS answers, not an earlier lookup.
         ...(!fixture ? { lookup: ((host: string, lookupOptions: any, callback: any) => {
           dns.lookup(host, { all: true }, (error, records) => {
@@ -44,16 +48,18 @@ export class InstagramHttpClient {
           });
         }) as any } : {}),
         headers: {
-          'User-Agent': 'SaveFrameMediaUtility/1.0 (+https://saveframe.site)',
+          'User-Agent': userAgent,
           'Accept-Encoding': 'identity', Accept: media ? 'image/jpeg,image/webp,video/mp4' : 'text/html,application/json',
           ...(range ? { Range: range } : {}),
+          ...(referer ? {Referer: referer} : {}),
           // Account credentials never accompany CDN requests.
           ...(!media && options.cookie ? { Cookie: options.cookie } : {}),
         },
       }, resolve);
       request.on('error', error => reject(this.mapError(error, signal)));
+      resetActiveSocketTimeout(request);
       request.end();
-    });
+    }));
     const status = response.statusCode || 500;
     try {
       if (status >= 300 && status < 400) {

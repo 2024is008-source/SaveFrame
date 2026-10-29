@@ -170,8 +170,8 @@ export async function handleApiRequest(
       const tool = typeof body.tool === 'string' ? body.tool : undefined;
       validatePublicMediaInput(rawUrl, tool);
       const metadata = await ctx.ytDlpService.extractMetadata(rawUrl, tool);
-      const cacheKey = `resolve:${metadata.canonicalUrl}`;
-      await ctx.redisStore.setJson(cacheKey, metadata, 300);
+      // The extractor owns the bounded, expiry-aware public metadata cache.
+      // Never duplicate signed CDN URLs in the legacy Redis JSON store.
 
       sendJson(
         res,

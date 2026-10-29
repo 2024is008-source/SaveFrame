@@ -1,0 +1,80 @@
+{
+  "baselineRevision": "d8573dda69382476102b4f7688ba9ffc0ed2cfd8",
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "win32",
+    "liveInstagram": false,
+    "fixtureDownloadProcessDelayMs": 60,
+    "fixtureHttpDelayMs": 20
+  },
+  "results": [
+    {
+      "name": "before",
+      "samples": 20,
+      "p50Ms": 213.25589999999966,
+      "p95Ms": 233.01249999999982,
+      "extractions": 1,
+      "downloadSubprocesses": 20,
+      "successRate": 1,
+      "byteEquality": true
+    },
+    {
+      "name": "after",
+      "samples": 20,
+      "p50Ms": 29.061400000000503,
+      "p95Ms": 31.176800000000185,
+      "extractions": 1,
+      "downloadSubprocesses": 0,
+      "successRate": 1,
+      "byteEquality": true
+    }
+  ],
+  "pythonStartup": [
+    {
+      "totalMs": 754.6598999999997,
+      "importMs": 584.6894999995129
+    },
+    {
+      "totalMs": 743.6423000000004,
+      "importMs": 597.8838999981235
+    },
+    {
+      "totalMs": 696.9790999999996,
+      "importMs": 552.68100000103
+    },
+    {
+      "totalMs": 731.6133000000009,
+      "importMs": 582.4434000023757
+    },
+    {
+      "totalMs": 701.4609,
+      "importMs": 562.2856000009051
+    },
+    {
+      "totalMs": 743.2724999999991,
+      "importMs": 601.3235000027635
+    },
+    {
+      "totalMs": 707.9169000000002,
+      "importMs": 554.6018999993976
+    },
+    {
+      "totalMs": 711.3212999999996,
+      "importMs": 567.6432000000204
+    },
+    {
+      "totalMs": 751.5722999999998,
+      "importMs": 603.5792000002402
+    },
+    {
+      "totalMs": 751.8934000000008,
+      "importMs": 588.0036999988079
+    }
+  ],
+  "pythonSummary": {
+    "samples": 10,
+    "p50ProcessAndImportMs": 731.6133000000009,
+    "p95ProcessAndImportMs": 754.6598999999997,
+    "p50ImportMs": 582.4434000023757
+  }
+}

@@ -3,6 +3,7 @@ import * as path from 'node:path';
 import { DownloaderAppError, ErrorCode, NormalizedMediaResult } from '../types/media.types';
 import { validateMediaInput, ValidatedInstagramUrl } from '../security/url-validator';
 import { InstagramHttpClient } from './instagram-http.service';
+import {mediaDuration, mediaStage} from './media-timing';
 
 const fs: typeof import('node:fs') = process.getBuiltinModule('fs');
 const os: typeof import('node:os') = process.getBuiltinModule('os');
@@ -79,8 +80,8 @@ export class InstagrapiService {
     const timeout = bounded(process.env.INSTAGRAPI_TIMEOUT_MS, 20000, 5000, 30000);
     const total = signal ? AbortSignal.any([signal, AbortSignal.timeout(timeout)]) : AbortSignal.timeout(timeout);
     try {
-      const raw = await this.runWorker({ version: 1, url: url.canonicalUrl, category: url.category, ...(authorization ? { access: authorization } : {}) }, total);
-      return await this.normalize(raw, url, total, access);
+      const raw = await mediaStage('python_worker',()=>this.runWorker({ version: 1, url: url.canonicalUrl, category: url.category, ...(authorization ? { access: authorization } : {}) }, total));
+      return await mediaStage('normalization',()=>this.normalize(raw, url, total, access));
     } catch (error) {
       if (!signal?.aborted) state.cooldown = Date.now() + 30000;
       if (signal?.aborted) throw cancelled();
@@ -99,6 +100,7 @@ export class InstagrapiService {
     const worker = path.join(process.cwd(), 'python', 'instagrapi_worker.py');
     return new Promise((resolve, reject) => {
       if (signal.aborted) { reject(cancelled()); return; }
+      const spawning = performance.now();
       const child = spawn(python, ['-I', '-B', worker], {
         shell: false, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'],
         env: {
@@ -113,6 +115,7 @@ export class InstagrapiService {
           ...(process.env.DOWNLOAD_TEMP_DIR ? { DOWNLOAD_TEMP_DIR: process.env.DOWNLOAD_TEMP_DIR } : {}),
         },
       });
+      child.once('spawn',()=>mediaDuration('subprocess_startup',performance.now()-spawning));
       const chunks: Buffer[] = []; let bytes = 0, stderrBytes = 0, overflow = false;
       let killTimer: ReturnType<typeof setTimeout> | undefined;
       const abort = () => { child.kill('SIGTERM'); killTimer ||= setTimeout(() => child.kill('SIGKILL'), 1000); killTimer.unref(); };
