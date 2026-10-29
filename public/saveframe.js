@@ -319,7 +319,7 @@
           return { valid: false, reason: 'empty', message: 'Please paste an Instagram link or @username above to continue.' };
         }
         // Check if @username for profile tab
-        if (/^@?[a-zA-Z0-9._]{2,30}$/.test(val) && !val.includes('/')) {
+        if (/^@[a-zA-Z0-9._]{2,30}$/.test(val)) {
           if (requestedTab === 'audio') return {valid:false,message:t('Paste Instagram Reel or video URL here')};
           return {
             valid: true,
@@ -336,7 +336,7 @@
           return { valid: false, reason: 'malformed', message: 'That does not look like a valid Instagram link. Copy the link directly from Instagram and try again.' };
         }
         const host = parsedUrl.hostname.toLowerCase();
-        if (!['instagram.com', 'instagr.am'].some(domain => host === domain || host.endsWith('.' + domain))) {
+        if (!['instagram.com', 'www.instagram.com', 'm.instagram.com', 'instagr.am'].includes(host)) {
           return {
             valid: false,
             reason: 'domain',
@@ -344,12 +344,17 @@
           };
         }
 
-        const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+        let pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+        // Instagram also shares post links with the creator before the media type.
+        if (pathParts.length === 3 && /^[A-Za-z0-9._]{1,30}$/.test(pathParts[0]) && ['p','reel','reels','tv'].includes(pathParts[1])) pathParts = pathParts.slice(1);
         if (pathParts.length === 0) {
           return { valid: false, reason: 'root', message: 'This link points to the Instagram homepage. Paste a specific photo, Reel, video, or profile URL.' };
         }
 
         const first = pathParts[0].toLowerCase();
+        const malformed = { valid: false, reason: 'malformed', message: 'That does not look like a valid Instagram link. Copy the link directly from Instagram and try again.' };
+        if (!['http:', 'https:'].includes(parsedUrl.protocol) || parsedUrl.username || parsedUrl.password || parsedUrl.port) return malformed;
+        if (['p','reel','reels','tv'].includes(first) && (pathParts.length !== 2 || !/^[A-Za-z0-9_-]{5,64}$/.test(pathParts[1]))) return malformed;
         if (requestedTab === 'audio' && !['reel','reels','p','tv'].includes(first)) return {valid:false,message:t('Paste Instagram Reel or video URL here')};
         if (first === 'p') {
           return { valid: true, detectedTab: requestedTab === 'audio' ? 'audio' : 'photo', shortcode: pathParts[1] || 'post_id', canonicalUrl: parsedUrl.href };
@@ -361,7 +366,8 @@
           return { valid: true, detectedTab: requestedTab === 'audio' ? 'audio' : 'video', shortcode: pathParts[1] || 'video_id', canonicalUrl: parsedUrl.href };
         }
         if (first === 'stories') return {valid:false,message:'The public story downloader has been retired.'};
-        // Otherwise treat single path segment as profile username
+        // Only a complete profile URL may select Profile; arbitrary text is ambiguous.
+        if (pathParts.length !== 1 || !/^[a-zA-Z0-9._]{2,30}$/.test(pathParts[0]) || ['accounts','explore','direct','about','legal','developer','press','api','graphql','challenge','session','share','reels','reel','p','tv'].includes(first)) return malformed;
         return { valid: true, detectedTab: 'profile', shortcode: pathParts[0], canonicalUrl: parsedUrl.href };
       }
 
@@ -404,10 +410,11 @@
           heroDescription.textContent = t('Save supported Instagram photos, videos, and Reels with a simple link.');
         }
 
-        panelTitle.textContent = cfg.panelTitle;
-        panelSubtitle.textContent = cfg.panelSubtitle;
-        urlInput.placeholder = cfg.placeholder;
-        submitBtnLabel.textContent = cfg.ctaLabel;
+        const universal = !state.dedicatedRouteActive;
+        panelTitle.textContent = universal ? t('Instagram Downloader') : cfg.panelTitle;
+        panelSubtitle.textContent = universal ? t('Paste a public Instagram video link (/p/... or /tv/...) to inspect MP4 stream quality.') : cfg.panelSubtitle;
+        urlInput.placeholder = universal ? t('Paste an Instagram link or @username') : cfg.placeholder;
+        submitBtnLabel.textContent = universal ? t('Download') : cfg.ctaLabel;
         downloaderPanel.setAttribute('aria-labelledby', 'tab-' + state.activeTab);
 
         // Update 5 Media Tool Tabs visual & ARIA state

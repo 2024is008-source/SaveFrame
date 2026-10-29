@@ -1,0 +1,1490 @@
+{
+ "url": "http://127.0.0.1:3137",
+ "at": "2026-10-29T08:30:13.778Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 5,
+   "filled": [
+    0.48,
+    0.44,
+    0.6,
+    0.66,
+    0.65
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 3668,
+     "screens": 4.1,
+     "words": 775,
+     "img": 3,
+     "video": 0,
+     "canvas": 0,
+     "svg": 36,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 3,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "stories-360.e9c465c209cf94b6.webp",
+      "photos-360.d0bd4118c2c3fd30.webp",
+      "reels-360.0d96ef5dd6fcbef7.webp"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Instagram Video, Reels & Photo Downloader",
+     "words": 6,
+     "chars": 41,
+     "lines": 2,
+     "size": 42,
+     "vw": 2.9,
+     "font": "Plus Jakarta Sans",
+     "weight": 700,
+     "tracking": -0.025,
+     "leading": 0.95,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "center",
+     "position": "center",
+     "widthRatio": 0.44,
+     "top": 105,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Instagram Video, Reels & Photo Downloader",
+     "words": 6,
+     "lines": 2,
+     "size": 42,
+     "font": "Plus Jakarta Sans"
+    },
+    "headings": [
+     {
+      "text": "Instagram Video, Reels & Photo Downloader",
+      "words": 6,
+      "chars": 41,
+      "lines": 2,
+      "size": 42,
+      "vw": 2.9,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 0.95,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.44,
+      "top": 105,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Save Supported Media in Three Steps",
+      "words": 6,
+      "chars": 35,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.43,
+      "top": 676,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Built for Fast, Transparent Media Inspection",
+      "words": 6,
+      "chars": 44,
+      "lines": 2,
+      "size": 30,
+      "vw": 2.1,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.31,
+      "top": 1229,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Frequently Asked Questions",
+      "words": 3,
+      "chars": 26,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.39,
+      "top": 1901,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Creator Workflow & Format Guides",
+      "words": 5,
+      "chars": 32,
+      "lines": 1,
+      "size": 30,
+      "vw": 2.1,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.34,
+      "top": 2571,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 5,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 2,
+     "medianWords": 6,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.81,
+       "mono": false
+      },
+      {
+       "family": "Plus Jakarta Sans",
+       "share": 0.17,
+       "mono": false
+      },
+      {
+       "family": "ui-monospace",
+       "share": 0.02,
+       "mono": false
+      }
+     ],
+     "familyCount": 3,
+     "sizes": [
+      11,
+      12,
+      14,
+      16,
+      18,
+      20,
+      30,
+      42
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter",
+      "size": 14,
+      "leading": 1.43,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": null
+     },
+     "measureChars": 70,
+     "max": {
+      "size": 42,
+      "vw": 2.9,
+      "font": "Plus Jakarta Sans",
+      "text": "Instagram Video, Reels & Photo Downloade"
+     },
+     "monoShare": 0.02,
+     "monoProseShare": 0,
+     "monoFamilies": [
+      "ui-monospace"
+     ],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.07,
+     "smallText": 16
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#ffffff",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 1
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f8f9fd",
+       "top": 611,
+       "hsl": {
+        "h": 228,
+        "s": 0.56,
+        "l": 0.98
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 1165,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#525866",
+       "share": 0.68
+      },
+      {
+       "color": "#171827",
+       "share": 0.21
+      },
+      {
+       "color": "#344054",
+       "share": 0.06
+      },
+      {
+       "color": "#7c3aed",
+       "share": 0.03
+      },
+      {
+       "color": "#047857",
+       "share": 0.01
+      }
+     ],
+     "button": {
+      "bg": "#ffffff",
+      "hsl": {
+       "h": 0,
+       "s": 0,
+       "l": 1
+      },
+      "fg": "#7c3aed"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 7,
+     "inHero": 7,
+     "radius": 12,
+     "height": 48,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Photo",
+      "Reels",
+      "Video",
+      "Audio",
+      "Profile"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 1,
+     "scrims": 0,
+     "gradientSamples": [
+      "div#downloader-panel.downloader-surface.rounded-2xl → linear-gradient(rgb(250, 248, 255), rgb(255, 249, 252))"
+     ],
+     "gradientText": 0,
+     "hairlines": 13,
+     "hairlineSamples": [
+      "header.sticky.top-0 1440px",
+      "section#how-to-use.py-12.sm:py-16 1440px",
+      "dl.mt-6.space-y-4 443px",
+      "div.px-5.py-4 635px",
+      "div.px-5.py-3 635px"
+     ],
+     "outlinedBoxes": 9,
+     "dashed": 0,
+     "blurred": 1,
+     "roundedBoxes": 9,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 3,
+     "mediaRadius": 16,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 808
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 2679
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 4,
+     "fixed": true,
+     "height": 65,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "inter",
+     "plus jakarta sans",
+     "inter fallback",
+     "jakarta fallback"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 3668,
+    "margins": {
+     "left": 160,
+     "right": 181
+    },
+    "sections": [],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Instagram Video, Reels & Photo Downloader",
+      "size": 42,
+      "top": 105,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 321,
+      "n": 7
+     },
+     {
+      "x": 160,
+      "n": 6
+     },
+     {
+      "x": 185,
+      "n": 2
+     },
+     {
+      "x": 566,
+      "n": 2
+     },
+     {
+      "x": 948,
+      "n": 2
+     },
+     {
+      "x": 664,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 20,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.15,
+    "voidBox": {
+     "x": 1140,
+     "y": 120,
+     "w": 300,
+     "h": 660
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 5,
+   "filled": [
+    0.71,
+    0.37,
+    0.7,
+    0.51,
+    0.76
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 4507,
+     "screens": 4.4,
+     "words": 775,
+     "img": 3,
+     "video": 0,
+     "canvas": 0,
+     "svg": 36,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 3,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "stories-360.e9c465c209cf94b6.webp",
+      "photos-360.d0bd4118c2c3fd30.webp",
+      "reels-360.0d96ef5dd6fcbef7.webp"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Instagram Video, Reels & Photo Downloader",
+     "words": 6,
+     "chars": 41,
+     "lines": 2,
+     "size": 36,
+     "vw": 4.7,
+     "font": "Plus Jakarta Sans",
+     "weight": 700,
+     "tracking": -0.025,
+     "leading": 1.11,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "center",
+     "position": "center",
+     "widthRatio": 0.83,
+     "top": 105,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Instagram Video, Reels & Photo Downloader",
+     "words": 6,
+     "lines": 2,
+     "size": 36,
+     "font": "Plus Jakarta Sans"
+    },
+    "headings": [
+     {
+      "text": "Instagram Video, Reels & Photo Downloader",
+      "words": 6,
+      "chars": 41,
+      "lines": 2,
+      "size": 36,
+      "vw": 4.7,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 1.11,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.83,
+      "top": 105,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Save Supported Media in Three Steps",
+      "words": 6,
+      "chars": 35,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.81,
+      "top": 696,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Built for Fast, Transparent Media Inspection",
+      "words": 6,
+      "chars": 44,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 1371,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Frequently Asked Questions",
+      "words": 3,
+      "chars": 26,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.73,
+      "top": 2476,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Creator Workflow & Format Guides",
+      "words": 5,
+      "chars": 32,
+      "lines": 1,
+      "size": 30,
+      "vw": 3.9,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.63,
+      "top": 3166,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 5,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 2,
+     "medianWords": 6,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.81,
+       "mono": false
+      },
+      {
+       "family": "Plus Jakarta Sans",
+       "share": 0.17,
+       "mono": false
+      },
+      {
+       "family": "ui-monospace",
+       "share": 0.02,
+       "mono": false
+      }
+     ],
+     "familyCount": 3,
+     "sizes": [
+      11,
+      12,
+      14,
+      16,
+      18,
+      20,
+      30,
+      36
+     ],
+     "sizeCount": 8,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter",
+      "size": 14,
+      "leading": 1.43,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": null
+     },
+     "measureChars": 57,
+     "max": {
+      "size": 36,
+      "vw": 4.7,
+      "font": "Plus Jakarta Sans",
+      "text": "Instagram Video, Reels & Photo Downloade"
+     },
+     "monoShare": 0.02,
+     "monoProseShare": 0,
+     "monoFamilies": [
+      "ui-monospace"
+     ],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.07,
+     "smallText": 16
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#ffffff",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 1
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f8f9fd",
+       "top": 631,
+       "hsl": {
+        "h": 228,
+        "s": 0.56,
+        "l": 0.98
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 1307,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#525866",
+       "share": 0.68
+      },
+      {
+       "color": "#171827",
+       "share": 0.21
+      },
+      {
+       "color": "#344054",
+       "share": 0.06
+      },
+      {
+       "color": "#7c3aed",
+       "share": 0.03
+      },
+      {
+       "color": "#047857",
+       "share": 0.01
+      }
+     ],
+     "button": {
+      "bg": "#ffffff",
+      "hsl": {
+       "h": 0,
+       "s": 0,
+       "l": 1
+      },
+      "fg": "#7c3aed"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 7,
+     "inHero": 7,
+     "radius": 12,
+     "height": 48,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Photo",
+      "Reels",
+      "Video",
+      "Audio",
+      "Profile"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 1,
+     "scrims": 0,
+     "gradientSamples": [
+      "div#downloader-panel.downloader-surface.rounded-2xl → linear-gradient(rgb(250, 248, 255), rgb(255, 249, 252))"
+     ],
+     "gradientText": 0,
+     "hairlines": 10,
+     "hairlineSamples": [
+      "header.sticky.top-0 768px",
+      "section#how-to-use.py-12.sm:py-16 768px",
+      "dl.mt-6.space-y-4 720px",
+      "div.px-5.py-4 718px",
+      "div.px-5.py-3 718px"
+     ],
+     "outlinedBoxes": 9,
+     "dashed": 0,
+     "blurred": 1,
+     "roundedBoxes": 9,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 3,
+     "mediaRadius": 16,
+     "textShadow": 0,
+     "cardRows": [
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 828
+      },
+      {
+       "count": 3,
+       "iconTopped": false,
+       "rounded": true,
+       "top": 3274
+      }
+     ]
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 4,
+     "fixed": true,
+     "height": 65,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "inter",
+     "plus jakarta sans",
+     "inter fallback",
+     "jakarta fallback"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 4507,
+    "margins": {
+     "left": 24,
+     "right": 25
+    },
+    "sections": [],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Instagram Video, Reels & Photo Downloader",
+      "size": 36,
+      "top": 105,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 45,
+      "n": 10
+     },
+     {
+      "x": 24,
+      "n": 6
+     },
+     {
+      "x": 297,
+      "n": 2
+     },
+     {
+      "x": 545,
+      "n": 2
+     }
+    ],
+    "leftBlocks": 20,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 9,
+   "filled": [
+    0.75,
+    0.57,
+    0.54,
+    0.48,
+    0.48,
+    0.54,
+    0.63,
+    0.87,
+    0.96
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 7034,
+     "screens": 8.3,
+     "words": 766,
+     "img": 3,
+     "video": 0,
+     "canvas": 0,
+     "svg": 36,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 3,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "stories-360.e9c465c209cf94b6.webp",
+      "photos-360.d0bd4118c2c3fd30.webp",
+      "reels-360.0d96ef5dd6fcbef7.webp"
+     ],
+     "blendText": 0,
+     "sideScrollers": 1,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Instagram Video, Reels & Photo Downloader",
+     "words": 6,
+     "chars": 41,
+     "lines": 2,
+     "size": 26,
+     "vw": 6.7,
+     "font": "Plus Jakarta Sans",
+     "weight": 700,
+     "tracking": -0.025,
+     "leading": 1.15,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "center",
+     "position": "center",
+     "widthRatio": 0.92,
+     "top": 89,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Instagram Video, Reels & Photo Downloader",
+     "words": 6,
+     "lines": 2,
+     "size": 26,
+     "font": "Plus Jakarta Sans"
+    },
+    "headings": [
+     {
+      "text": "Instagram Video, Reels & Photo Downloader",
+      "words": 6,
+      "chars": 41,
+      "lines": 2,
+      "size": 26,
+      "vw": 6.7,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 1.15,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 89,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Save Supported Media in Three Steps",
+      "words": 6,
+      "chars": 35,
+      "lines": 2,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 699,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Built for Fast, Transparent Media Inspection",
+      "words": 6,
+      "chars": 44,
+      "lines": 2,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 1802,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Frequently Asked Questions",
+      "words": 3,
+      "chars": 26,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 3124,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Creator Workflow & Format Guides",
+      "words": 5,
+      "chars": 32,
+      "lines": 2,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Plus Jakarta Sans",
+      "weight": 700,
+      "tracking": -0.025,
+      "leading": 1.2,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 3857,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 5,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 2,
+     "medianWords": 6,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.8,
+       "mono": false
+      },
+      {
+       "family": "Plus Jakarta Sans",
+       "share": 0.17,
+       "mono": false
+      },
+      {
+       "family": "ui-monospace",
+       "share": 0.02,
+       "mono": false
+      }
+     ],
+     "familyCount": 3,
+     "sizes": [
+      11,
+      12,
+      14,
+      16,
+      18,
+      24,
+      26
+     ],
+     "sizeCount": 7,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter",
+      "size": 12,
+      "leading": 1.33,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": null
+     },
+     "measureChars": 60,
+     "max": {
+      "size": 26,
+      "vw": 6.7,
+      "font": "Plus Jakarta Sans",
+      "text": "Instagram Video, Reels & Photo Downloade"
+     },
+     "monoShare": 0.02,
+     "monoProseShare": 0,
+     "monoFamilies": [
+      "ui-monospace"
+     ],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0.06,
+     "smallText": 54
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#ffffff",
+     "bodyBgHsl": {
+      "h": 0,
+      "s": 0,
+      "l": 1
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#f8f9fd",
+       "top": 650,
+       "hsl": {
+        "h": 228,
+        "s": 0.56,
+        "l": 0.98
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 1421,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#525866",
+       "share": 0.69
+      },
+      {
+       "color": "#171827",
+       "share": 0.21
+      },
+      {
+       "color": "#344054",
+       "share": 0.05
+      },
+      {
+       "color": "#7c3aed",
+       "share": 0.03
+      },
+      {
+       "color": "#047857",
+       "share": 0.01
+      }
+     ],
+     "button": {
+      "bg": "#ffffff",
+      "hsl": {
+       "h": 0,
+       "s": 0,
+       "l": 1
+      },
+      "fg": "#7c3aed"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 7,
+     "inHero": 7,
+     "radius": 12,
+     "height": 54,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Photo",
+      "Reels",
+      "Video",
+      "Audio",
+      "Profile"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 1,
+     "scrims": 0,
+     "gradientSamples": [
+      "div#downloader-panel.downloader-surface.rounded-2xl → linear-gradient(rgb(250, 248, 255), rgb(255, 249, 252))"
+     ],
+     "gradientText": 0,
+     "hairlines": 13,
+     "hairlineSamples": [
+      "header.sticky.top-0 390px",
+      "section#how-to-use.py-12.sm:py-16 390px",
+      "dl.mt-6.space-y-4 358px",
+      "div.px-5.py-4 356px",
+      "div.px-5.py-3 356px"
+     ],
+     "outlinedBoxes": 9,
+     "dashed": 0,
+     "blurred": 1,
+     "roundedBoxes": 9,
+     "boxRadius": 16,
+     "squareMedia": 0,
+     "roundedMedia": 3,
+     "mediaRadius": 16,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": {
+     "links": 1,
+     "fixed": true,
+     "height": 65,
+     "floatingPill": false,
+     "blur": true
+    },
+    "fontsLoaded": [
+     "inter",
+     "plus jakarta sans",
+     "inter fallback",
+     "jakarta fallback"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 7034,
+    "margins": {
+     "left": 16,
+     "right": 17
+    },
+    "sections": [],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Instagram Video, Reels & Photo Downloader",
+      "size": 26,
+      "top": 89,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 33,
+      "n": 13
+     },
+     {
+      "x": 16,
+      "n": 6
+     }
+    ],
+    "leftBlocks": 19,
+    "bodySize": 14,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "FAIL",
+   "id": "gradient",
+   "width": 1440,
+   "message": "1 gradient fill(s): div#downloader-panel.downloader-surface.rounded-2xl → linear-gradient(rgb(250, 248, 255), rgb(255, 249, 252))",
+   "fix": "Use a flat colour or a real image. The only gradient allowed by default is a neutral scrim over a photo for legibility.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "hairline",
+   "width": 1440,
+   "message": "13 thin rule(s)/divider line(s): header.sticky.top-0 1440px | section#how-to-use.py-12.sm:py-16 1440px | dl.mt-6.space-y-4 443px | div.px-5.py-4 635px",
+   "fix": "Delete. Separate with space, a tone change, or scale. Lines are only for real tables and form fields.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "outlined-box",
+   "width": 1440,
+   "message": "9 boxes drawn with a 1px outline.",
+   "fix": "Define a surface by its fill (one tone step from the page) or leave the content unboxed.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "card-rows",
+   "width": 1440,
+   "message": "2 rows of identical boxed cards.",
+   "fix": "Vary the composition; not every section is a card grid.",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "palette-purple",
+   "width": 1440,
+   "message": "Indigo / violet (text #7c3aed).",
+   "fix": "Use the accent from the drawn palette.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "font-count",
+   "width": 1440,
+   "message": "3 typefaces in use (Inter, Plus Jakarta Sans, ui-monospace).",
+   "fix": "Two at most.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "body-size",
+   "width": 1440,
+   "message": "Body text is 14px (the size most of the running text is set in).",
+   "fix": "Body copy 16–20px. Map small sizes from blueprints onto your body step.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "few-pictures",
+   "width": 1440,
+   "message": "Only 3 picture(s) on the page (3 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.",
+   "fix": "Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve."
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "FAIL",
+   "id": "small-text",
+   "width": 1440,
+   "message": "16 text blocks under 13px.",
+   "fix": "Nothing meant to be read goes below 13px.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "focal-point",
+   "width": 1440,
+   "message": "The first screen has no dominant element: the largest type is 42px (2.9vw) and no single picture holds a third of the viewport.",
+   "fix": "Make one thing lead: the headline at display size, or one large picture. A grid of many small pictures is not one thing; in blind tests jurors marked a first screen without a headline down every time. On the strongest studied sites the largest type has a median of 8.4vw."
+  },
+  {
+   "level": "WARN",
+   "id": "off-centre",
+   "width": 1440,
+   "message": "The margins differ: 160px on the left, 181px on the right, at 1440px.",
+   "fix": "Put the navigation and the content on one pair of margins; check for padding on one side only, a scrollbar gutter, or a header on another inset than the page."
+  },
+  {
+   "level": "FAIL",
+   "id": "still-page",
+   "width": 1440,
+   "message": "Only 0 element(s) moved while the page loaded and scrolled.",
+   "fix": "Build the motion layer (SKILL.md step 9, references/motion.md): the signature move, an entrance for the parts of every section, feedback on every control, and one moving picture. Transform and opacity only, with a reduced-motion fallback."
+  },
+  {
+   "level": "WARN",
+   "id": "side-scroll",
+   "width": 390,
+   "message": "1 row(s) scroll sideways with content past their edge.",
+   "fix": "Jurors and most visitors read a row cut at the edge as clipped, not as scrollable. Wrap it onto more lines, or end it inside the grid."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "D:\\My Project\\instagram-downloader-nextjs(1)\\instagram-downloader-nextjs\\reports\\audit-ui\\desktop-fold.jpg",
+   "pages": [
+    "D:\\My Project\\instagram-downloader-nextjs(1)\\instagram-downloader-nextjs\\reports\\audit-ui\\desktop-page-01.jpg",
+    "D:\\My Project\\instagram-downloader-nextjs(1)\\instagram-downloader-nextjs\\reports\\audit-ui\\desktop-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "D:\\My Project\\instagram-downloader-nextjs(1)\\instagram-downloader-nextjs\\reports\\audit-ui\\tablet-fold.jpg",
+   "pages": [
+    "D:\\My Project\\instagram-downloader-nextjs(1)\\instagram-downloader-nextjs\\reports\\audit-ui\\tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "D:\\My Project\\instagram-downloader-nextjs(1)\\instagram-downloader-nextjs\\reports\\audit-ui\\mobile-fold.jpg",
+   "pages": [
+    "D:\\My Project\\instagram-downloader-nextjs(1)\\instagram-downloader-nextjs\\reports\\audit-ui\\mobile-page-01.jpg",
+    "D:\\My Project\\instagram-downloader-nextjs(1)\\instagram-downloader-nextjs\\reports\\audit-ui\\mobile-page-02.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

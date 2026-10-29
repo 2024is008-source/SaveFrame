@@ -1,5 +1,5 @@
 {
-  "scope": "HTTP validation at http://127.0.0.1:3125; not a Google indexing confirmation",
+  "scope": "HTTP validation at http://127.0.0.1:3137; not a Google indexing confirmation",
   "sitemap": {
     "urlCount": 37,
     "localizedHomepages": 10,
@@ -15,8 +15,8 @@
     {
       "path": "/",
       "status": 200,
-      "title": "Instagram Video Downloader – View and Save Instagram to MP4",
-      "description": "Save supported public Instagram photos, videos, Reels, carousels, and MP3 audio with a simple link. Fast, clean, mobile-friendly web utility.",
+      "title": "Instagram Video, Reels & Photo Downloader | SaveFrame",
+      "description": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio. Free to use, with no Instagram login required. Quality depends on the source.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -24,7 +24,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 536
+      "responseAndBodyMs": 65
     },
     {
       "path": "/es/",
@@ -38,7 +38,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 969
+      "responseAndBodyMs": 93
     },
     {
       "path": "/pt-br/",
@@ -52,12 +52,12 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 1337
+      "responseAndBodyMs": 91
     },
     {
       "path": "/de/",
       "status": 200,
-      "title": "Instagram-Videos herunterladen – Ansehen & als MP4 speichern",
+      "title": "Instagram-Videos herunterladen – Ansehen & als MP4 speichern | SaveFrame",
       "description": "Speichere unterstützte öffentliche Instagram-Fotos, Videos, Reels, Karussells und MP3-Audio per Link. Schnell und mobilfreundlich.",
       "h1": 1,
       "schemaTypes": [
@@ -66,12 +66,12 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 673
+      "responseAndBodyMs": 54
     },
     {
       "path": "/fr/",
       "status": 200,
-      "title": "Télécharger une vidéo Instagram – Voir et enregistrer en MP4",
+      "title": "Télécharger une vidéo Instagram – Voir et enregistrer en MP4 | SaveFrame",
       "description": "Enregistrez des photos, vidéos, Reels, carrousels et fichiers audio MP3 publics Instagram avec un lien. Un outil rapide et adapté aux mobiles.",
       "h1": 1,
       "schemaTypes": [
@@ -80,7 +80,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 2068
+      "responseAndBodyMs": 51
     },
     {
       "path": "/ja/",
@@ -94,7 +94,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 2521
+      "responseAndBodyMs": 49
     },
     {
       "path": "/id/",
@@ -108,7 +108,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 892
+      "responseAndBodyMs": 53
     },
     {
       "path": "/tr/",
@@ -122,7 +122,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 2010
+      "responseAndBodyMs": 86
     },
     {
       "path": "/hi/",
@@ -136,7 +136,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 1629
+      "responseAndBodyMs": 63
     },
     {
       "path": "/ar/",
@@ -150,7 +150,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 942
+      "responseAndBodyMs": 55
     },
     {
       "path": "/reels-downloader",
@@ -165,7 +165,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 1259
+      "responseAndBodyMs": 121
     },
     {
       "path": "/video-downloader",
@@ -180,7 +180,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 2301
+      "responseAndBodyMs": 82
     },
     {
       "path": "/photo-downloader",
@@ -195,12 +195,12 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 1289
+      "responseAndBodyMs": 99
     },
     {
       "path": "/carousel-downloader",
       "status": 200,
-      "title": "Instagram Carousel Downloader – Pick Photos or Save a ZIP",
+      "title": "Instagram Carousel Downloader – Pick Photos or Save a ZIP | SaveFrame",
       "description": "Download individual photos from supported public Instagram carousels. Preview each returned slide, choose the items you need, and preserve their order.",
       "h1": 1,
       "schemaTypes": [
@@ -210,12 +210,12 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 1101
+      "responseAndBodyMs": 121
     },
     {
       "path": "/audio-downloader",
       "status": 200,
-      "title": "Instagram Audio Downloader – Download Reels MP3",
+      "title": "Instagram Audio Downloader – Download Reels MP3 | SaveFrame",
       "description": "Download audio from Instagram Reels and videos as MP3. Paste a public Instagram link, extract audio online, and save it for free. No signup required.",
       "h1": 1,
       "schemaTypes": [
@@ -225,12 +225,12 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 1528
+      "responseAndBodyMs": 73
     },
     {
       "path": "/profile-viewer",
       "status": 200,
-      "title": "Instagram Profile Picture Viewer – Preview Public Photos",
+      "title": "Instagram Profile Picture Viewer – Preview Public Photos | SaveFrame",
       "description": "View supported public Instagram profile information and available profile pictures by URL or username. Understand avatar resolution and access limits.",
       "h1": 1,
       "schemaTypes": [
@@ -240,7 +240,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 1181
+      "responseAndBodyMs": 137
     },
     {
       "path": "/about",
@@ -254,7 +254,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 235
+      "responseAndBodyMs": 19
     },
     {
       "path": "/contact",
@@ -268,7 +268,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 987
+      "responseAndBodyMs": 20
     },
     {
       "path": "/privacy",
@@ -282,7 +282,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 419
+      "responseAndBodyMs": 32
     },
     {
       "path": "/terms",
@@ -296,7 +296,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 331
+      "responseAndBodyMs": 38
     },
     {
       "path": "/copyright",
@@ -310,7 +310,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 857
+      "responseAndBodyMs": 25
     },
     {
       "path": "/blog",
@@ -324,7 +324,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 574
+      "responseAndBodyMs": 71
     },
     {
       "path": "/blog/how-to-download-instagram-stories-by-link",
@@ -336,7 +336,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 770
+      "responseAndBodyMs": 58
     },
     {
       "path": "/blog/how-to-download-instagram-story-videos",
@@ -348,7 +348,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 1909
+      "responseAndBodyMs": 49
     },
     {
       "path": "/blog/how-to-download-instagram-photos-online",
@@ -360,7 +360,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 1911
+      "responseAndBodyMs": 79
     },
     {
       "path": "/blog/how-to-copy-instagram-photo-link",
@@ -372,7 +372,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 970
+      "responseAndBodyMs": 66
     },
     {
       "path": "/blog/view-instagram-profile-picture-by-url",
@@ -384,7 +384,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 814
+      "responseAndBodyMs": 71
     },
     {
       "path": "/blog/how-to-download-instagram-reels-mp4",
@@ -396,7 +396,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 507
+      "responseAndBodyMs": 63
     },
     {
       "path": "/blog/download-instagram-reels-on-iphone",
@@ -408,7 +408,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 457
+      "responseAndBodyMs": 68
     },
     {
       "path": "/blog/download-instagram-videos-on-pc",
@@ -420,7 +420,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 447
+      "responseAndBodyMs": 67
     },
     {
       "path": "/blog/download-instagram-carousel-photos",
@@ -432,7 +432,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 438
+      "responseAndBodyMs": 64
     },
     {
       "path": "/blog/download-instagram-reels-with-audio",
@@ -444,7 +444,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 406
+      "responseAndBodyMs": 58
     },
     {
       "path": "/blog/instagram-downloader-not-working",
@@ -456,7 +456,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 433
+      "responseAndBodyMs": 63
     },
     {
       "path": "/blog/why-instagram-videos-wont-download",
@@ -468,7 +468,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 435
+      "responseAndBodyMs": 74
     },
     {
       "path": "/blog/download-instagram-photos-iphone-android",
@@ -480,7 +480,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 476
+      "responseAndBodyMs": 56
     },
     {
       "path": "/blog/instagram-photo-sizes-aspect-ratios",
@@ -492,7 +492,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 562
+      "responseAndBodyMs": 76
     },
     {
       "path": "/blog/backup-instagram-photos-videos-reels",
@@ -504,7 +504,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 491
+      "responseAndBodyMs": 75
     },
     {
       "path": "/blog?page=2",
@@ -518,7 +518,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 516
+      "responseAndBodyMs": 41
     }
   ],
   "internalDestinationsChecked": [

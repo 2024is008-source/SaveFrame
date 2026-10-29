@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "initial": {
+    "title": "Instagram Video, Reels & Photo Downloader | SaveFrame",
+    "heading": "Instagram Video, Reels & Photo Downloader",
+    "consent": true,
+    "trust": true,
+    "overflow": false,
+    "initialized": "true"
+  },
+  "verified": [
+    "mobile layout",
+    "consent initially pending",
+    "no Google request before consent",
+    "decline persisted across reload",
+    "grant queues one page_view",
+    "Google script request intercepted",
+    "malformed input never resolves",
+    "Reel selects Reels",
+    "explicit username selects Profile"
+  ],
+  "realGoogleRequestsSent": false,
+  "realInstagramRequestsSent": false
+}

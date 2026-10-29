@@ -51,7 +51,7 @@ export function analyticsEvent(name:unknown, input:Record<string,unknown>={}) {
 }
 
 // This controller has no dependency on React or the downloader's private data.
-export function createAnalytics(browser:Window, id:string, origin:string, production:boolean, load:()=>void,options:AnalyticsOptions={}) {
+export function createAnalytics(browser:Window, id:string, origin:string, production:boolean, load:()=>void,options:AnalyticsOptions={}, onConsentRequired:(required:boolean)=>void=()=>{}) {
   const win=browser as Window & {saveframeDataLayer?:unknown[];SaveFrameAnalytics?:{setConsent:(value:'granted'|'denied')=>void};[key:`ga-disable-${string}`]:boolean};
   type Runtime={configured:boolean;lastPath:string|null;referrer:string;entryReferrer:string;campaign:Record<string,string>;operations?:WeakMap<object,Set<string>>;stop?:()=>void};
   const runtimeWindow=win as typeof win & {__saveframeGa4?:Runtime};
@@ -64,7 +64,9 @@ export function createAnalytics(browser:Window, id:string, origin:string, produc
   const permitted=()=>consent==='granted'||(consent==='unset'&&options.automaticAllowed===true);
   const allowed=()=>!disposed&&production&&/^G-[A-Z0-9]+$/.test(id)&&browser.location.origin===origin&&origin==='https://saveframe.site'&&permitted()&&!preferenceDenied()&&!browser.navigator.webdriver&&!/bot|crawler|spider|lighthouse|headless/i.test(browser.navigator.userAgent||'')&&currentPath()!==null;
   const fields=()=>({page_location:origin+currentPath(),page_referrer:state.referrer,page_title:'SaveFrame',send_to:id});
+  const updateConsentPrompt=()=>onConsentRequired(production&&/^G-[A-Z0-9]+$/.test(id)&&browser.location.origin===origin&&origin==='https://saveframe.site'&&consent==='unset'&&!options.automaticAllowed&&!preferenceDenied()&&!browser.navigator.webdriver&&!/bot|crawler|spider|lighthouse|headless/i.test(browser.navigator.userAgent||'')&&currentPath()!==null);
   const page=()=>{
+    updateConsentPrompt();
     if(browser.location.pathname==='/privacy'&&new URLSearchParams(browser.location.search).get('analytics')==='off'&&consent!=='denied'){setConsent('denied');return;}
     if(!allowed()){win[`ga-disable-${id}`]=true;state.lastPath=null;return;}
     win[`ga-disable-${id}`]=false;
@@ -88,6 +90,7 @@ export function createAnalytics(browser:Window, id:string, origin:string, produc
     }
   };
   const apply=()=>{
+    updateConsentPrompt();
     // Preference only, without a visitor identifier. Internal country reporting
     // can respect the same opt-out without depending on GA enablement or receipt.
     const preference=preferenceDenied()?'denied':consent;

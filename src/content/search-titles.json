@@ -1,9 +1,9 @@
 {
-  "/": "Instagram Video Downloader – View and Save Instagram to MP4",
+  "/": "Instagram Video, Reels & Photo Downloader | SaveFrame",
   "/es/": "Descargar vídeos de Instagram – Ver y guardar en MP4 | SaveFrame",
   "/pt-br/": "Baixar vídeos do Instagram – Veja e salve em MP4 | SaveFrame",
-  "/de/": "Instagram-Videos herunterladen – Ansehen & als MP4 speichern",
-  "/fr/": "Télécharger une vidéo Instagram – Voir et enregistrer en MP4",
+  "/de/": "Instagram-Videos herunterladen – Ansehen & als MP4 speichern | SaveFrame",
+  "/fr/": "Télécharger une vidéo Instagram – Voir et enregistrer en MP4 | SaveFrame",
   "/ja/": "Instagram動画をダウンロード – プレビューしてMP4で保存 | SaveFrame",
   "/id/": "Download Video Instagram – Pratinjau & Simpan MP4 | SaveFrame",
   "/tr/": "Instagram Video İndir – Önizle ve MP4 Olarak Kaydet | SaveFrame",
@@ -12,8 +12,8 @@
   "/reels-downloader": "Instagram Reels Downloader – Preview & Save MP4 | SaveFrame",
   "/video-downloader": "Save Instagram Videos as MP4 – Video Downloader | SaveFrame",
   "/photo-downloader": "Instagram Photo Downloader – Preview & Save Images | SaveFrame",
-  "/carousel-downloader": "Instagram Carousel Downloader – Pick Photos or Save a ZIP",
-  "/profile-viewer": "Instagram Profile Picture Viewer – Preview Public Photos",
+  "/carousel-downloader": "Instagram Carousel Downloader – Pick Photos or Save a ZIP | SaveFrame",
+  "/profile-viewer": "Instagram Profile Picture Viewer – Preview Public Photos | SaveFrame",
   "/about": "About SaveFrame – How Our Instagram Download Tools Work",
   "/contact": "Contact SaveFrame – Get Download Help or Report an Issue",
   "/privacy": "SaveFrame Privacy Policy – Your Data & Analytics Choices",
@@ -35,5 +35,5 @@
   "/blog/download-instagram-photos-iphone-android": "Save Instagram Photos on iPhone & Android – Find Your Files",
   "/blog/instagram-photo-sizes-aspect-ratios": "Instagram Photo Sizes – Choose the Right Crop & Aspect Ratio",
   "/blog/backup-instagram-photos-videos-reels": "Back Up Your Instagram Photos & Reels – Build a Local Archive",
-  "/audio-downloader": "Instagram Audio Downloader – Download Reels MP3"
+  "/audio-downloader": "Instagram Audio Downloader – Download Reels MP3 | SaveFrame"
 }

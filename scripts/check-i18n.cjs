@@ -66,6 +66,10 @@ for (const locale of locales) {
   assert.equal(parsed.valid, false);
   assert.equal(hooks.t(parsed.message), dictionary['Only instagram.com or instagr.am links are supported. Please copy a link directly from Instagram.']);
   assert.equal(hooks.parseInstagramInput('@creator').detectedTab, 'profile');
+  for(const input of ['DdTXcU_RlzJ','creator','https://www.instagram.com/reel/','https://www.instagram.com/p/','https://www.instagram.com/tv/','https://www.instagram.com/creator/extra/','https://www.instagram.com/explore/'])assert.equal(hooks.parseInstagramInput(input).valid,false, 'Reject ambiguous or incomplete input: '+input);
+  assert.equal(hooks.parseInstagramInput('https://www.instagram.com/creator/').detectedTab,'profile');
+  assert.equal(hooks.parseInstagramInput('https://www.instagram.com/reel/DdTXcU_RlzJ/').detectedTab,'reels');
+  assert.equal(hooks.parseInstagramInput('https://www.instagram.com/creator/reel/DdTXcU_RlzJ/').detectedTab,'reels');
   assert.equal(hooks.parseInstagramInput('@creator', 'audio').valid, false);
   assert.equal(hooks.parseInstagramInput('https://www.instagram.com/creator/?utm_source=share', 'audio').valid, false);
   assert.equal(hooks.parseInstagramInput('https://www.instagram.com/stories/creator/123456789/', 'audio').valid, false);

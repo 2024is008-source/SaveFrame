@@ -8,16 +8,18 @@ function fixture(options={}){
  const win={location:{origin,hostname:'saveframe.site',pathname:'/',search:'?instagramUrl=https://instagram.com/private-user',hash:'#private'},navigator:{},document:{cookie:''},localStorage:{getItem:key=>stored.get(key),setItem:(key,value)=>stored.set(key,value)},addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:(name,fn)=>{if(events.get(name)===fn)events.delete(name);}};
  Object.assign(win.navigator,options.navigator);if(options.path)win.location.pathname=options.path;
  if(options.referrer)win.document.referrer=options.referrer;if(options.search!==undefined)win.location.search=options.search;
- let loads=0;const controller=createAnalytics(win,options.id||id,options.origin||origin,options.production!==false,()=>loads++,options.policy);
- return {win,controller,events,loads:()=>loads,emit:(name,detail)=>events.get(name)?.({detail}),commands:()=>Array.from(win.saveframeDataLayer||[],args=>Array.from(args)),stored};
+ let loads=0,needsConsent=false;const controller=createAnalytics(win,options.id||id,options.origin||origin,options.production!==false,()=>loads++,options.policy,value=>{needsConsent=value;});
+ return {win,controller,events,loads:()=>loads,needsConsent:()=>needsConsent,emit:(name,detail)=>events.get(name)?.({detail}),commands:()=>Array.from(win.saveframeDataLayer||[],args=>Array.from(args)),stored};
 }
 assert.equal(analyticsPath('/admin/login'),null);assert.equal(analyticsPath('/api/media/download/secret'),null);assert.equal(analyticsPath('/someone-private'),null);assert.equal(analyticsPath('/fr/'),'/fr');
 for(const locale of require('../src/i18n/config.ts').locales)assert.notEqual(analyticsPath(locale==='en'?'/':`/${locale}/`),null);
 for(const post of require('../src/content/blog/posts.json'))if(post.published)assert.notEqual(analyticsPath('/blog/'+post.slug),null);
 for(const page of [...require('../src/content/tools.json'),...require('../src/content/information.json')])assert.notEqual(analyticsPath('/'+page.slug),null);
 let test=fixture();assert.equal(test.loads(),0);assert.deepEqual(test.commands(),[]);
+assert.equal(test.needsConsent(),true,'Unknown region must have a visible choice before loading analytics');
 test.emit('saveframe:analytics-event',{name:'media_resolved',params:{media_type:'photo'}});assert.deepEqual(test.commands(),[]);
 test.win.SaveFrameAnalytics.setConsent('granted');assert.equal(test.loads(),1);assert.equal(test.commands().filter(c=>c[1]==='page_view').length,1);
+assert.equal(test.needsConsent(),false);
 test.controller.page();test.controller.page();assert.equal(test.commands().filter(c=>c[1]==='page_view').length,1,'No duplicate route views');
 test.win.location.pathname='/blog';test.controller.page();assert.equal(test.commands().filter(c=>c[1]==='page_view').length,2);
 test.emit('saveframe:analytics-event',{name:'download_failed',params:{media_type:'photo',failure_stage:'resolve',error_code:'LOGIN_REQUIRED',url:'secret-url',username:'private-user',cookies:'secret-cookie',message:'private-error',job_id:'secret-job'}});
@@ -27,12 +29,13 @@ assert.equal(test.commands().find(c=>c[0]==='config')[2].send_page_view,false);
 assert.equal(test.commands().find(c=>c[0]==='config')[2].allow_google_signals,false);
 const before=test.commands().length;test.win.location.pathname='/admin/audit';test.controller.page();test.emit('saveframe:analytics-event',{name:'download_started'});assert.equal(test.commands().length,before);assert.equal(test.win['ga-disable-'+id],true);
 test.win.location.pathname='/blog';test.controller.page();assert.equal(test.win['ga-disable-'+id],false);assert.equal(test.commands().filter(c=>c[1]==='page_view').length,3,'Return from an excluded route is a new public view');
-test.emit('saveframe:analytics-consent',{analytics:'denied'});assert.equal(test.win['ga-disable-'+id],true);assert.deepEqual(test.commands(),[]);test.emit('saveframe:analytics-event',{name:'media_resolved'});assert.deepEqual(test.commands(),[]);assert.equal(test.stored.get(consentKey),'denied');
+test.emit('saveframe:analytics-consent',{analytics:'denied'});assert.equal(test.needsConsent(),false);assert.equal(test.win['ga-disable-'+id],true);assert.deepEqual(test.commands(),[]);test.emit('saveframe:analytics-event',{name:'media_resolved'});assert.deepEqual(test.commands(),[]);assert.equal(test.stored.get(consentKey),'denied');
 test.controller.dispose();assert.equal(test.events.size,0);assert.equal(test.win.SaveFrameAnalytics,undefined);
 for(const options of [{consent:'denied'},{consent:'granted',navigator:{doNotTrack:'1'}},{consent:'granted',navigator:{globalPrivacyControl:true}},{consent:'granted',path:'/admin/login'},{consent:'granted',production:false},{consent:'granted',id:'bad'},{consent:'granted',origin:'http://localhost:3000'}]){test=fixture(options);assert.equal(test.loads(),0);assert.deepEqual(test.commands(),[]);test.controller.dispose();}
 test=fixture({consent:'granted'});assert.equal(test.loads(),1);test.stored.set(consentKey,'denied');test.events.get('storage')({key:consentKey});assert.equal(test.win['ga-disable-'+id],true);assert.deepEqual(test.commands(),[]);test.controller.dispose();
 assert.deepEqual(analyticsEvent('download_failed',{error_code:'https://instagram.com/private',media_type:'username',failure_stage:'secret'}),{name:'download_failed',params:{media_type:'unknown',download_format:'unknown',download_method:'single',download_status:'failed',source_page:'unknown',failure_stage:'download',error_code:'UNKNOWN'}});assert.equal(analyticsEvent('arbitrary_private_event'),null);assert.ok(analyticsEvent('media_resolved',null));
 const layout=fs.readFileSync('src/app/layout.tsx','utf8');assert.equal((layout.match(/<Analytics /g)||[]).length,1);
+assert.ok(fs.readFileSync('src/components/Analytics.tsx','utf8').includes('&l=saveframeDataLayer'),'Google must consume the same custom queue as the controller');
 const policyEnv={GA4_TRUST_REGION_HEADER:'1',GA4_AUTOMATIC_COUNTRIES:'*'};
 for(const country of ['DE','FR','GB','CH','IS','NO','XX','T1','ZZ','EU',''])assert.equal(analyticsPolicy(new Headers({'x-saveframe-country':country}),policyEnv).automaticAllowed,false,country);
 for(const country of ['US','LK','AU','JP'])assert.equal(analyticsPolicy(new Headers({'x-saveframe-country':country}),policyEnv).automaticAllowed,true,country);

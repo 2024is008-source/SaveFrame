@@ -8,10 +8,17 @@ import { isLocale, languageTag } from '../i18n/config';
 import Analytics from '../components/Analytics';
 import { Suspense } from 'react';
 import { analyticsPolicy } from '../lib/analytics-policy';
+import { socialImage } from '../lib/seo';
+import english from '../i18n/dictionaries/en.json';
+import titles from '../content/search-titles.json';
+
+const home = { title: titles['/'], description: english['Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.'] };
 
 export const metadata: Metadata = {
-  title: 'SaveFrame — Instagram Downloader for Photos, Reels, Videos & Audio',
-  description: 'Save supported public Instagram photos, videos, Reels, carousels, and MP3 audio with a simple link. Fast, clean, mobile-friendly web utility.',
+  title: home.title,
+  description: home.description,
+  openGraph: { type: 'website', siteName: 'SaveFrame', title: home.title, description: home.description, url: siteUrl, images: [socialImage] },
+  twitter: { card: 'summary_large_image', title: home.title, description: home.description, images: [socialImage.url] },
   metadataBase: new URL(siteUrl),
   alternates: { canonical: '/' },
   robots: { index: hasPublicSiteUrl, follow: true },

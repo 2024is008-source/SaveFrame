@@ -29,6 +29,15 @@ export function localizedHomepage(locale: Locale) {
   markup = markup.replace('<section data-home-blog></section>', blog);
   markup = markup.replace('id="info-modal-body"', 'id="info-modal-body" lang="en" dir="ltr"').replace('id="info-modal-title"', 'id="info-modal-title" lang="en" dir="ltr"');
   markup = markup.replace('type="url"', 'type="text" inputmode="url" dir="ltr"');
+  // Match the universal client state in the initial server HTML as well.
+  const replaceText = (id: string, value: string) => {
+    markup = markup.replace(new RegExp(`(id="${id}"[^>]*>)[^<]*(<)`), (_, open: string, close: string) => open + escapeHtml(value) + close);
+  };
+  replaceText('panel-tool-title', dict['Instagram Downloader']);
+  replaceText('panel-tool-subtitle', dict['Paste a public Instagram video link (/p/... or /tv/...) to inspect MP4 stream quality.']);
+  replaceText('submit-btn-label', dict.Download);
+  markup = markup.replace(/(<form id="downloader-form"[\s\S]*?<\/form>)/, (_, form: string) => form + `<p class="mt-3 text-sm text-ink-muted" data-download-trust>${escapeHtml(dict['Free to use · No Instagram login · Source quality'])}</p>`);
+  markup = markup.replace(/(id="instagram-url-input"[\s\S]*?placeholder=")[^"]*(")/, (_, open: string, close: string) => open + escapeHtml(dict['Paste an Instagram link or @username']) + close);
   const client = JSON.stringify({ locale, home: localePath(locale), language: languageTag(locale), dictionary: dict, publicSettings:publicSettings() }).replace(/</g, '\\u003c');
   markup = crawlableNavigation(markup, localePath(locale));
   markup = markup.replace('>About SaveFrame</a>', `>${escapeHtml(dict['About SaveFrame'])}</a>`).replace('>Copyright</a>', `>${escapeHtml(dict.Copyright)}</a>`);
