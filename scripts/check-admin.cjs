@@ -51,10 +51,10 @@ async function main(){
  analytics.recordEvent('request-2','download_requested','video');analytics.recordEvent('request-2','download_failed','video','job-2','https://private.example/token');analytics.recordEvent('request-3','download_requested','photo');analytics.recordEvent('request-3','download_started','photo','job-3');
  const report=analytics.reports({from:today,to:today});assert.equal(report.totals.requests,3);assert.equal(report.totals.prepared,1);assert.equal(report.totals.failed,1);assert.equal(report.totals.delivered,1);assert.equal(report.totals.success,50);assert.equal(report.totals.average,1000);assert.equal(report.totals.active,1);assert.equal(report.daily[0].requests,3);assert.equal(report.errors.length,0);assert.ok(report.recentErrors.some(row=>row.error_code==='EXTRACTOR_FAILURE'));assert.ok(!JSON.stringify(connection.prepare('SELECT * FROM download_events').all()).includes('private.example'));
  assert.ok(analytics.reportCsv({from:today,to:today}).includes('reel'));
- analytics.recordEvent('confirmed-system-fault','media_resolution_failed','video',null,'FFMPEG_ERROR');analytics.recordEvent('restricted-story','media_resolution_failed','story',null,'LOGIN_REQUIRED');analytics.recordEvent('cancelled-response','delivery_failed','video',null,'DELIVERY_CANCELLED');
+ analytics.recordEvent('confirmed-system-fault','media_resolution_failed','video',null,'FFMPEG_ERROR');analytics.recordEvent('restricted-reel','media_resolution_failed','reel',null,'LOGIN_REQUIRED');analytics.recordEvent('cancelled-response','delivery_failed','video',null,'DELIVERY_CANCELLED');
  const systemOnly=analytics.reports({from:today,to:today});assert.equal(systemOnly.totals.systemFailures,1);assert.equal(systemOnly.errors.reduce((sum,row)=>sum+row.count,0),1);assert.ok(!systemOnly.errors.some(row=>['LOGIN_REQUIRED','DELIVERY_CANCELLED'].includes(row.error_code)));assert.ok(systemOnly.recentErrors.some(row=>row.error_code==='LOGIN_REQUIRED'));assert.ok(systemOnly.recentErrors.some(row=>row.error_code==='DELIVERY_CANCELLED'));
  assert.equal(systemOnly.issueReasons.reduce((sum,row)=>sum+row.count,0),systemOnly.errorCount);assert.ok(systemOnly.issueReasons.some(row=>row.error_code==='LOGIN_REQUIRED'));assert.ok(systemOnly.issueReasons.some(row=>row.error_code==='DELIVERY_CANCELLED'));assert.ok(systemOnly.issueReasons.some(row=>row.error_code==='EXTRACTOR_FAILURE'));
- const storyIssues=analytics.reports({from:today,to:today,type:'story'});assert.deepEqual(storyIssues.issueReasons.map(row=>row.error_code),['LOGIN_REQUIRED']);assert.equal(storyIssues.totals.systemFailures,0);
+ const reelIssues=analytics.reports({from:today,to:today,type:'reel'});assert.deepEqual(reelIssues.issueReasons.map(row=>row.error_code),['LOGIN_REQUIRED']);assert.equal(reelIssues.totals.systemFailures,0);
  assert.throws(()=>analytics.reports({from:'2026-02-31'}),rejectStatus(400));
  const route='/photo-downloader',original=seo.seoEditor(route),base={title:original.page.title,description:original.page.description,alternates:{canonical:'https://saveframe.site/photo-downloader',languages:{en:'https://saveframe.site/'}},openGraph:{title:original.page.title},twitter:{card:'summary_large_image'}};
  for(const key of ['constructor','toString','__proto__']){assert.throws(()=>seo.validateSeo(route,JSON.parse('{"'+key+'":"bad"}')),rejectStatus(400));assert.throws(()=>seo.saveSettings(JSON.parse('{"'+key+'":"bad"}'),id),rejectStatus(400));}
@@ -68,8 +68,23 @@ async function main(){
   seo.saveSeo('/',{...homeEditor.values,title,ogTitle:title},'publish',id,homeVersion++);
   const result=publicSeo.applySeo('/',homeBase);assert.equal(result.title,require('../src/content/search-titles.json')['/']);assert.equal(result.openGraph.title,result.title);assert.equal(result.twitter.title,result.title);
  }
- seo.saveSeo('/',{...homeEditor.values,title:'Custom homepage title',ogTitle:'Custom social title'},'publish',id,homeVersion);
+ seo.saveSeo('/',{...homeEditor.values,title:'Custom homepage title',ogTitle:'Custom social title'},'publish',id,homeVersion++);
  assert.equal(publicSeo.applySeo('/',homeBase).title,'Custom homepage title');assert.equal(publicSeo.applySeo('/',homeBase).openGraph.title,'Custom social title');
+ const {homepageDescriptionKey,isLegacyHomepageDescription}=require('../src/lib/homepage-description.ts');
+ const {homepageMetadata}=require('../src/i18n/server.ts');
+ const correctDescription=require('../src/i18n/dictionaries/en.json')[homepageDescriptionKey];
+ for(const legacy of ['Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.','Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link.']){
+  seo.saveSeo('/',{...homeEditor.values,description:legacy,ogDescription:legacy},'publish',id,homeVersion++);
+  const before=connection.prepare('SELECT published_json FROM seo_overrides WHERE route=?').get('/').published_json;
+  const result=homepageMetadata('en');assert.equal(result.description,correctDescription);assert.equal(result.openGraph.description,correctDescription);assert.equal(result.twitter.description,correctDescription);
+  assert.equal(connection.prepare('SELECT published_json FROM seo_overrides WHERE route=?').get('/').published_json,before,'Rendering must not mutate published revisions');
+  assert.equal(isLegacyHomepageDescription('/photo-downloader',legacy),false);
+ }
+ const customDescription='Custom homepage description for supported Instagram photos and Reels.';
+ seo.saveSeo('/',{...homeEditor.values,description:customDescription,ogDescription:'Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link.'},'publish',id,homeVersion++);
+ assert.equal(homepageMetadata('en').description,customDescription);assert.equal(homepageMetadata('en').openGraph.description,customDescription);
+ seo.saveSeo('/',{...homeEditor.values,description:'Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link.',ogDescription:'Custom social description'},'publish',id,homeVersion++);
+ assert.equal(homepageMetadata('en').description,correctDescription);assert.equal(homepageMetadata('en').openGraph.description,'Custom social description');assert.equal(homepageMetadata('en').twitter.description,'Custom social description');
  const filename='google1234567890abcdef.html',content='google-site-verification: '+filename;verification.saveVerification(filename,content,id);assert.equal(verification.verificationFile(filename).content,content+'\n');assert.ok(!fs.existsSync(path.join(process.cwd(),'public',filename)));
  for(const invalid of ['../google12345678.html','robots.txt','favicon.ico','evil.php','google12345678.html/evil','%2e%2e%2fevil.html'])assert.throws(()=>verification.validateVerification(invalid,'x'),rejectStatus(400));
  assert.throws(()=>verification.validateVerification(filename,content+'<script>alert(1)</script>'),rejectStatus(400));assert.throws(()=>verification.validateVerification('ads.txt','x'.repeat(16385)),rejectStatus(400));assert.throws(()=>verification.validateVerification('BingSiteAuth.xml','<!DOCTYPE users><users><user>1234567890abcdef</user></users>'),rejectStatus(400));verification.validateVerification('ads.txt','google.com, pub-1234567890123456, DIRECT, f08c47fec0942fa0');

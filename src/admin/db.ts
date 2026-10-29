@@ -83,7 +83,7 @@ export function audit(actor: string | null, action: string, target: string, deta
 }
 export const settingDefaults: Record<string, string> = {
   site_name: 'SaveFrame', contact_email: process.env.SAVEFRAME_SUPPORT_EMAIL || 'backbencherz@gmail.com',
-  default_description: 'Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link.',
+  default_description: 'Download public Instagram Reels, videos, photos, carousels, and MP3 audio with a simple link.',
   default_social_image: '/social/saveframe.png', analytics_retention_days: '30', default_tool: 'photo',
 };
 export function settings(): Record<string, string> {

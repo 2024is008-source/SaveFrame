@@ -10,7 +10,7 @@ interface CountryData {
   countryOptions: {code: string; name: string}[];
 }
 const number = (value: number) => new Intl.NumberFormat('en-US').format(value);
-const mediaLabels: Record<string, string> = {audio: 'Audio', reel: 'Reels', video: 'Videos', photo: 'Photos', carousel: 'Carousels', story: 'Stories', profile: 'Profiles', zip: 'ZIP archives', unknown: 'Unclassified'};
+const mediaLabels: Record<string, string> = {audio: 'Audio', reel: 'Reels', video: 'Videos', photo: 'Photos', carousel: 'Carousels', profile: 'Profiles', zip: 'ZIP archives', unknown: 'Unclassified'};
 
 export function CountryAnalytics({data}: {data: CountryData}) {
   const metrics: [string, number, string][] = [

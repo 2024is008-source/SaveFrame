@@ -17,11 +17,11 @@ If the page is still loading, give the operation time to return a result. If you
 5. Check for missing shortcode characters or accidental text around the URL.
 6. Submit it once and read the resulting message.
 
-A URL can look plausible while identifying the wrong media type. A profile address does not select one photo from an account, and a Reel shared inside a story can have its own separate direct link. Use the [photo-link guide](/blog/how-to-copy-instagram-photo-link) if the difference is unclear.
+A URL can look plausible while identifying the wrong media type. Use the [photo-link guide](/blog/how-to-copy-instagram-photo-link) if the difference is unclear.
 
 ## Separate unavailable content from temporary limits
 
-A deleted post cannot be recovered just by retrying its address. An expired story may no longer expose the media you saw earlier. A private account or restricted audience requires permissions that the downloader does not gain from the URL.
+A deleted post cannot be recovered just by retrying its address. A private account or restricted audience requires permissions that the downloader does not gain from the URL.
 
 A rate-limit response is different. It indicates that requests are being limited, not necessarily that the media is permanently gone. Wait before a later attempt instead of immediately switching between multiple tabs and repeatedly submitting the same item.
 
@@ -78,3 +78,4 @@ Look for your original files and use Instagram’s official export or archive to
 ## Retry with a reason
 
 The best next attempt changes something you identified: the correct direct URL, an available format, a completed browser transfer, or enough time after a temporary limit. If the issue is permanent access, ask for an authorized original instead of pursuing increasingly unsafe workarounds.
+

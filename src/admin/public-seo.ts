@@ -3,6 +3,7 @@ import { unstable_noStore as noStore } from 'next/cache';
 import { db, publicSettings } from './db';
 import { absoluteUrl } from '../lib/site';
 import { searchTitle, isLegacyHomepageTitle } from '../lib/search-title';
+import { isLegacyHomepageDescription } from '../lib/homepage-description';
 export function publishedSeo(route: string): any {
   noStore();
   if(process.env.SAVEFRAME_DISABLE_SEO_OVERRIDES==='1') return null;
@@ -14,13 +15,15 @@ export function applySeo(route: string, base: Metadata): Metadata {
   const value=publishedSeo(route) || {}, site=publicSettings();
   const overrideTitle=isLegacyHomepageTitle(route,value.title) ? undefined : value.title;
   const overrideOgTitle=isLegacyHomepageTitle(route,value.ogTitle) ? undefined : value.ogTitle;
+  const overrideDescription=isLegacyHomepageDescription(route,value.description) ? undefined : value.description;
+  const overrideOgDescription=isLegacyHomepageDescription(route,value.ogDescription) ? undefined : value.ogDescription;
   const originalTitle=typeof base.title==='string' ? searchTitle(route,base.title) : '';
   const title=overrideTitle || (originalTitle ? site.siteName!=='SaveFrame' ? originalTitle.replace(/SaveFrame/g,site.siteName) : originalTitle : base.title);
-  const description=value.description || base.description || site.defaultDescription;
+  const description=overrideDescription || base.description || site.defaultDescription;
   const graph:any=base.openGraph || {}, twitter:any=base.twitter || {};
   const chosen=value.image || (site.defaultSocialImage!=='/social/saveframe.png' && (!graph.images || JSON.stringify(graph.images).includes('/social/saveframe.png')) ? site.defaultSocialImage : null);
   const image=chosen ? {url:absoluteUrl(chosen),width:1200,height:chosen.startsWith('/images/blog/')?900:630} : null;
-  return {...base,title,description,openGraph:{...graph,siteName:site.siteName,title:overrideOgTitle || title,description:value.ogDescription || description,...(image?{images:[image]}:{})},twitter:{...twitter,title:overrideOgTitle || title,description:value.ogDescription || description,...(image?{images:[image.url]}:{})}};
+  return {...base,title,description,openGraph:{...graph,siteName:site.siteName,title:overrideOgTitle || title,description:overrideOgDescription || description,...(image?{images:[image]}:{})},twitter:{...twitter,title:overrideOgTitle || title,description:overrideOgDescription || description,...(image?{images:[image.url]}:{})}};
 }
 export function publicBrandMarkup(markup: string) {
   const site=publicSettings();

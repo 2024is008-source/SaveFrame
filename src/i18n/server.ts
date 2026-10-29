@@ -6,6 +6,7 @@ import { locales, localePath, languageTag, ogLocales, type Locale } from './conf
 import { absoluteUrl, hasPublicSiteUrl } from '../lib/site';
 import { socialImage } from '../lib/seo';
 import { applySeo } from '../admin/public-seo';
+import { homepageDescriptionKey } from '../lib/homepage-description';
 export type TranslationKey = keyof typeof english;
 export type Dictionary = Record<TranslationKey, string>;
 const cache = new Map<Locale, Dictionary>();
@@ -20,7 +21,7 @@ export function translate(dict: Dictionary, key: TranslationKey, values: Record<
 export const languageAlternates = () => Object.fromEntries([...locales.map(locale => [languageTag(locale), absoluteUrl(localePath(locale))]), ['x-default', absoluteUrl('/')]]);
 export function homepageMetadata(locale: Locale): Metadata {
   const dict = getDictionary(locale);
-  const title = dict['SaveFrame — Instagram Downloader for Photos, Reels, Videos & Stories'];
-  const description = dict['Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.'];
+  const title = dict['SaveFrame — Instagram Downloader for Photos, Reels, Videos & Audio'];
+  const description = dict[homepageDescriptionKey];
   return applySeo(localePath(locale),{ title, description, alternates: { canonical: absoluteUrl(localePath(locale)), languages: languageAlternates() }, robots: { index: hasPublicSiteUrl, follow: true }, openGraph: { title, description, url: absoluteUrl(localePath(locale)), siteName: 'SaveFrame', type: 'website', images: [socialImage], locale: ogLocales[locale], alternateLocale: locales.filter(item => item !== locale).map(item => ogLocales[item]) }, twitter: { card: 'summary_large_image', title, description, images: [socialImage.url] } });
 }

@@ -19,9 +19,9 @@ export function localizedHomepage(locale: Locale) {
   markup = markup.replace(/(<select\b[^>]*id="language-select"[^>]*>)[\s\S]*?<\/select>/, (_, open: string) => `${open}${locales.map(item => `<option value="${item}"${item === locale ? ' selected' : ''}>${localeOptions[item]}</option>`).join('')}</select>`);
   // Article content remains English. Only the surrounding homepage interface is localized.
   let blog = homepageBlogMarkup();
-  for (const source of ['Creator Workflow & Format Guides', 'Practical guides to saving Instagram stories, photos, and Reels.', 'View All Guides →', 'Read guide'] as const) blog = blog.replaceAll(escapeHtml(source), escapeHtml(dict[source]));
+  for (const source of ['Creator Workflow & Format Guides', 'Practical guides to saving Instagram videos, photos, and Reels.', 'View All Guides →', 'Read guide'] as const) blog = blog.replaceAll(escapeHtml(source), escapeHtml(dict[source]));
   blog = blog.replace(/(\d+) min read/g, (_, minutes: string) => escapeHtml(translate(dict, '{minutes} min read', { minutes })));
-  for (const [category, label] of [['Instagram Stories', 'Story'], ['Instagram Photos', 'Photo'], ['Instagram Reels', 'Reels']] as const) blog = blog.replaceAll(`>${category}</span>`, `>${escapeHtml(locale === 'en' ? category : 'Instagram · ' + dict[label])}</span>`);
+  for (const [category, label] of [['Instagram Photos', 'Photo'], ['Instagram Reels', 'Reels']] as const) blog = blog.replaceAll(`>${category}</span>`, `>${escapeHtml(locale === 'en' ? category : 'Instagram · ' + dict[label])}</span>`);
   blog = blog.replace(/(<time datetime="([^"]+)">)[^<]+(<\/time>)/g, (_, open: string, date: string, close: string) => open + new Intl.DateTimeFormat(languageTag(locale), { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(date + 'T00:00:00Z')) + close);
   // Editorial titles and descriptions remain English, including their text direction in Arabic.
   blog = blog.replace(/(<h3\b[^>]*)(>)/g, '$1 lang="en" dir="ltr"$2').replace(/(<p class="text-sm sm:text-base text-ink-muted leading-relaxed")>/g, '$1 lang="en" dir="ltr">');

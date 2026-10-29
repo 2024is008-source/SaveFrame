@@ -24,7 +24,7 @@ SaveFrame is useful when you need a supported publicly accessible post and have 
 
 Resolve the link, confirm the returned creator and preview, and download the relevant media. Verify the actual file before adding it to your archive. SaveFrame does not provide a bulk export of an entire profile, recover deleted content, or bypass the restrictions of private accounts.
 
-For a carousel, preserve the sequence and record any omitted or unavailable items. For video, check picture and soundtrack. For a story, distinguish an active public file from content available only in your account’s own archive. Public-link retrieval and official account recovery are separate tasks.
+For a carousel, preserve the sequence and record any omitted or unavailable items. For video, check picture and soundtrack. Public-link retrieval and official account recovery are separate tasks.
 
 ## Choose a folder structure you can maintain
 
@@ -80,3 +80,4 @@ Usually the safer approach is to share only the media and records required for t
 ## Build an archive you can understand
 
 The useful backup is the one you can locate, open, explain, and restore. Keep originals, selected publication copies, official exports, and context in their proper roles. Verify the files and maintain a separate copy rather than depending on public Instagram addresses to remain available indefinitely.
+

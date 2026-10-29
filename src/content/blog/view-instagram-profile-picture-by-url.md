@@ -21,7 +21,7 @@ If an account has changed its handle, a previously saved URL can become outdated
 
 ## What the result can and cannot tell you
 
-Depending on the public response, the tool may return a username, display name, biography text, and an avatar image. Those are separate pieces of information. The availability of an avatar does not establish that posts, followers, messages, or archived stories are accessible.
+Depending on the public response, the tool may return a username, display name, biography text, and an avatar image. Those are separate pieces of information.
 
 It also does not verify the identity of the person behind the account. A profile can use artwork, a logo, an old portrait, or somebody else’s image. Treat the result as the profile image presented by that account, not as independent proof of a person’s identity or endorsement.
 
@@ -70,3 +70,4 @@ People can update their profile images. Save a retrieval date and source address
 ## Use the right source for the job
 
 An available avatar is useful for an authorized reference, but it is not an account export, a guarantee of high resolution, or evidence of identity. Confirm the handle, inspect the actual file, and request an original from the owner when quality or publication rights matter.
+

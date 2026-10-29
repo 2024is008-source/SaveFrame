@@ -3,8 +3,8 @@ import { isLocale } from './i18n/config';
 import { isVerificationFilename } from './admin/verification-patterns';
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  if (pathname.replace(/\/+$/, '') === '/story-downloader') {
-    return new NextResponse('<!doctype html><html lang="en"><head><title>Story Downloader Retired | SaveFrame</title><meta name="robots" content="noindex, follow"></head><body><main><h1>Story downloader retired</h1><p>The public story downloader is no longer available. Existing editorial guides remain in the <a href="/blog">SaveFrame blog</a>.</p></main></body></html>', {
+  if (['/story-downloader','/stories-downloader','/story-viewer','/public-story-viewer','/blog/how-to-download-instagram-stories-by-link','/blog/how-to-download-instagram-story-videos'].includes(pathname.replace(/\/+$/, ''))) {
+    return new NextResponse('<!doctype html><html lang="en"><head><title>Page Removed | SaveFrame</title><meta name="robots" content="noindex, follow"></head><body><main><h1>This page is no longer available</h1><p>Explore the current <a href="/">SaveFrame tools</a> or <a href="/blog">download guides</a>.</p></main></body></html>', {
       status: 410, headers: {'Content-Type':'text/html; charset=utf-8','X-Robots-Tag':'noindex, follow','Cache-Control':'public, max-age=3600'},
     });
   }

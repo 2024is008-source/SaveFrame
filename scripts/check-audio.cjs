@@ -83,7 +83,7 @@ async function main() {
   for (const url of ['https://evil.example/reel/Audio12345/', 'http://127.0.0.1/', 'https://www.instagram.com/stories/fixture/123456/', '@fixture']) {
     await assert.rejects(service.extractMetadata(url, 'audio'));
   }
-  assert.throws(() => validation.validatePublicMediaInput('https://www.instagram.com/stories/fixture/123456/'), error => error.statusCode === 410);
+  assert.throws(() => validation.validatePublicMediaInput('https://www.instagram.com/stories/fixture/123456/'), error => error.statusCode === 400);
   const occupied = path.join(directory, 'occupied.mp3'); fs.writeFileSync(occupied, 'preserve');
   await assert.rejects(encodeMp3(source, occupied, 128, 100000, args => run(service.ffmpegPath, args, 10000)));
   assert.equal(fs.readFileSync(occupied, 'utf8'), 'preserve');

@@ -3,7 +3,7 @@ import { db, transaction, cleanup } from './db';
 import { AdminError } from './auth';
 import { countryCode } from '../lib/country';
 import { rebuildCountryDay } from './country-analytics';
-export const mediaKinds = ['audio','reel','video','photo','carousel','story','profile','unknown'];
+export const mediaKinds = ['audio','reel','video','photo','carousel','profile','unknown'];
 // Expected access restrictions, input rejections and visitor cancellations are not system faults.
 export const systemFailureCodes=['INTERNAL_ERROR','YTDLP_NOT_INSTALLED','FFMPEG_ERROR','INSUFFICIENT_DISK_SPACE','PROCESS_RESTARTED','DELIVERY_STREAM_ERROR'];
 const systemFailureCondition="error_code IN ('"+systemFailureCodes.join("','")+"')";

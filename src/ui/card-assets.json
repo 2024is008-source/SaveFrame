@@ -1,33 +1,33 @@
 [
   {
-    "cover": "stories",
+    "cover": "workflow",
     "width": 360,
-    "path": "/assets/stories-360.e9c465c209cf94b6.webp",
-    "bytes": 10176
+    "path": "/assets/workflow-360.7f1ad15821db382d.webp",
+    "bytes": 15526
   },
   {
-    "cover": "stories",
+    "cover": "workflow",
     "width": 480,
-    "path": "/assets/stories-480.dce57b71806b1eca.webp",
-    "bytes": 13972
+    "path": "/assets/workflow-480.b96c0c5dc4c63049.webp",
+    "bytes": 23020
   },
   {
-    "cover": "stories",
+    "cover": "workflow",
     "width": 640,
-    "path": "/assets/stories-640.79c70f403f84fad7.webp",
-    "bytes": 20016
+    "path": "/assets/workflow-640.28b3c8de56eb12c7.webp",
+    "bytes": 33630
   },
   {
-    "cover": "stories",
+    "cover": "workflow",
     "width": 720,
-    "path": "/assets/stories-720.01ab86f41917d00b.webp",
-    "bytes": 22810
+    "path": "/assets/workflow-720.ac306e8ce9f1ff31.webp",
+    "bytes": 39748
   },
   {
-    "cover": "stories",
+    "cover": "workflow",
     "width": 960,
-    "path": "/assets/stories-960.b222ec6005f5fb78.webp",
-    "bytes": 32492
+    "path": "/assets/workflow-960.e6c7217bf7276330.webp",
+    "bytes": 55212
   },
   {
     "cover": "photos",

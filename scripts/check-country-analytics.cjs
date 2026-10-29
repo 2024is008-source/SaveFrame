@@ -85,8 +85,8 @@ async function main() {
   analytics.attachJob('zip', 'job-zip', 'carousel', true);
   process.env.NODE_ENV = 'test';
   event('zip', 'media_prepared', 'carousel'); event('zip', 'delivery_completed', 'carousel');
-  event('unknown', 'download_requested', 'story');
-  event('unknown', 'download_failed', 'story', 'JOB_CANCELLED');
+  event('unknown', 'download_requested', 'reel');
+  event('unknown', 'download_failed', 'reel', 'JOB_CANCELLED');
   Date.now = () => fixedNow;
 
   const range = {from: '2026-10-27', to: '2026-10-27'};

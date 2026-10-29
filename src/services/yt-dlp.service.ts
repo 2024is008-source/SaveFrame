@@ -18,7 +18,6 @@ import {
 } from '../security/url-validator';
 import { InstagramAuthorizedAdapters } from './instagram-adapters.service';
 import { InstagramHttpClient } from './instagram-http.service';
-import { AuthorizedStoryAccess, StoryExtractionPipeline, parseStoryJson, ytDlpStoryCandidates } from './story-extraction.service';
 import { AuthorizedInstagrapiAccess, InstagrapiService, instagrapiEligible } from './instagrapi.service';
 import {audioMetadata, encodeMp3, isMp3Format} from './audio';
 
@@ -30,10 +29,6 @@ export interface YtDlpServiceConfig {
   maxStdoutBytes?: number;
   maxFileSizeBytes?: number;
   socketTimeoutSeconds?: number;
-  storyHttp?: InstagramHttpClient;
-  storyTimeoutMs?: number;
-  storyGalleryEnabled?: boolean;
-  galleryDlBinaryPath?: string;
 }
 
 export interface DownloadMediaOptions {
@@ -82,13 +77,12 @@ export class YtDlpService {
   private readonly activeProcesses = new Map<string, ChildProcess>();
   private readonly cancelledJobIds = new Set<string>();
   private readonly adapters: InstagramAuthorizedAdapters;
-  private readonly stories: StoryExtractionPipeline;
+  private readonly http = new InstagramHttpClient();
   private readonly instagrapi: InstagrapiService;
   private readonly activeTransfers = new Map<string, AbortController>();
   private readonly metadataWaiters = new Map<string, { controller: AbortController; count: number; done: boolean }>();
   private readonly metadataCache = new Map<string, { data: NormalizedMediaResult; raw: any; expiresAt: number }>();
   private readonly pendingMetadata = new Map<string, Promise<NormalizedMediaResult>>();
-  private readonly storyFailures = new Map<string,{error:DownloaderAppError;expires:number}>();
   private rememberMetadata(url:string,data:NormalizedMediaResult,raw:any=null){
     for(const [key,value]of this.metadataCache)if(value.expiresAt<=Date.now())this.metadataCache.delete(key);
     if(this.metadataCache.size>=8)this.metadataCache.delete(this.metadataCache.keys().next().value!);
@@ -138,29 +132,7 @@ export class YtDlpService {
     if(!Number.isSafeInteger(this.maxFileSizeBytes)||this.maxFileSizeBytes<=0||this.maxFileSizeBytes>1024*1024*1024)this.maxFileSizeBytes=150*1024*1024;
     if(!Number.isSafeInteger(this.maxStdoutBytes)||this.maxStdoutBytes<=0||this.maxStdoutBytes>10*1024*1024)this.maxStdoutBytes=10*1024*1024;
     this.adapters = adapters || new InstagramAuthorizedAdapters();
-    this.stories = new StoryExtractionPipeline({
-      http: config?.storyHttp, timeoutMs: config?.storyTimeoutMs, galleryEnabled: config?.storyGalleryEnabled, galleryBinary: config?.galleryDlBinaryPath,
-      maxFileBytes: this.maxFileSizeBytes,
-      runner: (...args) => this.runSubprocess(...args),
-      mapError: stderr => this.mapYtDlpStderrToAppError(stderr, 'story'),
-      primary: async (validated, context) => {
-        const budget = Math.min(this.metadataTimeoutMs, 20000, Math.max(1, context.deadline - Date.now()));
-        const primarySignal=AbortSignal.any([context.signal,AbortSignal.timeout(budget)]);
-        await new Promise<void>((resolve,reject)=>{
-          const abort=()=>{primarySignal.removeEventListener('abort',abort);reject(new DownloaderAppError(context.signal.aborted&&context.signal.reason?.name!=='TimeoutError'?'JOB_CANCELLED':'DOWNLOAD_TIMEOUT','Story inspection was cancelled or timed out.',primarySignal.reason?.name==='TimeoutError'?504:499,true));};
-          primarySignal.addEventListener('abort',abort,{once:true});
-          if(primarySignal.aborted){abort();return;}
-          assertSafeHostResolution('www.instagram.com').then(resolve,reject).finally(()=>primarySignal.removeEventListener('abort',abort));
-        });
-        const args = ['--dump-single-json', '--no-download', '--no-config', '--no-warnings', '--no-playlist', '--ignore-no-formats-error', '--socket-timeout', String(Math.min(this.socketTimeoutSeconds, 8)),
-          ...(context.access ? ['--cookies', context.access.cookieFile] : []), '--', validated.canonicalUrl];
-        const result = await this.runSubprocess(this.ytDlpPath, args, Math.max(1,Math.min(budget,context.deadline-Date.now())), undefined, undefined, primarySignal, 2 * 1024 * 1024);
-        if (result.exitCode !== 0) throw this.mapYtDlpStderrToAppError(result.stderr, 'story');
-        let raw: unknown; try { raw = parseStoryJson(result.stdout); } catch { throw new DownloaderAppError('EXTRACTOR_FAILURE', 'Story extractor returned invalid metadata.', 502, true); }
-        return ytDlpStoryCandidates(raw, validated);
-      },
-    });
-    this.instagrapi = new InstagrapiService(this.stories.http);
+    this.instagrapi = new InstagrapiService(this.http);
   }
 
   /**
@@ -177,7 +149,7 @@ export class YtDlpService {
     outputLimit?: number
   ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
     return new Promise((resolve, reject) => {
-      if(signal?.aborted) { reject(new DownloaderAppError('JOB_CANCELLED', 'Story request was cancelled.', 499)); return; }
+      if(signal?.aborted) { reject(new DownloaderAppError('JOB_CANCELLED', 'Media request was cancelled.', 499)); return; }
       // Allow cross-platform .js test fixture harnesses to run via process.execPath with shell: false
       const isNodeScript = binary.endsWith('.js');
       const execBin = isNodeScript ? process.execPath : binary;
@@ -309,7 +281,7 @@ export class YtDlpService {
         const stdout = Buffer.concat(stdoutChunks).toString('utf8');
         const stderr = Buffer.concat(stderrChunks).toString('utf8');
 
-        if (overflow) { reject(new DownloaderAppError('FILE_TOO_LARGE','Story metadata response exceeded its size limit.',413)); return; }
+        if (overflow) { reject(new DownloaderAppError('FILE_TOO_LARGE','Media metadata response exceeded its size limit.',413)); return; }
         if (timedOut) {
           reject(
             new DownloaderAppError(
@@ -355,19 +327,11 @@ export class YtDlpService {
     if(tool==='audio') return audioMetadata(await this.extractMetadata(rawUrl, undefined, signal));
     const cached=this.metadataCache.get(validated.canonicalUrl);
     if(cached&&cached.expiresAt>Date.now())return cached.data;
-    if(validated.category==='story'){
-      for(const [key,value]of this.storyFailures)if(value.expires<=Date.now())this.storyFailures.delete(key);
-      const failure=this.storyFailures.get(validated.canonicalUrl);if(failure)throw failure.error;
-    }
-    const key=validated.canonicalUrl+':'+(validated.category==='story'?'story':tool||'');
+    const key=validated.canonicalUrl+':'+(tool||'');
     const pending=this.pendingMetadata.get(key);if(pending)return this.awaitMetadata(key,pending,signal);
     if(this.pendingMetadata.size>=3)throw new DownloaderAppError('RATE_LIMITED','Media inspection is busy. Try again shortly.',429,true);
     const waiter={controller:new AbortController(),count:0,done:false};this.metadataWaiters.set(key,waiter);
     const operation=this.extractMetadataInternal(rawUrl,tool,waiter.controller.signal).catch(error=>{
-      if(validated.category==='story'&&error instanceof DownloaderAppError&&['LOGIN_REQUIRED','PRIVATE_CONTENT','EXPIRED_STORY','DELETED_CONTENT','NO_ACTIVE_STORIES','RATE_LIMITED'].includes(error.code)){
-        if(this.storyFailures.size>=8)this.storyFailures.delete(this.storyFailures.keys().next().value!);
-        this.storyFailures.set(validated.canonicalUrl,{error:new DownloaderAppError(error.code,error.userMessage,error.statusCode,error.retryable),expires:Date.now()+(error.code==='RATE_LIMITED'?30000:15000)});
-      }
       throw error;
     }).finally(()=>{waiter.done=true;this.pendingMetadata.delete(key);this.metadataWaiters.delete(key);});
     this.pendingMetadata.set(key,operation);return this.awaitMetadata(key,operation,signal);
@@ -402,23 +366,7 @@ export class YtDlpService {
   /** No HTTP route calls this. Session-backed results never enter public caches. */
   public async extractOperatorMetadata(rawUrl: string, access: AuthorizedInstagrapiAccess, signal?: AbortSignal): Promise<NormalizedMediaResult> {
     const validated=validateMediaInput(rawUrl);
-    if(validated.category==='story')return this.instagrapi.extractAuthorizedStory(validated,access,signal);
     return this.extractMetadataInternal(rawUrl, undefined, signal, access);
-  }
-
-  /** Used only by a private CLI manager instance; never by public API jobs. */
-  public async downloadOperatorStory(rawUrl:string,access:AuthorizedInstagrapiAccess,options:DownloadMediaOptions):Promise<DownloadMediaArtifact>{
-    const validated=validateMediaInput(rawUrl,'story');
-    const root=fs.realpathSync(process.cwd()),output=path.resolve(options.outputDir);
-    const overlaps=(left:string,right:string)=>{const relative=path.relative(left,right);return !relative||(!relative.startsWith('..'+path.sep)&&!path.isAbsolute(relative));};
-    const sessionDir=path.resolve(process.env.INSTAGRAPI_SESSION_DIR||'/var/lib/saveframe/instagram-sessions');
-    const publicDownloads=path.resolve(process.env.DOWNLOAD_TEMP_DIR||path.join(os.tmpdir(),'saveframe-downloads'));
-    if(overlaps(root,output)||overlaps(sessionDir,output)||overlaps(output,sessionDir)||overlaps(publicDownloads,output)||overlaps(output,publicDownloads))throw new DownloaderAppError('PRIVATE_CONTENT','Owner downloads require separate private storage outside the checkout.',403);
-    const stat=fs.lstatSync(output);
-    if(!stat.isDirectory()||stat.isSymbolicLink()||fs.realpathSync(output)!==output||(process.platform!=='win32'&&((stat.mode&0o077)!==0||stat.uid!==process.getuid?.())))throw new DownloaderAppError('PRIVATE_CONTENT','Owner download storage must be private and owned by this operator.',403);
-    const controller=new AbortController();this.activeTransfers.set(options.jobId,controller);
-    try{return await this.downloadStoryFile(await this.extractOperatorMetadata(validated.canonicalUrl,access,controller.signal),options,controller);}
-    finally{this.activeTransfers.delete(options.jobId);}
   }
 
   private async extractPrimaryMetadata(rawUrl: string, tool?: string, signal?: AbortSignal): Promise<NormalizedMediaResult> {
@@ -426,7 +374,6 @@ export class YtDlpService {
     const cached = this.metadataCache.get(validated.canonicalUrl);
     if (cached && cached.expiresAt > Date.now()) return cached.data;
     this.metadataCache.delete(validated.canonicalUrl);
-    if(validated.category==='story')return this.rememberMetadata(validated.canonicalUrl,await this.stories.extract(validated,signal));
     await assertSafeHostResolution('www.instagram.com');
 
     // Profile URLs are handled by our dedicated Profile Metadata Adapter
@@ -493,51 +440,36 @@ export class YtDlpService {
     return metadata.items[0].formats;
   }
 
-  /** Operator-only library entry point. Public HTTP routes never supply access. */
-  public async downloadAuthorizedStory(rawUrl:string, access:AuthorizedStoryAccess, options:DownloadMediaOptions):Promise<DownloadMediaArtifact>{
-    const validated=validateMediaInput(rawUrl,'story');
-    const root=fs.realpathSync(process.cwd()),output=path.resolve(options.outputDir);
-    const outside=(target:string)=>{const relative=path.relative(root,target);return relative.startsWith('..'+path.sep)||path.isAbsolute(relative);};
-    if(!outside(output))throw new DownloaderAppError('PRIVATE_CONTENT','Authorized story files require an external private output directory.',403);
-    const controller=new AbortController();this.activeTransfers.set(options.jobId,controller);
-    try{
-      const metadata=await this.stories.extract(validated,controller.signal,access);
-      await fs.promises.mkdir(output,{recursive:true,mode:0o700});
-      if(!outside(fs.realpathSync(output))||(process.platform!=='win32'&&(fs.statSync(output).mode&0o077)!==0))throw new DownloaderAppError('PRIVATE_CONTENT','Authorized story files require an external private output directory.',403);
-      return await this.downloadStoryFile(metadata,options,controller);
-    }finally{this.activeTransfers.delete(options.jobId);}
-  }
-
-  private async downloadStoryFile(metadata:NormalizedMediaResult,options:DownloadMediaOptions,controller=new AbortController()):Promise<DownloadMediaArtifact>{
-    if(options.itemIndex!==undefined&&options.itemIndex!==0)throw new DownloaderAppError('UNSUPPORTED_OPERATION','Only the requested story item can be downloaded.',400);
+  private async downloadDirectMediaFile(metadata:NormalizedMediaResult,options:DownloadMediaOptions,controller=new AbortController()):Promise<DownloadMediaArtifact>{
+    if(options.itemIndex!==undefined&&options.itemIndex!==0)throw new DownloaderAppError('UNSUPPORTED_OPERATION','Only the requested media item can be downloaded.',400);
     const item=metadata.items[0],format=options.formatId&&options.formatId!=='best'?item.formats.find(candidate=>candidate.formatId===options.formatId):item.formats[0];
-    if(!format?.directUrl)throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE','No supported story file is available.',422);
+    if(!format?.directUrl)throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE','No supported media file is available.',422);
     const audioOnly=format.ext==='m4a';
     const filename=sanitizeFilename(`${options.filenamePrefix||metadata.uploader.username+'_'+metadata.shortcode}_${audioOnly?'audio':item.mediaType}`,format.ext);
     const destination=path.join(options.outputDir,`${options.jobId}_${filename}`);
-    if(controller.signal.aborted)throw new DownloaderAppError('JOB_CANCELLED','Story download was cancelled.',499);
+    if(controller.signal.aborted)throw new DownloaderAppError('JOB_CANCELLED','Media download was cancelled.',499);
     this.activeTransfers.set(options.jobId,controller);
     try{
       if(audioOnly){
         const source=destination+'.source.mp4';let sourceOwned=false,outputOwned=false,complete=false,tooLarge=false;
         try{
-          await this.stories.http.download(format.directUrl,source,'video/mp4',this.maxFileSizeBytes,{signal:controller.signal,timeoutMs:this.downloadTimeoutMs});sourceOwned=true;
+          await this.http.download(format.directUrl,source,'video/mp4',this.maxFileSizeBytes,{signal:controller.signal,timeoutMs:this.downloadTimeoutMs});sourceOwned=true;
           const handle=await fs.promises.open(destination,'wx',0o600);outputOwned=true;await handle.close();
           const result=await this.runSubprocess(this.ffmpegPath,['-nostdin','-y','-i',source,'-vn','-c:a','aac','-b:a','160k','-movflags','+faststart','-progress','pipe:1',destination],this.downloadTimeoutMs,options.jobId,line=>{
             const bytes=Number(/^total_size=(\d+)/.exec(line)?.[1]);
             if(bytes>this.maxFileSizeBytes){tooLarge=true;controller.abort();}
           },controller.signal);
-          if(result.exitCode!==0)throw new DownloaderAppError('FFMPEG_ERROR','Story audio extraction failed.',502,true);
+          if(result.exitCode!==0)throw new DownloaderAppError('FFMPEG_ERROR','Media audio extraction failed.',502,true);
           const stat=await fs.promises.stat(destination);
-          if(stat.size>this.maxFileSizeBytes)throw new DownloaderAppError('FILE_TOO_LARGE','Story audio exceeds the download size limit.',413);
-          if(!stat.size)throw new DownloaderAppError('FFMPEG_ERROR','Story audio extraction returned an empty file.',502,true);
+          if(stat.size>this.maxFileSizeBytes)throw new DownloaderAppError('FILE_TOO_LARGE','Media audio exceeds the download size limit.',413);
+          if(!stat.size)throw new DownloaderAppError('FFMPEG_ERROR','Media audio extraction returned an empty file.',502,true);
           options.onProgress?.({percent:100,downloadedBytes:stat.size,totalBytes:stat.size,stage:'processing'});complete=true;
           return {filePath:destination,safeFilename:filename,mimeType:'audio/mp4',filesizeBytes:stat.size};
-        }catch(error){if(tooLarge)throw new DownloaderAppError('FILE_TOO_LARGE','Story audio exceeds the download size limit.',413);throw error;}
+        }catch(error){if(tooLarge)throw new DownloaderAppError('FILE_TOO_LARGE','Media audio exceeds the download size limit.',413);throw error;}
         finally{if(sourceOwned)await fs.promises.rm(source,{force:true});if(outputOwned&&!complete)await fs.promises.rm(destination,{force:true});}
       }
       const mime=format.ext==='mp4'?'video/mp4':format.ext==='webp'?'image/webp':'image/jpeg';
-      const result=await this.stories.http.download(format.directUrl,destination,mime,this.maxFileSizeBytes,{signal:controller.signal,timeoutMs:this.downloadTimeoutMs},bytes=>options.onProgress?.({percent:format.filesizeBytes?Math.min(99,bytes/format.filesizeBytes*100):50,downloadedBytes:bytes,totalBytes:format.filesizeBytes,stage:'processing'}));
+      const result=await this.http.download(format.directUrl,destination,mime,this.maxFileSizeBytes,{signal:controller.signal,timeoutMs:this.downloadTimeoutMs},bytes=>options.onProgress?.({percent:format.filesizeBytes?Math.min(99,bytes/format.filesizeBytes*100):50,downloadedBytes:bytes,totalBytes:format.filesizeBytes,stage:'processing'}));
       options.onProgress?.({percent:100,downloadedBytes:result.bytesWritten,totalBytes:result.bytesWritten,stage:'processing'});
       return {filePath:destination,safeFilename:filename,mimeType:result.mimeType,filesizeBytes:result.bytesWritten};
     }finally{this.activeTransfers.delete(options.jobId);}
@@ -563,12 +495,6 @@ export class YtDlpService {
     }
 
     await fs.promises.mkdir(options.outputDir, { recursive: true, mode: 0o700 });
-
-    if(validated.category==='story'){
-      const controller=new AbortController();this.activeTransfers.set(options.jobId,controller);
-      try{return await this.downloadStoryFile(await this.extractMetadata(validated.canonicalUrl,undefined,controller.signal),options,controller);}
-      finally{this.activeTransfers.delete(options.jobId);}
-    }
 
     const controller=new AbortController();this.activeTransfers.set(options.jobId,controller);
     try {
@@ -606,9 +532,9 @@ export class YtDlpService {
     const finalFilePath = path.join(options.outputDir, `${options.jobId}_${safeFilename}`);
 
     // Fallback URLs use the same pinned-DNS, signature-checked, size-bounded
-    // transport as stories. Never resolve them again through yt-dlp.
+    // transport as direct media. Never resolve them again through yt-dlp.
     if (metadata.extractorSource === 'instagrapi') {
-      return await this.downloadStoryFile({ ...metadata, items: [item] }, {
+      return await this.downloadDirectMediaFile({ ...metadata, items: [item] }, {
         ...options, itemIndex: 0, filenamePrefix: prefix + itemSuffix,
       }, controller);
     }
@@ -642,7 +568,7 @@ export class YtDlpService {
       };
     }
 
-    // Case B: Video / Reel / Story Video via yt-dlp subprocess
+    // Case B: Video / Reel / Media Video via yt-dlp subprocess
     const sourceFormatId = selectedFormat.sourceFormatId || selectedFormat.formatId;
     const maxFileSizeArg = `${Math.floor(this.maxFileSizeBytes / (1024 * 1024))}M`;
     const formatSelector =
@@ -895,9 +821,6 @@ export class YtDlpService {
     raw: any,
     validated: { canonicalUrl: string; category: InstagramMediaCategory; shortcode: string }
   ): NormalizedMediaResult {
-    if (validated.category === 'story' && raw?._type === 'playlist' && Array.isArray(raw.entries) && !raw.entries.length) {
-      throw new DownloaderAppError('NO_ACTIVE_STORIES', 'No downloadable active stories were returned by Instagram.', 404);
-    }
     const isPlaylist =
       raw._type === 'playlist' && Array.isArray(raw.entries) && raw.entries.length > 0;
     const rawEntries: any[] = isPlaylist ? raw.entries : [raw];
@@ -998,12 +921,8 @@ export class YtDlpService {
         formats: imageFormats,
       };
     });
-
-    if (validated.category === 'story' && (items.length !== 1 || items[0].mediaType !== 'video')) {
-      throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'Use a direct link to one story video. Bulk story downloads are not supported.', 400);
-    }
     let resolvedCategory: InstagramMediaCategory = validated.category;
-    if (items.length > 1 && validated.category !== 'story') {
+    if (items.length > 1) {
       resolvedCategory = 'carousel';
     } else if (
       resolvedCategory === 'photo' &&
@@ -1176,25 +1095,6 @@ export class YtDlpService {
         true,
         stderr
       );
-    }
-
-    if (category === 'story') {
-      // Upstream often reports "unreachable" together with "login required".
-      // Authentication failure is not evidence that a story has expired.
-      if (/log[ -]?in|log in|authentication|cookies/.test(lower)) {
-        return new DownloaderAppError('LOGIN_REQUIRED', 'Instagram requires login to access this story. Only accessible story media can be retrieved.', 403, false, stderr);
-      }
-      if (/403|forbidden|access denied|permission denied/.test(lower))return new DownloaderAppError('PRIVATE_CONTENT','Instagram denied access to this story.',403,false,stderr);
-      if (lower.includes('expired')) {
-        return new DownloaderAppError(
-          'EXPIRED_STORY',
-          'This Instagram Story is unavailable or has expired past its 24-hour visibility window.',
-          404,
-          false,
-          stderr
-        );
-      }
-      if(lower.includes('not found')||lower.includes('404'))return new DownloaderAppError('DELETED_CONTENT','This Instagram story was not found or is unavailable.',404,false,stderr);
     }
 
     if (

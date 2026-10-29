@@ -24,7 +24,7 @@ async function main() {
   new (require('node:vm').Script)(js);
   assert.ok(js.length < require('node:fs').statSync('public/saveframe.js').size * .8, 'Client bundle is not minified');
   const images = require('../src/ui/card-assets.json');
-  for (const cover of ['stories', 'photos', 'reels']) {
+  for (const cover of ["workflow","photos","reels"]) {
     const variants = images.filter(image => image.cover === cover);
     assert.deepEqual(variants.map(image => image.width), [360, 480, 640, 720, 960]);
     for (const image of variants) {

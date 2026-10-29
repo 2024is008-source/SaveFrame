@@ -365,7 +365,7 @@
         if (first === 'tv') {
           return { valid: true, detectedTab: requestedTab === 'audio' ? 'audio' : 'video', shortcode: pathParts[1] || 'video_id', canonicalUrl: parsedUrl.href };
         }
-        if (first === 'stories') return {valid:false,message:'The public story downloader has been retired.'};
+        if (first === 'stories' || first === 'highlights') return {valid:false,message:t('Only public Instagram Reels, videos, photos, carousels, audio, and profiles are supported.')};
         // Only a complete profile URL may select Profile; arbitrary text is ambiguous.
         if (pathParts.length !== 1 || !/^[a-zA-Z0-9._]{2,30}$/.test(pathParts[0]) || ['accounts','explore','direct','about','legal','developer','press','api','graphql','challenge','session','share','reels','reel','p','tv'].includes(first)) return malformed;
         return { valid: true, detectedTab: 'profile', shortcode: pathParts[0], canonicalUrl: parsedUrl.href };

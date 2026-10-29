@@ -346,7 +346,7 @@ export class InstagramAuthorizedAdapters {
       if (ogTitle?.[1]) fullName = ogTitle[1].split('(@')[0].trim() || username;
     }
 
-    // Account privacy protects posts/stories, not an avatar already exposed by
+    // Account privacy protects posts, not an avatar already exposed by
     // this unauthenticated public response. Never query private media here.
 
     if (!avatarUrl) {

@@ -6,7 +6,7 @@
     "sections": [
       [
         "What SaveFrame helps you do",
-        "SaveFrame is an independent browser interface for inspecting and saving supported public Instagram media. You paste an individual link, check the returned preview and formats, and request a file. The tools cover photos, Reels, feed videos, carousel items, active public stories and available public profile information."
+        "SaveFrame is an independent browser interface for inspecting and saving supported public Instagram media. You paste an individual link, check the returned preview and formats, and request a file. The tools cover photos, Reels, feed videos, carousel items, MP3 audio and available public profile information."
       ],
       [
         "How the tools work",
@@ -14,7 +14,7 @@
       ],
       [
         "Our practical limits",
-        "Private content, login-restricted posts, expired stories and deleted media may be unavailable. The service does not ask for Instagram passwords or login cookies. A successful download does not grant ownership or permission to republish the material."
+        "Private content, login-restricted posts and deleted media may be unavailable. The service does not ask for Instagram passwords or login cookies. A successful download does not grant ownership or permission to republish the material."
       ],
       [
         "Guides and responsibility",

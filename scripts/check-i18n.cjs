@@ -8,6 +8,7 @@ const { locales, localePath, languageTag } = require('../src/i18n/config.ts');
 const { localizedHomepage } = require('../src/i18n/homepage.ts');
 const { getDictionary, translate, homepageMetadata } = require('../src/i18n/server.ts');
 const english = require('../src/i18n/dictionaries/en.json');
+const {homepageDescriptionKey}=require('../src/lib/homepage-description.ts');
 const variables = text => [...text.matchAll(/\{(\w+)\}/g)].map(match => match[1]).sort();
 const original = require('../src/ui/saveframe.json').markup;
 const normalize = text => text.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
@@ -20,7 +21,7 @@ for (const locale of locales) {
   }
   const markup = localizedHomepage(locale);
   assert.ok(markup.includes('id="downloader-form"'));
-  assert.ok(markup.includes('How to Download Instagram Stories by Link'), 'Article titles must stay English');
+  assert.ok(markup.includes('Download Instagram Videos on PC'), 'Article titles must stay English');
   assert.ok(!markup.includes('I18N ='));
   const client = JSON.parse(markup.match(/<script type="application\/json" id="home-i18n">([\s\S]*?)<\/script>/)[1]);
   assert.equal(client.locale, locale);
@@ -30,6 +31,9 @@ for (const locale of locales) {
   assert.ok(markup.includes(`value="${locale}" selected`));
   assert.ok(markup.includes('lang="en" dir="ltr"'), 'English editorial copy must be marked');
   const metadata = homepageMetadata(locale);
+  assert.equal(metadata.description,dictionary[homepageDescriptionKey],locale+': homepage must use the preserved description key');
+  assert.equal(metadata.openGraph.description,metadata.description);
+  assert.equal(metadata.twitter.description,metadata.description);
   assert.ok(metadata.alternates.canonical.endsWith(localePath(locale)));
   assert.equal(Object.keys(metadata.alternates.languages).length, 11);
   assert.equal(metadata.alternates.languages['pt-BR'].endsWith('/pt-br/'), true);

@@ -1,4 +1,4 @@
-A carousel post can contain several photographs, videos, or a mixture of both. To download its photos, submit the post’s direct link to SaveFrame, inspect the returned slide list, and save the individual images you need. Keep their original order if the sequence tells a story or belongs in a campaign archive.
+A carousel post can contain several photographs, videos, or a mixture of both. To download its photos, submit the post’s direct link to SaveFrame, inspect the returned slide list, and save the individual images you need.
 
 The important starting point is that a carousel is one post with several media items. Copying its link does not necessarily select only the slide currently visible in Instagram. This guide explains how to inspect the full result, avoid duplicate or missing slides, and verify the files after downloading them.
 
@@ -76,3 +76,4 @@ Do not assume so. Media files and post context are separate. Store the post addr
 ## Keep a reliable sequence
 
 A useful carousel archive has verified files, recognizable names, correct order, and a record of any omissions. Work through the available slides deliberately and retain their source context. For your own published collection, combine this approach with the broader [backup workflow](/blog/backup-instagram-photos-videos-reels).
+

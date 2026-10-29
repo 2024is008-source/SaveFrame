@@ -15,7 +15,7 @@ const request=(body,route='resolve')=>new NextRequest('http://localhost/api/medi
  }
  for(const scenario of ['rate','context','invalid']){mode=scenario;events=[];const response=await resolve(request('not-json'));assert.equal(response.status,scenario==='rate'?429:scenario==='context'?500:400);assert.equal(events.filter(e=>e[0]===(scenario==='invalid'?'resolve':'api')).length,1);assert.ok(!JSON.stringify(events).includes('Secret'));}
  for(const scenario of ['rate','context','invalid']){mode=scenario;events=[];const response=await download(request('not-json','download'));assert.equal(response.status,scenario==='rate'?429:scenario==='context'?500:400);assert.equal(events.filter(e=>e[0]==='api').length,1);assert.equal(events.filter(e=>e[0]==='download-request').length,0);}
- mode='restricted';events=[];const retired=await resolve(request({url:'https://www.instagram.com/stories/creator/12345/'}));assert.equal(retired.status,410);const retiredDownload=await download(request({url:'https://www.instagram.com/stories/creator/12345/'},'download'));assert.equal(retiredDownload.status,410);
+ mode='restricted';events=[];const retired=await resolve(request({url:'https://www.instagram.com/stories/creator/12345/'}));assert.equal(retired.status,400);const retiredDownload=await download(request({url:'https://www.instagram.com/stories/creator/12345/'},'download'));assert.equal(retiredDownload.status,400);
  events=[];await download(request({url:'https://www.instagram.com/p/Example1/'}));assert.equal(events.at(-1)[4],'photo');assert.equal(events.filter(e=>e[0]==='job').length,1);assert.equal(events.filter(e=>e[0]==='api').length,0);
  events=[];await download(request({url:'https://www.instagram.com/p/Example1/',preview:true}));assert.equal(events.length,0,'Playback failures must not create download analytics');
  Object.assign(process.env,{SAVEFRAME_COUNTRY_ANALYTICS_ENABLED:'1',SAVEFRAME_TRUST_COUNTRY_HEADER:'1',SAVEFRAME_COUNTRY_ANALYTICS_COUNTRIES:'LK,US'});
@@ -24,5 +24,5 @@ const request=(body,route='resolve')=>new NextRequest('http://localhost/api/medi
   assert.equal(events.find(event=>event[0]==='download-request')[2],country,'Only policy-approved proxy header country reaches initial recording');
  }
  events=[];const inspection=request({url:'https://www.instagram.com/p/Example1/'});inspection.headers.set('x-saveframe-country','LK');await resolve(inspection);assert.equal(events.find(event=>event[0]==='started')[1],'LK');
- console.log('PASS: photo/Reel/story/profile error classification, rate limits, malformed requests, internal errors, one failure event per rejection, safe diagnostics and preview isolation.');
+ console.log('PASS: photo/Reel/unsupported-link/profile error classification, rate limits, malformed requests, internal errors, one failure event per rejection, safe diagnostics and preview isolation.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

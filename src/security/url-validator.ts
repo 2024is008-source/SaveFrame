@@ -7,7 +7,6 @@ export interface ValidatedInstagramUrl {
   category: InstagramMediaCategory;
   shortcode: string;
   username?: string;
-  storyId?: string;
 }
 
 const ALLOWED_HOSTS = new Set([
@@ -36,28 +35,19 @@ const RESERVED_ROOT_PATHS = new Set([
 // Allowlisted Instagram URL regex patterns
 const POST_OR_REEL_REGEX =
   /^\/(?:([A-Za-z0-9._]{1,30})\/)?(p|reel|reels|tv)\/([A-Za-z0-9_-]{5,64})\/?$/;
-const STORY_REGEX =
-  /^\/stories\/([A-Za-z0-9._]{1,30})(?:\/([0-9]{5,32}))?\/?$/;
 const PROFILE_REGEX = /^\/([A-Za-z0-9._]{2,30})\/?$/;
 
-/** Direct story items only. Do not turn a profile URL into a bulk story request. */
+/** Validate supported media before dispatching to an extractor. */
 export function validateMediaInput(rawUrl: string, tool?: string): ValidatedInstagramUrl {
+  if (tool && !['photo','reels','reel','video','carousel','audio','profile'].includes(tool)) throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'Only public Instagram Reels, videos, photos, carousels, audio, and profiles are supported.', 400);
   const validated = validateInstagramUrl(rawUrl);
   if (tool === 'audio' && !['reel','video','photo'].includes(validated.category)) throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'Paste a public Instagram Reel or video post link for MP3 extraction.', 400);
-  if ((tool === 'story' && validated.category !== 'story') ||
-      (validated.category === 'story' && (!/^[1-9][0-9]{4,31}$/.test(validated.storyId||'') ||
-        !/^[A-Za-z0-9_](?:[A-Za-z0-9._]{0,28}[A-Za-z0-9_])?$/.test(validated.username||'') ||
-        (validated.username||'').includes('..') || ['highlights','me'].includes((validated.username||'').toLowerCase())))) {
-    throw new DownloaderAppError('INVALID_STORY_LINK', 'Paste a direct Instagram story link containing /stories/username/story-id/. Profile links and bulk story downloads are not supported.', 400);
-  }
   return validated;
 }
 
-/** Public tools no longer expose story extraction; operator workflows stay separate. */
+/** Public and library callers share the same supported media policy. */
 export function validatePublicMediaInput(rawUrl: string, tool?: string) {
-  if (tool === 'story') throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'The public story downloader has been retired.', 410);
   const value = validateMediaInput(rawUrl, tool);
-  if (tool === 'story' || value.category === 'story') throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'The public story downloader has been retired.', 410);
   return value;
 }
 
@@ -111,7 +101,7 @@ export function validateInstagramUrl(rawInput: string): ValidatedInstagramUrl {
   if (!trimmed || trimmed.length > 512) {
     throw new DownloaderAppError(
       'INVALID_URL',
-      'Please paste a valid Instagram photo, Reel, video, story, or profile link.',
+      'Please paste a valid Instagram photo, Reel, video, or profile link.',
       400
     );
   }
@@ -193,6 +183,8 @@ export function validateInstagramUrl(rawInput: string): ValidatedInstagramUrl {
 
   const pathname = parsed.pathname.replace(/\/+/g, '/');
 
+  if (/^\/(?:stories|highlights)(?:\/|$)/i.test(parsed.pathname)) throw new DownloaderAppError('UNSUPPORTED_MEDIA_TYPE', 'Only public Instagram Reels, videos, photos, carousels, audio, and profiles are supported.', 400);
+
   // 1. Check /p/, /reel/, /reels/, /tv/
   const postMatch = pathname.match(POST_OR_REEL_REGEX);
   if (postMatch) {
@@ -224,29 +216,6 @@ export function validateInstagramUrl(rawInput: string): ValidatedInstagramUrl {
     };
   }
 
-  // 2. Check /stories/{username}/{storyId?}
-  const storyMatch = pathname.match(STORY_REGEX);
-  if (storyMatch) {
-    const [, storyUser, storyId] = storyMatch;
-    if (storyUser.toLowerCase() === 'highlights' && !storyId) {
-      throw new DownloaderAppError(
-        'INVALID_URL',
-        'Instagram Highlight URLs must include a numeric Highlight ID.',
-        400
-      );
-    }
-    const shortcode = storyId ? `story_${storyId}` : `story_${storyUser}`;
-    const canonicalUrl = storyId
-      ? `https://www.instagram.com/stories/${storyUser}/${storyId}/`
-      : `https://www.instagram.com/stories/${storyUser}/`;
-    return {
-      canonicalUrl,
-      category: 'story',
-      shortcode,
-      username: storyUser,
-      storyId: storyId || undefined,
-    };
-  }
 
   // 3. Check Profile URL /{username}/
   const profileMatch = pathname.match(PROFILE_REGEX);
@@ -269,7 +238,7 @@ export function validateInstagramUrl(rawInput: string): ValidatedInstagramUrl {
 
   throw new DownloaderAppError(
     'UNSUPPORTED_MEDIA_TYPE',
-    'Unsupported Instagram URL structure. Supported links: Photos (/p/...), Reels (/reel/...), Videos (/tv/...), Stories (/stories/...), and Profiles.',
+    'Unsupported Instagram URL structure. Supported links: Photos (/p/...), Reels (/reel/...), Videos (/tv/...), MP3 Audio, and Profiles.',
     400
   );
 }

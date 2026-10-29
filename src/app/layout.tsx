@@ -11,8 +11,9 @@ import { analyticsPolicy } from '../lib/analytics-policy';
 import { socialImage } from '../lib/seo';
 import english from '../i18n/dictionaries/en.json';
 import titles from '../content/search-titles.json';
+import { homepageDescriptionKey } from '../lib/homepage-description';
 
-const home = { title: titles['/'], description: english['Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.'] };
+const home = { title: titles['/'], description: english[homepageDescriptionKey] };
 
 export const metadata: Metadata = {
   title: home.title,

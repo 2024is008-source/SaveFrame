@@ -46,7 +46,7 @@ async function main() {
   });
   await fs.writeFile('public/favicon.ico', Buffer.concat([icoHeader, ...pngs.map(image => image.png)]));
   const images = [];
-  for (const cover of ['stories', 'photos', 'reels']) {
+  for (const cover of ["workflow","photos","reels"]) {
     for (const width of [360, 480, 640, 720, 960]) {
       const image = await sharp(`public/images/blog/${cover}-1200.webp`).resize({ width }).webp({ quality: 78, effort: 6, smartSubsample: true }).toBuffer();
       const digest = crypto.createHash('sha256').update(image).digest('hex').slice(0, 16);

@@ -281,40 +281,7 @@ if (isDumpJson) {
     process.exit(0);
   }
 
-  if (targetUrl.includes('/stories/atelier.mediterraneo/348192041')) {
-    process.stdout.write(JSON.stringify({
-      id: '348192041',
-      title: 'Story by @atelier.mediterraneo',
-      uploader: 'Atelier Mediterraneo',
-      channel: 'atelier.mediterraneo',
-      timestamp: 1729680000,
-      duration: 15.0,
-      thumbnail: fixtureOrigin + '/media/sample.jpg?story=1',
-      formats: [
-        {
-          format_id: 'story-hd',
-          ext: 'mp4',
-          width: 1080,
-          height: 1920,
-          vcodec: 'avc1.64002a',
-          acodec: 'mp4a.40.2',
-          filesize: 2621440,
-          url: fixtureOrigin + '/media/story.mp4'
-        }
-      ]
-    }) + '\\n');
-    process.exit(0);
-  }
 
-  if (targetUrl.includes('/stories/atelier.mediterraneo/999999999')) {
-    process.stderr.write('ERROR: [instagram:story] 999999999: This story is unreachable or expired (404 Not Found)\\n');
-    process.exit(1);
-  }
-
-  if (targetUrl.includes('/stories/private_user/111111111')) {
-    process.stderr.write('ERROR: [instagram:story] 111111111: You need to log in to access this content.\\n');
-    process.exit(1);
-  }
 
   process.stderr.write('ERROR: [Instagram] Post not found (404)\\n');
   process.exit(1);
@@ -639,31 +606,6 @@ async function runTests() {
       test: 'Extract 3-slide mixed carousel, preserve order, individual download & ZIP packaging',
       status: 'PASS',
       details: `Verified 3 ordered slides (video+photo+video) & packaged valid PKZIP archive (${zipFileRes.rawBody.length} bytes)`,
-    });
-
-    // =========================================================================
-    // TEST GROUP G: Instagram Stories (Authorized/Public vs Expired vs Login-Gated)
-    // =========================================================================
-    const storyOkUrl = 'https://www.instagram.com/stories/atelier.mediterraneo/348192041/';
-    const storyResolve = await httpRequest(apiBase, 'POST', '/api/media/resolve', { url: storyOkUrl });
-    assert.strictEqual(storyResolve.statusCode, 200);
-    assert.strictEqual(storyResolve.json?.data?.category, 'story');
-
-    const storyExpiredUrl = 'https://www.instagram.com/stories/atelier.mediterraneo/999999999/';
-    const storyExpRes = await httpRequest(apiBase, 'POST', '/api/media/resolve', { url: storyExpiredUrl });
-    assert.strictEqual(storyExpRes.statusCode, 404);
-    assert.strictEqual(storyExpRes.json?.error?.code, 'EXPIRED_STORY');
-
-    const storyLoginUrl = 'https://www.instagram.com/stories/private_user/111111111/';
-    const storyLoginRes = await httpRequest(apiBase, 'POST', '/api/media/resolve', { url: storyLoginUrl });
-    assert.strictEqual(storyLoginRes.statusCode, 403);
-    assert.strictEqual(storyLoginRes.json?.error?.code, 'LOGIN_REQUIRED');
-
-    report.push({
-      category: 'Stories',
-      test: 'Active Story extraction + EXPIRED_STORY (404) & LOGIN_REQUIRED (403) enforcement',
-      status: 'PASS',
-      details: 'Resolved public story; accurately returned EXPIRED_STORY and LOGIN_REQUIRED without login bypass',
     });
 
     // =========================================================================

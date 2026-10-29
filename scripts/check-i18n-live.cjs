@@ -23,8 +23,8 @@ async function main() {
     const dict = require(`../src/i18n/dictionaries/${locale}.json`);
     const visible = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
     for (const key of ['Instagram Downloader', 'Save Supported Media in Three Steps', 'Frequently Asked Questions', 'Built for Fast, Transparent Media Inspection', 'Downloader Tools', 'Creator Workflow & Format Guides']) assert.ok(visible.includes(escape(dict[key])), locale + ': missing server translation ' + key);
-    assert.ok(html.includes(`<title>${escape(dict['SaveFrame — Instagram Downloader for Photos, Reels, Videos & Stories'])}</title>`));
-    assert.ok(visible.includes('How to Download Instagram Stories by Link'));
+    assert.ok(html.includes(`<title>${escape(dict['SaveFrame — Instagram Downloader for Photos, Reels, Videos & Audio'])}</title>`));
+    assert.ok(visible.includes('Download Instagram Videos on PC'));
     assert.ok(!html.includes('href="/' + locale + '/blog'));
     if (locale !== 'en') {
       const redirect = await fetch(base + '/' + locale, { redirect: 'manual' });
@@ -41,11 +41,11 @@ async function main() {
   const spoof = await (await fetch(base + '/blog', { headers: { 'x-saveframe-locale': 'ar' } })).text();
   assert.match(spoof, /<html[^>]*lang="en"/);
   const sitemap = await (await fetch(base + '/sitemap.xml')).text();
-  assert.equal((sitemap.match(/<loc>/g) || []).length, 37);
+  assert.equal((sitemap.match(/<loc>/g) || []).length, 35);
   for (const locale of locales) assert.ok(sitemap.includes(`<loc>${origin}${home(locale)}</loc>`));
   assert.ok(sitemap.includes('hreflang="pt-BR"'));
   assert.equal((await fetch(base + '/saveframe.js')).status, 200);
   assert.equal((await fetch(base + '/api/health')).status, 200);
-  console.log('PASS: 10 SSR homepages, localized metadata, lang/dir, 11 hreflang alternatives each, trailing-slash redirects, invalid-locale 404s, English blog isolation, static/API paths and 37 sitemap entries.');
+  console.log('PASS: 10 SSR homepages, localized metadata, lang/dir, 11 hreflang alternatives each, trailing-slash redirects, invalid-locale 404s, English blog isolation, static/API paths and 35 sitemap entries.');
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

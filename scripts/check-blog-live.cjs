@@ -19,18 +19,18 @@ async function main() {
     assert.ok(html.includes('article-prose'));
   }
   await page('/blog/not-a-published-article', 404);
-  assert.match(await page('/blog?page=2'), /Showing 10–15 of 15 guides/);
+  assert.match(await page('/blog?page=2'), /Showing 10–13 of 13 guides/);
   assert.match(await page('/blog?q=audio'), /Showing 1–2 of 2 guides/);
-  assert.match(await page('/blog?category=Instagram+Stories'), /Showing 1–2 of 2 guides/);
+  assert.match(await page('/blog?category=Instagram+Videos'), /Showing 1–1 of 1 guides/);
   assert.match(await page('/blog?q=notarealtopicxyz'), /No guides match your search/);
   assert.match(await page('/blog?q=audio'), /name="robots" content="noindex, follow"/);
   const home = await page('/');
-  assert.match(home, /How to Download Instagram Stories by Link/);
+  assert.match(home, /Download Instagram Videos on PC/);
   assert.ok(!home.includes('Understanding Instagram Reels Export Settings'));
   const sitemap = await page('/sitemap.xml');
-  assert.equal((sitemap.match(/<loc>/g) || []).length, 37);
+  assert.equal((sitemap.match(/<loc>/g) || []).length, 35);
   assert.ok(!sitemap.includes('localhost'));
   assert.match(await page('/robots.txt'), /Sitemap: https:\/\/saveframe.site\/sitemap.xml/);
-  console.log('Live checks passed: 15 articles, 404, search, categories, pagination, home cards, canonical URLs, structured data, robots and sitemap.');
+  console.log('Live checks passed: 13 articles, 404, search, categories, pagination, home cards, canonical URLs, structured data, robots and sitemap.');
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

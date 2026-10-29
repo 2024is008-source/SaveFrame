@@ -4,7 +4,7 @@ This guide is for an ordinary Windows browser workflow rather than installing co
 
 ## Open the individual video
 
-Instagram can display video in a Reel, a feed post, a carousel, or a story. Open the exact item you want before copying the browser’s address. A profile grid is not a direct video link, and a shared message can contain a redirect or several unrelated addresses.
+Open the exact item you want before copying the browser’s address. A profile grid is not a direct video link, and a shared message can contain a redirect or several unrelated addresses.
 
 A Reel usually has a `/reel/` path, while a feed post commonly uses `/p/`. Older or other supported video addresses may use different recognized paths. SaveFrame refines the media category after inspecting the post, so a feed-post URL can correctly return video rather than photographs.
 
@@ -75,3 +75,4 @@ Use a current browser and media player, verify the actual file type, and retain 
 ## Keep an identifiable, playable copy
 
 A successful PC download ends with a file you can locate, open, and connect to its source. Verify it before editing, retain the original version, and keep the relevant permission notes. If the problem remains unclear, the [general troubleshooting guide](/blog/instagram-downloader-not-working) provides a stage-by-stage checklist.
+

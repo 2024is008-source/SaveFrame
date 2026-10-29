@@ -1,0 +1,133 @@
+{
+  "passed": true,
+  "widths": [
+    {
+      "width": 1440,
+      "hasRetiredCopy": false,
+      "title": "Instagram Video, Reels & Photo Downloader | SaveFrame",
+      "tabs": [
+        "Photo",
+        "Reels",
+        "Video",
+        "Audio",
+        "Profile"
+      ],
+      "description": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio with a simple link. Fast, clean, mobile-friendly web utility.",
+      "images": [
+        {
+          "loaded": false,
+          "src": ""
+        },
+        {
+          "loaded": false,
+          "src": ""
+        },
+        {
+          "loaded": false,
+          "src": ""
+        }
+      ],
+      "overflow": false,
+      "imagesLoaded": true,
+      "unsupportedLinkFeedback": "Only public Instagram Reels, videos, photos, carousels, audio, and profiles are supported."
+    },
+    {
+      "width": 768,
+      "hasRetiredCopy": false,
+      "title": "Instagram Video, Reels & Photo Downloader | SaveFrame",
+      "tabs": [
+        "Photo",
+        "Reels",
+        "Video",
+        "Audio",
+        "Profile"
+      ],
+      "description": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio with a simple link. Fast, clean, mobile-friendly web utility.",
+      "images": [
+        {
+          "loaded": true,
+          "src": "http://127.0.0.1:3137/assets/workflow-360.7f1ad15821db382d.webp"
+        },
+        {
+          "loaded": true,
+          "src": "http://127.0.0.1:3137/assets/photos-360.d0bd4118c2c3fd30.webp"
+        },
+        {
+          "loaded": true,
+          "src": "http://127.0.0.1:3137/assets/reels-360.0d96ef5dd6fcbef7.webp"
+        }
+      ],
+      "overflow": false,
+      "imagesLoaded": true,
+      "unsupportedLinkFeedback": "Only public Instagram Reels, videos, photos, carousels, audio, and profiles are supported."
+    },
+    {
+      "width": 390,
+      "hasRetiredCopy": false,
+      "title": "Instagram Video, Reels & Photo Downloader | SaveFrame",
+      "tabs": [
+        "Photo",
+        "Reels",
+        "Video",
+        "Audio",
+        "Profile"
+      ],
+      "description": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio with a simple link. Fast, clean, mobile-friendly web utility.",
+      "images": [
+        {
+          "loaded": true,
+          "src": "http://127.0.0.1:3137/assets/workflow-360.7f1ad15821db382d.webp"
+        },
+        {
+          "loaded": true,
+          "src": "http://127.0.0.1:3137/assets/photos-360.d0bd4118c2c3fd30.webp"
+        },
+        {
+          "loaded": true,
+          "src": "http://127.0.0.1:3137/assets/reels-360.0d96ef5dd6fcbef7.webp"
+        }
+      ],
+      "overflow": false,
+      "imagesLoaded": true,
+      "unsupportedLinkFeedback": "Only public Instagram Reels, videos, photos, carousels, audio, and profiles are supported."
+    }
+  ],
+  "http": [
+    {
+      "route": "/story-downloader",
+      "status": 410
+    },
+    {
+      "route": "/stories-downloader",
+      "status": 410
+    },
+    {
+      "route": "/story-viewer",
+      "status": 410
+    },
+    {
+      "route": "/public-story-viewer",
+      "status": 410
+    },
+    {
+      "route": "/blog/how-to-download-instagram-stories-by-link",
+      "status": 410
+    },
+    {
+      "route": "/blog/how-to-download-instagram-story-videos",
+      "status": 410
+    },
+    {
+      "endpoint": "resolve",
+      "status": 400,
+      "errorCode": "UNSUPPORTED_MEDIA_TYPE"
+    },
+    {
+      "endpoint": "download",
+      "status": 400,
+      "errorCode": "UNSUPPORTED_MEDIA_TYPE"
+    }
+  ],
+  "mediaRequests": 0,
+  "externalRequestsBlocked": true
+}

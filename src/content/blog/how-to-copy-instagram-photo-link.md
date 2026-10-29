@@ -6,7 +6,7 @@ Link copying sounds simple, but it is the source of many avoidable download prob
 
 A direct feed-post URL usually has a path containing `/p/` and a shortcode. That shortcode is a mixed sequence of letters, numbers, and sometimes punctuation allowed in the address. It identifies the post and must remain intact. A missing character can point to nothing or to a different item.
 
-By contrast, an address ending at a username normally opens a profile. An address containing `/reel/` opens a Reel, while `/stories/` identifies story content. SaveFrame can direct supported links to the relevant tool, but a profile address cannot identify one particular photograph from a large account.
+By contrast, an address ending at a username normally opens a profile. SaveFrame can direct supported links to the relevant tool, but a profile address cannot identify one particular photograph from a large account.
 
 Some copied addresses include sharing parameters after a question mark. Those parameters are not the same as the shortcode. You can normally submit the copied address without editing it because the server normalizes supported Instagram URLs. If you do remove tracking parameters for your own notes, remove only the query portion and preserve the complete post path.
 
@@ -65,3 +65,4 @@ Keep both when provenance matters. The URL identifies the source post; the filen
 ## Copy once, verify once
 
 The most reliable workflow is to open the intended post, copy its direct address, and check the preview after submission. Avoid editing the shortcode or substituting temporary image URLs. A small amount of care at this stage prevents wrong-photo downloads and makes any later troubleshooting much more specific.
+

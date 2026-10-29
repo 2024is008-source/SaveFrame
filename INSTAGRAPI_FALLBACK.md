@@ -29,12 +29,12 @@ Existing public UI, translations, blog content, admin/authentication/SQLite, SEO
 ## Extraction flow
 
 1. Existing input validation, API rate limiting, metadata coalescing and cache apply.
-2. Profiles use the existing profile adapter. Stories use the existing yt-dlp → exact-story HTTP → optional gallery-dl pipeline. Posts/Reels/videos use yt-dlp; photo posts also try the existing photo adapter on recoverable failure.
+2. Profiles use the existing profile adapter. Posts/Reels/videos use yt-dlp; photo posts also try the existing photo adapter on recoverable failure.
 3. A successful primary never launches Python. Terminal errors stop the operation. Only `EXTRACTOR_FAILURE`, `DOWNLOAD_TIMEOUT` and `YTDLP_NOT_INSTALLED` are eligible; a retryable flag alone grants no eligibility.
 4. With `INSTAGRAPI_FALLBACK_ENABLED=1`, an eligible final primary error can launch one Python worker. Public requests pass **no session**, even if operator session configuration exists.
-5. The worker uses explicit public web methods for public media, a public-profile lookup for avatars, and an exact-ID selection from the requested account's accessible stories. It rejects private accounts, mismatched owners/media IDs and expired/unavailable stories. It neither returns a profile's bulk stories nor downloads files.
+5. The worker uses explicit public web methods for public media, a public-profile lookup for avatars, and public post metadata. It rejects private accounts, mismatched owners/media IDs and unavailable media. It does not perform bulk profile downloads or download files.
 6. Node validates the entire response and every CDN URL before any probe. Existing DNS-pinned transport probes MIME/signatures and file size, then creates existing `NormalizedMediaResult` metadata. Ordered carousels retain their order; unknown resolution/audio stays unknown.
-7. Public fallback metadata uses the existing bounded cache. Downloads use the existing download manager and the existing story transport, with DNS pinning, no redirects, signature checks, exclusive file creation, cancellation, size limits and partial-file cleanup. Fallback videos are not sent back through yt-dlp to resolve Instagram again.
+7. Public fallback metadata uses the existing bounded cache. Downloads use the existing download manager and the shared media transport, with DNS pinning, no redirects, signature checks, exclusive file creation, cancellation, size limits and partial-file cleanup. Fallback videos are not sent back through yt-dlp to resolve Instagram again.
 
 No paid API, browser automation, additional service or exposed port is introduced.
 
@@ -154,10 +154,10 @@ Do not enable a session for the anonymous downloader. Test live extraction only 
 
 ## Validation results
 
-- `npm run test:instagrapi`: PASS, including eight Python test cases; real Python process cancellation, timeout and output overflow; primary success suppression; one eligible fallback; terminal errors; ordered photo/video/carousel/story/profile mapping; URL validation before probes; safe error messages; operator scope/cache isolation; direct guarded video delivery compatibility.
+- `npm run test:instagrapi`: PASS, including eight Python test cases; real Python process cancellation, timeout and output overflow; primary success suppression; one eligible fallback; terminal errors; ordered photo/video/carousel/profile mapping; URL validation before probes; safe error messages; operator scope/cache isolation; direct guarded video delivery compatibility.
 - `npm run typecheck`: PASS.
 - `npm run lint`: PASS.
-- `npm test`: PASS (admin, security/audit regressions, preview/paste, downloader, stories/hybrid stories, i18n, blog, analytics).
+- `npm test`: PASS (admin, security/audit regressions, preview/paste, downloader, i18n, blog, analytics).
 - `npm run build`: PASS; final build privacy check verified 21 manifests and removed 56 private-state references without modifying private originals.
 - `pip check`: PASS; import/Client construction PASS; locked dependency dry-run resolves to the installed tested set.
 - `pip-audit 2.10.1` against all 17 entries in the pinned Python dependency set: no known vulnerabilities found. Report: `reports/instagrapi-dependency-audit.json`. The audit tool was installed in a separate ignored virtualenv, not the application's Python environment. Pins are version-locked but not hash-locked; the audit explicitly noted that limitation.
@@ -170,5 +170,5 @@ Do not enable a session for the anonymous downloader. Test live extraction only 
 - No live Instagram extraction or real file-save success is claimed. Public web endpoints can be login-gated or changed by Instagram; this fallback cannot guarantee access or repair `LOGIN_REQUIRED`.
 - No VPS/Contabo access was used; Linux resource-limit behavior and shared-server capacity require the pre-enable checks above. Windows validation does not prove Linux compatibility.
 - Public profile avatars from private accounts retain their existing primary-adapter behavior. The fallback conservatively rejects private accounts rather than using an account session to expand public access.
-- No automatic session creation, authentication bypass, challenge solving, shared-account access, bulk story delivery or private-content delivery is added.
+- No automatic session creation, authentication bypass, challenge solving, shared-account access, bulk account delivery or private-content delivery is added.
 - Dependency pinning and tests are not a guarantee of absence of vulnerabilities. This change does not claim a complete new repository-wide security audit; keep upstream and pinned dependencies under review.

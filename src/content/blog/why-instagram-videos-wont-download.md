@@ -6,7 +6,7 @@ This guide concentrates on video-specific problems, including separate audio tra
 
 A still thumbnail does not prove the underlying item is a photograph, and a post address does not always identify a video by its path alone. Feed posts can contain images or video, while carousels can mix them. Open the intended source and note which item actually moves.
 
-If you copied a story that reshared a Reel, decide which one you need. The story frame and the original Reel are different resources. A profile page or an audio page is also not a substitute for the direct video-post address.
+A profile page or an audio page is also not a substitute for the direct video-post address.
 
 When the tool resolves a post, compare its creator and preview with the source. If they do not match, stop before downloading. A wrong or incomplete address is a more plausible explanation than a format problem at this stage.
 
@@ -79,3 +79,4 @@ No. The tool retrieves supported accessible media; it is not a historical recove
 ## Choose the next step from the evidence
 
 For an accessible source and an ordinary download, follow the [MP4 walkthrough](/blog/how-to-download-instagram-reels-mp4) or [PC guide](/blog/download-instagram-videos-on-pc). For a permanent access problem, stop retrying and seek an authorized original. Keeping the failure stage clear is the fastest way to avoid unnecessary, ineffective fixes.
+

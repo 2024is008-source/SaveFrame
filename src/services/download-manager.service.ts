@@ -237,9 +237,6 @@ export class DownloadManagerService {
     if(this.queue.length>=this.maxQueuedJobs || this.jobs.size>=1000) throw new DownloaderAppError('RATE_LIMITED','The download queue is full. Please try again shortly.',429,true);
     if(input.itemIndex!==undefined&&(!Number.isInteger(input.itemIndex)||input.itemIndex<0||input.itemIndex>99))throw new DownloaderAppError('UNSUPPORTED_OPERATION','Choose a valid media item.',400);
     if(input.formatId!==undefined&&(typeof input.formatId!=='string'||input.formatId.length>128))throw new DownloaderAppError('UNSUPPORTED_OPERATION','Choose a valid media format.',400);
-    if (validated.category === 'story' && input.zipCarousel) {
-      throw new DownloaderAppError('UNSUPPORTED_OPERATION', 'Bulk story downloads are not supported. Download one story image or video.', 400);
-    }
     if (input.itemIndices !== undefined && (!input.zipCarousel || !Array.isArray(input.itemIndices) ||
       input.itemIndices.length === 0 || input.itemIndices.length > 100 ||
       input.itemIndices.some(index => !Number.isInteger(index) || index < 0))) {

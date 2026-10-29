@@ -186,7 +186,7 @@
       "Paste it above and check the returned handle, profile information and image.",
       "Save an available image only when permitted, then inspect its actual dimensions rather than assuming it is a full-size portrait."
     ],
-    "limits": "This page does not reveal private profiles, anonymous story-viewing guarantees or hidden account information. Public metadata may still be unavailable if Instagram requires login or restricts requests. Information can change after the result is returned.",
+    "limits": "This page does not reveal private profiles, hidden account information. Public metadata may still be unavailable if Instagram requires login or restricts requests. Information can change after the result is returned.",
     "faqs": [
       [
         "Can I view a private Instagram profile?",
@@ -198,7 +198,7 @@
       ],
       [
         "Should I paste a post link here?",
-        "Use a profile URL or @username for profile information. For an individual photo, Reel or story, use its matching downloader."
+        "Use a profile URL or @username for profile information. For an individual photo, Reel or video, use its matching downloader."
       ]
     ],
     "guides": [

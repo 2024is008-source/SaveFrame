@@ -12,16 +12,16 @@ async function main() {
   assert.ok(!sitemap.includes(origin + '/story-downloader'));
 
   const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => new URL(decode(match[1])));
-  assert.equal(urls.length, 37);
+  assert.equal(urls.length, 35);
   const homeAlternates={en:'/',es:'/es/','pt-BR':'/pt-br/',de:'/de/',fr:'/fr/',ja:'/ja/',id:'/id/',tr:'/tr/',hi:'/hi/',ar:'/ar/','x-default':'/'};
   const expectedLanguages=Object.fromEntries(Object.entries(homeAlternates).map(([language,path])=>[language,origin+path]));
   const tools=require('../src/content/tools.json'),information=require('../src/content/information.json'),posts=require('../src/content/blog/posts.json').filter(post=>post.published);
-  assert.equal(tools.length,6);assert.equal(information.length,5);assert.equal(posts.length,15);
+  assert.equal(tools.length,6);assert.equal(information.length,5);assert.equal(posts.length,13);
   const expectedUrls=[...new Set(Object.values(expectedLanguages)),...tools.map(page=>origin+'/'+page.slug),...information.map(page=>origin+'/'+page.slug),origin+'/blog',...posts.map(post=>origin+'/blog/'+post.slug)];
   assert.deepEqual(urls.map(url=>url.href).sort(),expectedUrls.sort(),'Preserve the exact canonical URL set');
-  assert.equal(new Set(urls.map(url=>url.href)).size,37,'No duplicate sitemap URLs');
+  assert.equal(new Set(urls.map(url=>url.href)).size,urls.length,'No duplicate sitemap URLs');
   assert.equal(/<(?:changefreq|priority)\b/i.test(sitemap),false,'No unused priority/frequency tags');
-  const blocks=[...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(match=>match[1]);assert.equal(blocks.length,37);
+  const blocks=[...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(match=>match[1]);assert.equal(blocks.length,urls.length);
   let datedArticles=0,alternateAnnotations=0;
   for(const block of blocks){
     const location=decode(block.match(/<loc>([^<]+)<\/loc>/)[1]),url=new URL(location);
@@ -34,7 +34,7 @@ async function main() {
     if(Object.values(expectedLanguages).includes(location)){assert.deepEqual(alternatives,expectedLanguages,'Every homepage must repeat the reciprocal, self-inclusive language cluster');alternateAnnotations+=Object.keys(alternatives).length;}
     else assert.deepEqual(alternatives,{},'Homepage language annotations must not leak to other pages');
   }
-  assert.equal(datedArticles,15);assert.equal(alternateAnnotations,110);
+  assert.equal(datedArticles,posts.length);assert.equal(alternateAnnotations,110);
   const pages = [...urls.map(url => url.pathname), '/blog?page=2'];
   const titles = new Set(), descriptions = new Set(), links = new Set(), rows = [], fragments = [], htmlCache = new Map();
   for (const path of pages) {
@@ -109,6 +109,6 @@ async function main() {
   const robots = await (await fetch(base + '/robots.txt')).text(); assert.match(robots, /Sitemap: https:\/\/saveframe.site\/sitemap.xml/); assert.ok(!robots.includes('Disallow: /_next'));
   fs.mkdirSync('reports', { recursive: true });
   fs.writeFileSync('reports/seo-crawl.json', JSON.stringify({ scope: 'HTTP validation at '+base+'; not a Google indexing confirmation', sitemap:{urlCount:urls.length,localizedHomepages:10,tools:tools.length,informationPages:information.length,blogIndexes:1,articles:posts.length,lastModifiedArticles:datedArticles,reciprocalLanguageAnnotations:alternateAnnotations,priorityAndChangefreqAbsent:true}, pages: rows, internalDestinationsChecked: [...links].sort() }, null, 2));
-  console.log(`PASS: 37 canonical sitemap URLs, 15 preserved editorial dates, 110 reciprocal XML/HTML language annotations including x-default; ${rows.length} indexable pages, ${links.size} internal destinations, robots sitemap reference, exclusions and 404.`);
+  console.log(`PASS: ${urls.length} canonical sitemap URLs, ${datedArticles} preserved editorial dates, 110 reciprocal XML/HTML language annotations including x-default; ${rows.length} indexable pages, ${links.size} internal destinations, robots sitemap reference, exclusions and 404.`);
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

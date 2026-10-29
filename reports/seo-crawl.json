@@ -1,13 +1,13 @@
 {
   "scope": "HTTP validation at http://127.0.0.1:3137; not a Google indexing confirmation",
   "sitemap": {
-    "urlCount": 37,
+    "urlCount": 35,
     "localizedHomepages": 10,
     "tools": 6,
     "informationPages": 5,
     "blogIndexes": 1,
-    "articles": 15,
-    "lastModifiedArticles": 15,
+    "articles": 13,
+    "lastModifiedArticles": 13,
     "reciprocalLanguageAnnotations": 110,
     "priorityAndChangefreqAbsent": true
   },
@@ -16,7 +16,7 @@
       "path": "/",
       "status": 200,
       "title": "Instagram Video, Reels & Photo Downloader | SaveFrame",
-      "description": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio. Free to use, with no Instagram login required. Quality depends on the source.",
+      "description": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio with a simple link. Fast, clean, mobile-friendly web utility.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -24,7 +24,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 65
+      "responseAndBodyMs": 52
     },
     {
       "path": "/es/",
@@ -38,7 +38,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 93
+      "responseAndBodyMs": 52
     },
     {
       "path": "/pt-br/",
@@ -52,7 +52,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 91
+      "responseAndBodyMs": 60
     },
     {
       "path": "/de/",
@@ -66,7 +66,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 54
+      "responseAndBodyMs": 51
     },
     {
       "path": "/fr/",
@@ -80,7 +80,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 51
+      "responseAndBodyMs": 63
     },
     {
       "path": "/ja/",
@@ -94,7 +94,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 49
+      "responseAndBodyMs": 54
     },
     {
       "path": "/id/",
@@ -108,7 +108,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 53
+      "responseAndBodyMs": 58
     },
     {
       "path": "/tr/",
@@ -122,7 +122,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 86
+      "responseAndBodyMs": 56
     },
     {
       "path": "/hi/",
@@ -136,7 +136,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 63
+      "responseAndBodyMs": 53
     },
     {
       "path": "/ar/",
@@ -150,7 +150,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 55
+      "responseAndBodyMs": 64
     },
     {
       "path": "/reels-downloader",
@@ -165,7 +165,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 121
+      "responseAndBodyMs": 92
     },
     {
       "path": "/video-downloader",
@@ -180,7 +180,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 82
+      "responseAndBodyMs": 72
     },
     {
       "path": "/photo-downloader",
@@ -195,7 +195,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 99
+      "responseAndBodyMs": 75
     },
     {
       "path": "/carousel-downloader",
@@ -210,7 +210,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 121
+      "responseAndBodyMs": 82
     },
     {
       "path": "/audio-downloader",
@@ -225,7 +225,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 73
+      "responseAndBodyMs": 74
     },
     {
       "path": "/profile-viewer",
@@ -240,7 +240,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 137
+      "responseAndBodyMs": 70
     },
     {
       "path": "/about",
@@ -254,7 +254,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 19
+      "responseAndBodyMs": 31
     },
     {
       "path": "/contact",
@@ -268,7 +268,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 20
+      "responseAndBodyMs": 30
     },
     {
       "path": "/privacy",
@@ -282,7 +282,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 32
+      "responseAndBodyMs": 16
     },
     {
       "path": "/terms",
@@ -296,7 +296,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 38
+      "responseAndBodyMs": 18
     },
     {
       "path": "/copyright",
@@ -310,13 +310,13 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 25
+      "responseAndBodyMs": 36
     },
     {
       "path": "/blog",
       "status": 200,
       "title": "Instagram Download Guides – Reels, Photos & Fixes | SaveFrame",
-      "description": "Practical guides to downloading supported Instagram photos, Reels, videos, and stories, with clear troubleshooting and backup advice.",
+      "description": "Practical guides to downloading supported Instagram photos, Reels, videos, and MP3 audio, with clear troubleshooting and backup advice.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -324,31 +324,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 71
-    },
-    {
-      "path": "/blog/how-to-download-instagram-stories-by-link",
-      "status": 200,
-      "title": "Download Instagram Stories by Link – What Works & What Doesn&#x27;t",
-      "description": "Copy the right story link, check public access, and save an available story without confusing it with a post or Reel.",
-      "h1": 1,
-      "schemaTypes": [
-        "BlogPosting",
-        "BreadcrumbList"
-      ],
-      "responseAndBodyMs": 58
-    },
-    {
-      "path": "/blog/how-to-download-instagram-story-videos",
-      "status": 200,
-      "title": "Save Instagram Story Videos – Check Access, Sound & Downloads",
-      "description": "Save available story clips, check their sound, and understand why some active stories still cannot be downloaded.",
-      "h1": 1,
-      "schemaTypes": [
-        "BlogPosting",
-        "BreadcrumbList"
-      ],
-      "responseAndBodyMs": 49
+      "responseAndBodyMs": 53
     },
     {
       "path": "/blog/how-to-download-instagram-photos-online",
@@ -360,7 +336,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 79
+      "responseAndBodyMs": 51
     },
     {
       "path": "/blog/how-to-copy-instagram-photo-link",
@@ -372,7 +348,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 66
+      "responseAndBodyMs": 60
     },
     {
       "path": "/blog/view-instagram-profile-picture-by-url",
@@ -384,7 +360,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 71
+      "responseAndBodyMs": 54
     },
     {
       "path": "/blog/how-to-download-instagram-reels-mp4",
@@ -396,7 +372,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 63
+      "responseAndBodyMs": 61
     },
     {
       "path": "/blog/download-instagram-reels-on-iphone",
@@ -408,7 +384,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 68
+      "responseAndBodyMs": 57
     },
     {
       "path": "/blog/download-instagram-videos-on-pc",
@@ -420,7 +396,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 67
+      "responseAndBodyMs": 64
     },
     {
       "path": "/blog/download-instagram-carousel-photos",
@@ -432,7 +408,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 64
+      "responseAndBodyMs": 62
     },
     {
       "path": "/blog/download-instagram-reels-with-audio",
@@ -444,7 +420,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 58
+      "responseAndBodyMs": 62
     },
     {
       "path": "/blog/instagram-downloader-not-working",
@@ -456,7 +432,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 63
+      "responseAndBodyMs": 54
     },
     {
       "path": "/blog/why-instagram-videos-wont-download",
@@ -468,7 +444,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 74
+      "responseAndBodyMs": 48
     },
     {
       "path": "/blog/download-instagram-photos-iphone-android",
@@ -480,7 +456,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 56
+      "responseAndBodyMs": 43
     },
     {
       "path": "/blog/instagram-photo-sizes-aspect-ratios",
@@ -492,7 +468,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 76
+      "responseAndBodyMs": 50
     },
     {
       "path": "/blog/backup-instagram-photos-videos-reels",
@@ -504,7 +480,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 75
+      "responseAndBodyMs": 47
     },
     {
       "path": "/blog?page=2",
@@ -518,7 +494,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 41
+      "responseAndBodyMs": 37
     }
   ],
   "internalDestinationsChecked": [
@@ -536,19 +512,15 @@
     "/blog/how-to-copy-instagram-photo-link",
     "/blog/how-to-download-instagram-photos-online",
     "/blog/how-to-download-instagram-reels-mp4",
-    "/blog/how-to-download-instagram-stories-by-link",
-    "/blog/how-to-download-instagram-story-videos",
     "/blog/instagram-downloader-not-working",
     "/blog/instagram-photo-sizes-aspect-ratios",
     "/blog/view-instagram-profile-picture-by-url",
     "/blog/why-instagram-videos-wont-download",
     "/blog?category=Instagram%20Photos",
     "/blog?category=Instagram%20Reels",
-    "/blog?category=Instagram%20Stories",
     "/blog?category=Instagram%20Videos",
     "/blog?category=Instagram+Photos",
     "/blog?category=Instagram+Reels",
-    "/blog?category=Instagram+Stories",
     "/blog?category=Instagram+Videos",
     "/blog?category=Profile%20Pictures",
     "/blog?category=Profile+Pictures",

@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "translationKey": "Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.",
+  "englishValueChanged": false,
+  "otherTranslationsChanged": false,
+  "publishedOverridesEnabled": true,
+  "database": "isolated test database",
+  "scenarios": [
+    {
+      "scenario": "No published override",
+      "title": "Instagram Video, Reels & Photo Downloader | SaveFrame",
+      "description": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio. Free to use, with no Instagram login required. Quality depends on the source.",
+      "openGraphDescription": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio. Free to use, with no Instagram login required. Quality depends on the source.",
+      "twitterDescription": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio. Free to use, with no Instagram login required. Quality depends on the source.",
+      "canonical": "https://saveframe.site",
+      "robots": "index, follow"
+    },
+    {
+      "scenario": "Legacy Story override ignored",
+      "title": "Instagram Video, Reels & Photo Downloader | SaveFrame",
+      "description": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio. Free to use, with no Instagram login required. Quality depends on the source.",
+      "openGraphDescription": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio. Free to use, with no Instagram login required. Quality depends on the source.",
+      "twitterDescription": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio. Free to use, with no Instagram login required. Quality depends on the source.",
+      "canonical": "https://saveframe.site",
+      "robots": "index, follow"
+    },
+    {
+      "scenario": "Legacy Story override ignored",
+      "title": "Instagram Video, Reels & Photo Downloader | SaveFrame",
+      "description": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio. Free to use, with no Instagram login required. Quality depends on the source.",
+      "openGraphDescription": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio. Free to use, with no Instagram login required. Quality depends on the source.",
+      "twitterDescription": "Download public Instagram Reels, videos, photos, carousels, and MP3 audio. Free to use, with no Instagram login required. Quality depends on the source.",
+      "canonical": "https://saveframe.site",
+      "robots": "index, follow"
+    },
+    {
+      "scenario": "Deliberate custom override preserved",
+      "title": "Instagram Video, Reels & Photo Downloader | SaveFrame",
+      "description": "Deliberate custom homepage description for photos and Reels.",
+      "openGraphDescription": "Deliberate custom social description.",
+      "twitterDescription": "Deliberate custom social description.",
+      "canonical": "https://saveframe.site",
+      "robots": "index, follow"
+    }
+  ],
+  "checks": {
+    "test": "passed",
+    "lint": "passed",
+    "typecheck": "passed",
+    "build": "passed"
+  },
+  "pushed": false,
+  "deployed": false
+}

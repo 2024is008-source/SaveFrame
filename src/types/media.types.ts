@@ -3,7 +3,6 @@ export type InstagramMediaCategory =
   | 'video'
   | 'photo'
   | 'carousel'
-  | 'story'
   | 'audio'
   | 'profile';
 
@@ -16,9 +15,6 @@ export type ErrorCode =
   | 'UNSUPPORTED_OPERATION'
   | 'PRIVATE_CONTENT'
   | 'DELETED_CONTENT'
-  | 'EXPIRED_STORY'
-  | 'NO_ACTIVE_STORIES'
-  | 'INVALID_STORY_LINK'
   | 'LOGIN_REQUIRED'
   | 'SESSION_EXPIRED'
   | 'CHALLENGE_REQUIRED'
@@ -120,7 +116,7 @@ export interface NormalizedMediaResult {
   isCarousel: boolean;
   supportsZipDownload: boolean;
   items: NormalizedMediaItem[];
-  extractorSource: 'yt-dlp' | 'yt-dlp+image-adapter' | 'profile-adapter' | 'story-http' | 'gallery-dl' | 'instagrapi';
+  extractorSource: 'yt-dlp' | 'yt-dlp+image-adapter' | 'profile-adapter' | 'instagrapi';
   warnings?: string[];
 }
 

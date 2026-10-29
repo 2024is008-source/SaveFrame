@@ -40,9 +40,9 @@ npm run build
 npm start
 ```
 
-## MP3 audio and retired story tool
+## MP3 audio
 
-The Audio tool provides real MP3 extraction at 128/192/up to 320 kbps from accessible public Reels and video posts, with a ten-minute source duration limit. Higher encoding bitrate cannot restore source quality. `/story-downloader` returns HTTP 410; historical story articles remain available with a retirement notice. Separate authorized owner-story CLI workflows remain server-only. No paid API is needed. See `AUDIO_DOWNLOADER_REPORT.md` for validation and deployment on the existing port 3001.
+The Audio tool provides real MP3 extraction at 128/192/up to 320 kbps from accessible public Reels and video posts, with a ten-minute source duration limit. Higher encoding bitrate cannot restore source quality. No paid API is needed. See `AUDIO_DOWNLOADER_REPORT.md` for validation and deployment on the existing port 3001.
 
 ## Supported access
 
@@ -67,17 +67,12 @@ Deploy the content files along with the application. Blog articles remain file-b
 The production origin is configured as `https://saveframe.site` in `.env.production`. Change `NEXT_PUBLIC_SITE_URL` before building if the deployment domain changes. Development without an override uses localhost and disables indexing. With a public origin, published guides are crawlable, `/api/` is excluded from robots, and article metadata, Open Graph/Twitter images, BlogPosting/BreadcrumbList structured data, and sitemap URLs use that origin. Filtered/paginated listing URLs canonicalize to `/blog` and are marked noindex.
 
 The blog has 15 articles dated 24 October 2026. The author is attributed to SaveFrame; no personal qualifications or testimonials are invented. Cover images are generated editorial illustrations in the supplied warm photographic style, not documentary photos or Instagram screenshots. Image prompts and asset notes are in `design-system/insta-save/IMAGE-NOTES.md`.
-## Direct story images and videos
-
-The Story tool accepts one active story image or video URL containing `/stories/username/story-id/`. It tries yt-dlp, then a bounded canonical-page HTTP fallback on recoverable errors, then optional gallery-dl when explicitly enabled. Profile links, whole-account stories and bulk story downloads are rejected. Public requests remain anonymous; no paid provider or shared account is configured. Instagram login restrictions remain explicit failures. See [hybrid story architecture and configuration](docs/HYBRID_STORIES.md) for deadlines, security checks, optional operator-only authorization and deployment steps.
-
-Run `npm run test:stories` for offline provider, image/video/audio, transport, cancellation, authorization and error fixtures. Add `-- --live-url=https://www.instagram.com/stories/username/story-id/` for an explicitly requested live test on a disposable local production server after building.
 
 ## Media previews and public avatars
 
 Desktop media previews preserve source proportions. Mobile keeps compact 4:3 cards; tap the main photo or video to open an accessible dialog showing the full media. Videos have a centred transparent play control and native playback controls. Preparation is on demand, uses the existing bounded queue, supports byte-range seeking and does not increase download or delivery totals. Closing by button, backdrop or Escape preserves the current result and scroll position. `npm run test:preview` checks partial responses, attachment compatibility and error recognition across route-module reloads.
 
-The profile tool can save an avatar already exposed by Instagram's unauthenticated public response, including an avatar belonging to a private account. It does not access private posts or restricted pictures, infer unavailable dimensions or promise HD. The supplied `@ama_shaa_` profile downloaded a valid 2,579-byte JPEG on 26 October 2026. The supplied `sula_dewmini/4016120619302180887` story returned `403 LOGIN_REQUIRED` on the fresh production preview. See `reports/media-live-2026-10-26.json` for the results.
+The profile tool can save an avatar already exposed by Instagram's unauthenticated public response, including an avatar belonging to a private account. It does not access private posts or restricted pictures, infer unavailable dimensions or promise HD. The supplied `@ama_shaa_` profile downloaded a valid 2,579-byte JPEG on 26 October 2026. See `reports/media-live-2026-10-26.json` for the results.
 
 ## Private administration
 
@@ -89,7 +84,7 @@ Read [ADMIN_SETUP.md](ADMIN_SETUP.md) for local preview, HTTPS hosting, persiste
 
 Read `FINAL_AUDIT_REPORT.md` and `DEPLOYMENT_CHECKLIST.md` before deployment. The final audit supersedes earlier readiness statements; historical reports are preserved.
 
-`npm run lint` runs ESLint without interactive setup. `npm test` includes security, queue/cleanup, local photo/profile fixtures and CLI recovery checks. `npm run test:runtime` verifies the installed binaries and creates only disposable local media for real FFmpeg mux/audio checks. Instagram network access is a separate test: a valid story URL can still return `LOGIN_REQUIRED`. No authenticated Instagram connection or paid provider is configured.
+`npm run lint` runs ESLint without interactive setup. `npm test` includes security, queue/cleanup, local photo/profile fixtures and CLI recovery checks. `npm run test:runtime` verifies the installed binaries and creates only disposable local media for real FFmpeg mux/audio checks. Instagram network access is a separate test: a valid public media URL can still return `LOGIN_REQUIRED`. No authenticated Instagram connection or paid provider is configured.
 
 The system-failure score and chart count confirmed internal errors only: INTERNAL_ERROR, YTDLP_NOT_INSTALLED, FFMPEG_ERROR, INSUFFICIENT_DISK_SPACE, PROCESS_RESTARTED and DELIVERY_STREAM_ERROR. Instagram access restrictions, ambiguous upstream extraction failures/timeouts, invalid input, configured size/rate limits and visitor cancellations remain in recent issue history and are excluded from that score. Preparation totals remain separate lifecycle metrics. Requests rejected by the rate limiter are not written as individual analytics events.
 

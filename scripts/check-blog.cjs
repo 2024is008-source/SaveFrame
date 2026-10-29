@@ -9,7 +9,7 @@ require.extensions['.ts'] = (module, filename) => module._compile(ts.transpileMo
 const { getPublishedPosts, getPost, filterPosts, relatedPosts, tableOfContents, homepageBlogMarkup } = require('../src/lib/blog.ts');
 async function main() {
   const posts = getPublishedPosts();
-  assert.equal(posts.length, 15);
+  assert.equal(posts.length, 13);
   const slugs = new Set(posts.map(post => post.slug));
   assert.equal(slugs.size, posts.length);
   assert.equal(new Set(posts.map(post => post.cover)).size, posts.length, 'Every article must have a unique cover');
@@ -25,7 +25,7 @@ async function main() {
     assert.ok((post.content.match(/^### /gm) || []).length >= 3, post.slug + ' needs FAQs');
     for (const [, href] of post.content.matchAll(/\]\((\/[^)]+)\)/g)) {
       if (href.startsWith('/blog/')) assert.ok(slugs.has(href.slice(6)), `Broken article link: ${href}`);
-      else assert.match(href, /^\/\?tool=(photo|reels|story|video|profile)#main-tool$/);
+      else assert.match(href, /^\/\?tool=(photo|reels|video|profile)#main-tool$/);
     }
     const related = relatedPosts(post);
     assert.equal(related.length, 3);
@@ -41,7 +41,7 @@ async function main() {
   assert.ok(filterPosts(posts, '', 'Instagram Photos').every(post => post.category === 'Instagram Photos'));
   assert.equal(filterPosts(posts, 'unmatched-query-xyz', '').length, 0);
   const homepage = homepageBlogMarkup();
-  assert.ok(homepage.includes('How to Download Instagram Stories by Link'));
+  assert.ok(homepage.includes('Download Instagram Videos on PC'));
   assert.ok(homepage.includes('View All Guides'));
   assert.ok(!homepage.includes('open-blog-btn'));
   console.log(`PASS: ${posts.length} full articles, ${posts.reduce((sum, post) => sum + post.wordCount, 0)} words, working filters, related links, table-of-contents IDs, and optimized covers.`);

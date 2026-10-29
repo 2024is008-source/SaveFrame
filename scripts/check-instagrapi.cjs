@@ -22,7 +22,7 @@ async function main(){
   process.env.INSTAGRAPI_FALLBACK_ENABLED='1';
   let calls=0;
   const service=new InstagrapiService(http);service.runWorker=async()=>{calls++;return reply([media()]);};
-  for(const code of ['LOGIN_REQUIRED','PRIVATE_CONTENT','DELETED_CONTENT','EXPIRED_STORY','RATE_LIMITED','SSRF_BLOCKED','INVALID_URL','JOB_CANCELLED','FILE_TOO_LARGE','UNSUPPORTED_MEDIA_TYPE']){
+  for(const code of ['LOGIN_REQUIRED','PRIVATE_CONTENT','DELETED_CONTENT','RATE_LIMITED','SSRF_BLOCKED','INVALID_URL','JOB_CANCELLED','FILE_TOO_LARGE','UNSUPPORTED_MEDIA_TYPE']){
    const error=new DownloaderAppError(code,'Restriction.',403,true);assert.equal(instagrapiEligible(error),false);
    await assert.rejects(service.afterPrimaryFailure(url,error),e=>e===error);
   }
@@ -30,8 +30,8 @@ async function main(){
   process.env.INSTAGRAPI_FALLBACK_ENABLED='0';await rejects(service.afterPrimaryFailure(url,problem()),'EXTRACTOR_FAILURE');assert.equal(calls,0);
   process.env.INSTAGRAPI_FALLBACK_ENABLED='1';
   const result=await service.afterPrimaryFailure(url,problem());assert.equal(calls,1);assert.equal(result.extractorSource,'instagrapi');assert.equal(result.items[0].formats[0].directUrl,media().url);reset();
-  for(const [category,items]of [['reel',[media('video')]],['photo',[media(),media('video','2')]],['profile',[media()]],['story',[media('video','4016120619302180887')]]]){
-   const target=category==='story'?validation.validateMediaInput('https://www.instagram.com/stories/owner/4016120619302180887/'):category==='profile'?validation.validateMediaInput('https://www.instagram.com/owner/'):category==='reel'?validation.validateMediaInput('https://www.instagram.com/reel/Example1/'):url;
+  for(const [category,items]of [['reel',[media('video')]],['photo',[media(),media('video','2')]],['profile',[media()]]]){
+   const target=category==='profile'?validation.validateMediaInput('https://www.instagram.com/owner/'):category==='reel'?validation.validateMediaInput('https://www.instagram.com/reel/Example1/'):url;
    service.runWorker=async()=>reply(items);const data=await service.afterPrimaryFailure(target,problem());assert.equal(data.itemCount,items.length);assert.deepEqual(data.items.map(i=>i.itemId),items.map(i=>i.id));reset();
   }
   service.runWorker=async()=>reply([media(),{...media('photo','2'),url:'https://127.0.0.1/private'}]);probes=0;
@@ -64,35 +64,6 @@ async function main(){
    const scoped=new YtDlpService();scoped.extractPrimaryMetadata=async()=>{throw problem();};scoped.adapters.extractPublicPhotoPost=async()=>{throw problem();};
    scoped.instagrapi.afterPrimaryFailure=async()=>result;await scoped.extractOperatorMetadata(url.canonicalUrl,access);
    assert.equal(scoped.metadataCache.has(url.canonicalUrl),false,'Operator fallback must never populate public metadata cache');
-   const ownerUrl=validation.validateMediaInput('https://www.instagram.com/stories/owner/4016120619302180887/','story');
-   const ownerAccess={...access,allowedCanonicalUrls:[ownerUrl.canonicalUrl]};
-   const ownerService=new YtDlpService();let ownerCalls=0;
-   ownerService.extractPrimaryMetadata=async()=>{throw Error('Owner mode must not use anonymous extraction');};
-   ownerService.instagrapi.runWorker=async input=>{ownerCalls++;assert.equal(input.operation,'owner-story');return reply([media('photo',ownerUrl.storyId)]);};
-   ownerService.instagrapi.http.probe=http.probe;
-   await ownerService.extractOperatorMetadata(ownerUrl.canonicalUrl,ownerAccess);assert.equal(ownerCalls,1);assert.equal(ownerService.metadataCache.size,0);reset();
-   await rejects(ownerService.extractOperatorMetadata(ownerUrl.canonicalUrl,{...ownerAccess,ownerUsername:'other'}),'PRIVATE_CONTENT');reset();
-   for(const code of ['SESSION_EXPIRED','CHALLENGE_REQUIRED']){ownerService.instagrapi.runWorker=async()=>({version:1,status:'error',code});await rejects(ownerService.extractOperatorMetadata(ownerUrl.canonicalUrl,ownerAccess),code);reset();}
-   // Real local byte delivery through a separate existing DownloadManager instance.
-   const net=require('node:http');let corrupt=false;
-   const jpeg=await require('sharp')({create:{width:16,height:16,channels:3,background:'#7c3aed'}}).jpeg().toBuffer();
-   const server=net.createServer((request,response)=>{const bytes=corrupt&&!request.headers.range?Buffer.from('not an image despite declared JPEG'):jpeg;response.writeHead(200,{'content-type':'image/jpeg','content-length':bytes.length});response.end(bytes);});
-   let manager;
-   try{
-    await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const origin='http://127.0.0.1:'+server.address().port;process.env.SAVEFRAME_FIXTURE_ORIGIN=origin;
-    const real=new YtDlpService();real.instagrapi.runWorker=async()=>reply([{...media('photo',ownerUrl.storyId),url:origin+'/photo.jpg',thumbnail:origin+'/photo.jpg'}]);
-    const {DownloadManagerService}=require('../src/services/download-manager.service.ts');
-    const storage=path.join(directory,'owner-downloads');
-    manager=new DownloadManagerService({downloadMedia:(u,o)=>real.downloadOperatorStory(u,ownerAccess,o),cancelDownload:id=>real.cancelDownload(id)},{tempDir:storage,maxConcurrentDownloads:1});
-    for(const bad of [false,true]){
-     corrupt=bad;const job=await manager.createJob({url:ownerUrl.canonicalUrl,trackAnalytics:false});
-     const deadline=Date.now()+3000;while(!['completed','failed'].includes(job.status)&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,10));
-     assert.equal(job.status,bad?'failed':'completed');assert.equal(job.analyticsId,undefined);
-     if(!bad){assert.equal(job.mimeType,'image/jpeg');assert.deepEqual(fs.readFileSync(job.outputFilePath),jpeg);assert.equal(real.metadataCache.size,0);await manager.removeJobFile(job.jobId);}
-     else {assert.equal(job.error.code,'UNSUPPORTED_MEDIA_TYPE');while(manager.activeCount)await new Promise(resolve=>setTimeout(resolve,10));assert.equal(fs.readdirSync(storage).length,0,'Failed private transfers clean partial files');}
-     reset();
-    }
-   }finally{if(manager?.cleanupTimer)clearInterval(manager.cleanupTimer);server.closeAllConnections();await new Promise(resolve=>server.close(resolve));delete process.env.SAVEFRAME_FIXTURE_ORIGIN;}
   }finally{fs.rmSync(external,{recursive:true,force:true});delete process.env.INSTAGRAPI_SESSION_DIR;delete process.env.INSTAGRAPI_AUTH_ENABLED;}
   // Full orchestration: successful primary never invokes fallback; all suitable photo methods precede it.
   const primary=new YtDlpService();let fallbackCalls=0;
@@ -106,7 +77,7 @@ async function main(){
   // Direct fallback downloads use the existing guarded transport, never yt-dlp.
   const download=new YtDlpService();download.extractMetadata=async()=>({...result,items:[{...result.items[0],mediaType:'video',formats:[{...result.items[0].formats[0],ext:'mp4',directUrl:media('video').url}]}]});
   download.runSubprocess=async()=>{throw Error('yt-dlp must not run');};
-  download.stories.http.download=async(source,destination,mime)=>{assert.equal(source,media('video').url);fs.writeFileSync(destination,'fixture');return{bytesWritten:7,mimeType:mime};};
+  download.http.download=async(source,destination,mime)=>{assert.equal(source,media('video').url);fs.writeFileSync(destination,'fixture');return{bytesWritten:7,mimeType:mime};};
   const artifact=await download.downloadMedia(url.canonicalUrl,{jobId:'fixture',outputDir:directory});assert.equal(artifact.mimeType,'video/mp4');assert.ok(fs.existsSync(artifact.filePath));
   // Actual OS subprocesses with an offline Python fixture substituted at spawn boundary.
   const python=process.env.INSTAGRAPI_PYTHON_PATH||path.resolve('.runtime',process.platform==='win32'?'Scripts/python.exe':'bin/python');
