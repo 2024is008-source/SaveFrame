@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "liveGoogleRequests": false,
+  "propertyRealtimeVerified": false,
+  "results": [
+    "homepage has no popup; automatic allowed-region loader; exactly one initial internal view",
+    "Next.js navigation: one GA4 command and one internal counter per route",
+    "duplicate download operations submit one sanitized event",
+    "restricted/unknown: zero Google requests; internal counts remain available; opt-outs/GPC/DNT excluded",
+    "mobile layout and browser console clean"
+  ],
+  "failures": [],
+  "network": [
+    {
+      "kind": "loader",
+      "status": 200
+    },
+    {
+      "kind": "loader",
+      "status": 200
+    }
+  ]
+}

@@ -10,6 +10,8 @@ import { isLocale, languageTag } from '../i18n/config';
 import Analytics from '../components/Analytics';
 import { Suspense } from 'react';
 import { analyticsPolicy } from '../lib/analytics-policy';
+import { after } from 'next/server';
+import { recordDocumentView, trafficEnabled } from '../admin/traffic-analytics';
 
 export const metadata: Metadata = {
   title: seoPages['/'].title,
@@ -30,10 +32,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const requested = requestHeaders.get('x-saveframe-locale') || 'en';
   const locale = isLocale(requested) ? requested : 'en';
   const gaId = process.env.GA_MEASUREMENT_ID || process.env.NEXT_PUBLIC_GA_ID || '';
+  const aggregateEnabled=trafficEnabled();
+  if(aggregateEnabled) after(()=>recordDocumentView(requestHeaders,siteUrl));
   return (
     <html lang={languageTag(locale)} dir={locale === 'ar' ? 'rtl' : 'ltr'} className="scroll-smooth">
       <head>{fontAssets.map(href => <link key={href} rel="preload" href={href} as="font" type="font/woff2" crossOrigin="anonymous" />)}</head>
-      <body className="tiksave-theme min-h-screen flex flex-col bg-canvas text-ink selection:bg-brand-violetSoft selection:text-brand-violet">{children}<Suspense fallback={null}><Analytics id={gaId} origin={siteUrl} production={process.env.NODE_ENV==='production'&&process.env.GA4_ENABLED!=='0'} options={analyticsPolicy(requestHeaders)}/></Suspense></body>
+      <body className="tiksave-theme min-h-screen flex flex-col bg-canvas text-ink selection:bg-brand-violetSoft selection:text-brand-violet">{children}<Suspense fallback={null}><Analytics id={gaId.trim()} origin={siteUrl} production={process.env.NODE_ENV==='production'&&process.env.GA4_ENABLED!=='0'} options={{...analyticsPolicy(requestHeaders),trafficEnabled:aggregateEnabled}}/></Suspense></body>
     </html>
   );
 }

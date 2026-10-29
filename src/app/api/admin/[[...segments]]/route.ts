@@ -6,6 +6,7 @@ import { beginEmailLogin,completeEmailLogin,emailChallengeName } from '../../../
 import { db, settings, audit, cleanup } from '../../../../admin/db';
 import { reports, reportCsv } from '../../../../admin/analytics';
 import { countryReports, countryCsv } from '../../../../admin/country-analytics';
+import { trafficReports } from '../../../../admin/traffic-analytics';
 import { seoCatalog, approvedImages } from '../../../../admin/catalog';
 import { seoEditor, saveSeo, restoreSeo, saveSettings } from '../../../../admin/seo-service';
 import { saveVerification, verificationList, verificationFile, removeVerification, saveDnsRecord } from '../../../../admin/verification';
@@ -50,6 +51,7 @@ async function handler(request: Request,context: Context) {
       const parameters=query(request);
       if(action==='session') return json({email:session.email,csrf:session.csrf_token,totpEnabled:Boolean(session.totp_enabled)});
       if(action==='reports') return json(reports(parameters));
+      if(action==='reports/traffic') return json(trafficReports(parameters));
       if(action==='reports/countries') return json(countryReports(parameters));
       if(action==='reports/countries/export') {
         audit(session.user_id,'reports.exported','country-statistics');

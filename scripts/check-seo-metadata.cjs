@@ -64,13 +64,15 @@ async function main() {
     assert.equal(response.status,308,'One permanent locale redirect');
     assert.equal(new URL(response.headers.get('location')).pathname,'/');
   }
-  for (const path of ['/admin', '/admin/login', '/api/admin/settings', '/nonexistent-seo-check']) {
+  for (const path of ['/nonexistent-seo-check']) {
     const response = await fetch(base + path);
     assert.equal(response.status, 404, path);
     if (path.includes('admin')) assert.match(response.headers.get('x-robots-tag') || '', /noindex/);
   }
+  assert.equal((await fetch(base+'/admin/login')).status,200,'Admin login is accessible');
+  assert.equal((await fetch(base+'/api/admin/settings')).status,401,'Admin API requires authentication');
   fs.mkdirSync('reports/seo', { recursive: true });
   fs.writeFileSync('reports/seo/metadata.json', JSON.stringify(results, null, 2) + '\n');
-  console.log(`PASS: ${results.length} sitemap URLs, unique titles/descriptions, matching social metadata, canonicals, and private/unknown 404s.`);
+  console.log(`PASS: ${results.length} sitemap URLs, unique titles/descriptions, matching social metadata, canonicals, protected admin routes and unknown 404s.`);
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

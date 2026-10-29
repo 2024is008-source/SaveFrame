@@ -40,7 +40,10 @@
     "test:tiktok": "node scripts/check-tiktok.cjs",
     "test:browser": "node scripts/check-tiktok-browser.cjs",
     "test:blog:browser": "node scripts/check-tiktok-blog-browser.cjs",
-    "test:seo:metadata": "node scripts/check-seo-metadata.cjs"
+    "test:seo:metadata": "node scripts/check-seo-metadata.cjs",
+    "test:traffic": "node scripts/check-traffic.cjs",
+    "test:analytics:browser": "node scripts/check-audit-browser.cjs",
+    "analytics:config": "node scripts/check-analytics-config.cjs"
   },
   "dependencies": {
     "@next/third-parties": "^15.5.28",

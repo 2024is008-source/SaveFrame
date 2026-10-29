@@ -35,7 +35,7 @@ async function main() {
   const {countryCode, countryName, countryCodes} = require('../src/lib/country.ts');
   const auth = require('../src/admin/auth.ts');
   const connection = store.db();
-  assert.equal(connection.prepare('SELECT MAX(version) version FROM schema_migrations').get().version, 3);
+  assert.equal(connection.prepare('SELECT MAX(version) version FROM schema_migrations').get().version, 4);
   assert.equal(connection.prepare('SELECT COUNT(*) count FROM schema_migrations WHERE version<3 AND applied_at=123').get().count, 2);
   assert.equal(connection.prepare('SELECT value FROM public_settings WHERE key=?').get('site_name').value, 'Preserved brand');
   assert.equal(connection.prepare('SELECT country_code FROM download_requests WHERE id=?').get('historical').country_code, 'XX');

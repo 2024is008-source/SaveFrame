@@ -22,7 +22,7 @@ export function localHttp(request: Request) {
   const host=new URL(request.url).hostname;
   return ['localhost','127.0.0.1','[::1]'].includes(host) && (process.env.ADMIN_ALLOW_LOCAL_HTTP === '1' || process.env.NODE_ENV !== 'production');
 }
-export function adminOrigin(request: Request) { return process.env.ADMIN_ORIGIN || (localHttp(request) ? new URL(request.url).origin : process.env.NEXT_PUBLIC_SITE_URL || 'https://saveframe.site'); }
+export function adminOrigin(request: Request) { return process.env.ADMIN_ORIGIN || (localHttp(request) ? new URL(request.url).origin : process.env.NEXT_PUBLIC_SITE_URL || 'https://tiksavemp4.online'); }
 export function checkOrigin(request: Request) {
   if (request.headers.get('origin') !== new URL(adminOrigin(request)).origin) throw new AdminError(403,'This request must come from the admin site.');
   if (request.headers.get('sec-fetch-site') === 'cross-site') throw new AdminError(403,'Cross-site request rejected.');

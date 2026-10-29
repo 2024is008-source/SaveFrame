@@ -1,0 +1,64 @@
+{
+  "passed": true,
+  "liveGoogleRequests": true,
+  "propertyRealtimeVerified": false,
+  "results": [
+    "homepage has no popup; automatic allowed-region loader; exactly one initial internal view",
+    "Next.js navigation: one GA4 command and one internal counter per route",
+    "duplicate download operations submit one sanitized event",
+    "restricted/unknown: zero Google requests; internal counts remain available; opt-outs/GPC/DNT excluded",
+    "HTML requests counted with JavaScript disabled",
+    "mobile layout and browser console clean"
+  ],
+  "failures": [],
+  "network": [
+    {
+      "kind": "loader",
+      "status": 200
+    },
+    {
+      "event": "page_view",
+      "location": "https://tiksavemp4.online/",
+      "title": "Download TikTok Videos as MP4 & Photo Slideshows | TikSaveMP4",
+      "referrer": "https://www.google.com/",
+      "source": "newsletter",
+      "medium": "email",
+      "measurementId": "G-XP63QEZK1R",
+      "status": 204
+    },
+    {
+      "kind": "loader",
+      "status": 200
+    },
+    {
+      "event": "page_view",
+      "location": "https://tiksavemp4.online/blog",
+      "title": "TikTok Download Guides & Tutorials | TikSaveMP4",
+      "referrer": "",
+      "source": null,
+      "medium": null,
+      "measurementId": "G-XP63QEZK1R",
+      "status": 204
+    },
+    {
+      "event": "page_view",
+      "location": "https://tiksavemp4.online/blog/how-to-download-tiktok-videos-mp4",
+      "title": "How to Download TikTok Videos as MP4 | TikSaveMP4",
+      "referrer": "https://tiksavemp4.online/blog",
+      "source": null,
+      "medium": null,
+      "measurementId": "G-XP63QEZK1R",
+      "status": 204
+    },
+    {
+      "event": "download_started",
+      "location": "https://tiksavemp4.online/blog/how-to-download-tiktok-videos-mp4",
+      "title": "How to Download TikTok Videos as MP4 | TikSaveMP4",
+      "referrer": "https://tiksavemp4.online/blog",
+      "source": null,
+      "medium": null,
+      "measurementId": "G-XP63QEZK1R",
+      "status": 204
+    }
+  ]
+}

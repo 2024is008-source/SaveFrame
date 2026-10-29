@@ -23,7 +23,7 @@ legacy.win.location.origin='https://saveframe.site';legacy.win.location.hostname
 const legacyController=createAnalytics(legacy.win,id,'https://saveframe.site',true,()=>{},{});
 assert.equal(legacy.win['ga-disable-'+id],false,'Legacy production origin remains supported');legacyController.dispose();assert.equal(test.loads(),0);assert.deepEqual(test.commands(),[]);
 test.emit('saveframe:analytics-event',{name:'media_resolved',params:{media_type:'photo'}});assert.deepEqual(test.commands(),[]);
-test.win.SaveFrameAnalytics.setConsent('granted');assert.equal(test.loads(),1);assert.equal(test.commands().filter(c=>c[1]==='page_view').length,1);
+test.controller.dispose();test=fixture({consent:'granted'});assert.equal(test.loads(),1);assert.equal(test.commands().filter(c=>c[1]==='page_view').length,1);
 test.controller.page();test.controller.page();assert.equal(test.commands().filter(c=>c[1]==='page_view').length,1,'No duplicate route views');
 test.win.location.pathname='/blog';test.controller.page();assert.equal(test.commands().filter(c=>c[1]==='page_view').length,2);
 test.emit('saveframe:analytics-event',{name:'download_failed',params:{media_type:'photo',failure_stage:'resolve',error_code:'LOGIN_REQUIRED',url:'secret-url',username:'private-user',cookies:'secret-cookie',message:'private-error',job_id:'secret-job'}});
@@ -33,7 +33,7 @@ assert.equal(test.commands().find(c=>c[0]==='config')[2].send_page_view,false);
 assert.equal(test.commands().find(c=>c[0]==='config')[2].allow_google_signals,false);
 const before=test.commands().length;test.win.location.pathname='/admin/audit';test.controller.page();test.emit('saveframe:analytics-event',{name:'download_started'});assert.equal(test.commands().length,before);assert.equal(test.win['ga-disable-'+id],true);
 test.win.location.pathname='/blog';test.controller.page();assert.equal(test.win['ga-disable-'+id],false);assert.equal(test.commands().filter(c=>c[1]==='page_view').length,3,'Return from an excluded route is a new public view');
-test.emit('saveframe:analytics-consent',{analytics:'denied'});assert.equal(test.win['ga-disable-'+id],true);assert.deepEqual(test.commands(),[]);test.emit('saveframe:analytics-event',{name:'media_resolved'});assert.deepEqual(test.commands(),[]);assert.equal(test.stored.get(consentKey),'denied');
+test.win.SaveFrameAnalytics.optOut();assert.equal(test.win['ga-disable-'+id],true);assert.deepEqual(test.commands(),[]);test.emit('saveframe:analytics-event',{name:'media_resolved'});assert.deepEqual(test.commands(),[]);assert.equal(test.stored.get(consentKey),'denied');
 test.controller.dispose();assert.equal(test.events.size,0);assert.equal(test.win.SaveFrameAnalytics,undefined);
 for(const options of [{consent:'denied'},{consent:'granted',navigator:{doNotTrack:'1'}},{consent:'granted',navigator:{globalPrivacyControl:true}},{consent:'granted',path:'/admin/login'},{consent:'granted',production:false},{consent:'granted',id:'bad'},{consent:'granted',origin:'http://localhost:3000'}]){test=fixture(options);assert.equal(test.loads(),0);assert.deepEqual(test.commands(),[]);test.controller.dispose();}
 test=fixture({consent:'granted'});assert.equal(test.loads(),1);test.stored.set(consentKey,'denied');test.events.get('storage')({key:consentKey});assert.equal(test.win['ga-disable-'+id],true);assert.deepEqual(test.commands(),[]);test.controller.dispose();

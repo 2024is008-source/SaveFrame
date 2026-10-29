@@ -12,7 +12,7 @@ async function main(){
  assert.equal(formatAdminTime(Date.parse('2026-10-27T18:29:59Z')),'2026-10-27 23:59:59 SLST');
  assert.equal(formatAdminTime(Date.parse('2026-10-27T18:30:00Z')),'2026-10-28 00:00:00 SLST');
  for(const value of [undefined,null,'',NaN,'invalid'])assert.equal(formatAdminTime(value),'—');
- const connection=store.db();assert.equal(connection.prepare('SELECT MAX(version) version FROM schema_migrations').get().version,3);
+ const connection=store.db();assert.equal(connection.prepare('SELECT MAX(version) version FROM schema_migrations').get().version,4);
  const password='admin-fixture-'+require('node:crypto').randomBytes(18).toString('hex');const id=await auth.createAdmin('operator@example.test',password);
  const user=connection.prepare('SELECT * FROM admin_users WHERE id=?').get(id);assert.ok(user.password_hash.startsWith('$argon2id$'));
  await assert.rejects(auth.createAdmin('other@example.test',password),rejectStatus(403));
@@ -59,7 +59,7 @@ async function main(){
  const route='/photo-downloader',original=seo.seoEditor(route),base={title:original.page.title,description:original.page.description,alternates:{canonical:'https://saveframe.site/photo-downloader',languages:{en:'https://saveframe.site/'}},openGraph:{title:original.page.title},twitter:{card:'summary_large_image'}};
  for(const key of ['constructor','toString','__proto__']){assert.throws(()=>seo.validateSeo(route,JSON.parse('{"'+key+'":"bad"}')),rejectStatus(400));assert.throws(()=>seo.saveSettings(JSON.parse('{"'+key+'":"bad"}'),id),rejectStatus(400));}
  const values={...original.values,title:'A test photo title',description:'A server-rendered description for testing the publishing workflow.'};
- seo.saveSeo(route,values,'draft',id,0);assert.equal(publicSeo.applySeo(route,base).title,base.title);seo.saveSeo(route,values,'publish',id,1);const published=publicSeo.applySeo(route,base);assert.equal(published.title,values.title);assert.deepEqual(published.alternates,base.alternates);assert.equal(published.keywords,undefined);
+ seo.saveSeo(route,values,'draft',id,0);assert.equal(publicSeo.applySeo(route,base).title,require('../src/content/search-titles.json')[route]);seo.saveSeo(route,values,'publish',id,1);const published=publicSeo.applySeo(route,base);assert.equal(published.title,values.title);assert.deepEqual(published.alternates,base.alternates);assert.equal(published.keywords,undefined);
  assert.throws(()=>seo.saveSeo(route,values,'draft',id,0),rejectStatus(409));assert.throws(()=>seo.validateSeo('/evil',values),rejectStatus(400));assert.throws(()=>seo.validateSeo(route,{canonical:'https://evil.example'}),rejectStatus(400));assert.throws(()=>seo.validateSeo(route,{image:'https://evil.example/file.svg'}),rejectStatus(400));assert.throws(()=>seo.validateSeo(route,{title:'<script>alert(1)</script>'}),rejectStatus(400));
  const baseline=seo.seoEditor(route).history.find(row=>row.action==='baseline');seo.restoreSeo(route,baseline.id,id,2);assert.equal(publicSeo.applySeo(route,base).title,values.title);seo.saveSeo(route,seo.seoEditor(route).values,'publish',id,3);assert.equal(publicSeo.applySeo(route,base).title,original.page.title);
  const filename='google1234567890abcdef.html',content='google-site-verification: '+filename;verification.saveVerification(filename,content,id);assert.equal(verification.verificationFile(filename).content,content+'\n');assert.ok(!fs.existsSync(path.join(process.cwd(),'public',filename)));

@@ -14,7 +14,7 @@ export function analyticsPath(pathname:string,search=''):string|null {
   const page=new URLSearchParams(search).get('page');
   return clean==='/blog'&&page&&/^[1-9][0-9]{0,3}$/.test(page)&&Number(page)>1?clean+'?page='+Number(page):clean;
 }
-export interface AnalyticsOptions {automaticAllowed?:boolean;campaigns?:Partial<Record<'source'|'medium'|'name'|'content'|'term',string[]>>}
+export interface AnalyticsOptions {automaticAllowed?:boolean;trafficEnabled?:boolean;campaigns?:Partial<Record<'source'|'medium'|'name'|'content'|'term',string[]>>}
 export function analyticsReferrer(value:string,origin:string){
   try{
     const url=new URL(value);
@@ -53,7 +53,7 @@ export function analyticsEvent(name:unknown, input:Record<string,unknown>={}) {
 
 // This controller has no dependency on React or the downloader's private data.
 export function createAnalytics(browser:Window, id:string, origin:string, production:boolean, load:()=>void,options:AnalyticsOptions={}) {
-  const win=browser as Window & {saveframeDataLayer?:unknown[];SaveFrameAnalytics?:{setConsent:(value:'granted'|'denied')=>void};[key:`ga-disable-${string}`]:boolean};
+  const win=browser as Window & {saveframeDataLayer?:unknown[];SaveFrameAnalytics?:{optOut:()=>void};[key:`ga-disable-${string}`]:boolean};
   type Runtime={configured:boolean;lastPath:string|null;referrer:string;entryReferrer:string;campaign:Record<string,string>;operations?:WeakMap<object,Set<string>>;stop?:()=>void};
   const runtimeWindow=win as typeof win & {__saveframeGa4?:Runtime};
   const state=runtimeWindow.__saveframeGa4 ||= {configured:false,lastPath:null,referrer:'',entryReferrer:analyticsReferrer(browser.document.referrer||'',origin),campaign:analyticsCampaign(browser.location.search,options)};
@@ -63,10 +63,10 @@ export function createAnalytics(browser:Window, id:string, origin:string, produc
   const preferenceDenied=()=>['1','yes'].includes(browser.navigator.doNotTrack)||(browser.navigator as Navigator & {globalPrivacyControl?:boolean}).globalPrivacyControl===true;
   const currentPath=()=>analyticsPath(browser.location.pathname,browser.location.search);
   const permitted=()=>consent==='granted'||(consent==='unset'&&options.automaticAllowed===true);
-  const allowed=()=>!disposed&&production&&/^G-[A-Z0-9]+$/.test(id)&&browser.location.origin===origin&&/^https:\/\/(?:tiksavemp4\.online|saveframe\.site)$/.test(origin)&&permitted()&&!preferenceDenied()&&!browser.navigator.webdriver&&!/bot|crawler|spider|lighthouse|headless/i.test(browser.navigator.userAgent||'')&&currentPath()!==null;
+  const allowed=()=>!disposed&&production&&/^G-[A-Z0-9]+$/.test(id)&&browser.location.origin===origin&&/^https:\/\//.test(origin)&&permitted()&&!preferenceDenied()&&!browser.navigator.webdriver&&!/bot|crawler|spider|lighthouse|headless/i.test(browser.navigator.userAgent||'')&&currentPath()!==null;
   const fields=()=>({page_location:origin+currentPath(),page_referrer:state.referrer,page_title:browser.document.title||'TikSaveMP4',send_to:id});
   const page=()=>{
-    if(browser.location.pathname==='/privacy'&&new URLSearchParams(browser.location.search).get('analytics')==='off'&&consent!=='denied'){setConsent('denied');return;}
+    if(browser.location.pathname==='/privacy'&&new URLSearchParams(browser.location.search).get('analytics')==='off'&&consent!=='denied'){optOut();return;}
     if(!allowed()){win[`ga-disable-${id}`]=true;state.lastPath=null;return;}
     win[`ga-disable-${id}`]=false;
     const path=currentPath();
@@ -103,8 +103,8 @@ export function createAnalytics(browser:Window, id:string, origin:string, produc
     }
     page();
   };
-  const setConsent=(value:'granted'|'denied')=>{
-    consent=value==='granted'?'granted':'denied';
+  const optOut=()=>{
+    consent='denied';
     try{browser.localStorage.setItem(consentKey,consent);}catch{}
     apply();
   };
@@ -112,10 +112,9 @@ export function createAnalytics(browser:Window, id:string, origin:string, produc
     let value:string|null=null;
     try{value=browser.localStorage.getItem(consentKey);}catch{ /* Preserve an existing opt-out cookie when storage is unavailable. */ }
     const denied=browser.document.cookie.split(';').some(value=>value.trim()==='sf_analytics_preference=denied');
-    return value==='granted'?'granted':value==='denied'||denied?'denied':'unset';
+    return value==='denied'||denied?'denied':value==='granted'?'granted':'unset';
   };
   const onStorage=(event:StorageEvent)=>{if(event.key===consentKey||event.key===null){consent=readPreference();apply();}};
-  const onConsent=(event:Event)=>setConsent((event as CustomEvent).detail?.analytics==='granted'?'granted':'denied');
   const onEvent=(event:Event)=>{
     if(!allowed()){page();return;}
     const detail=(event as CustomEvent).detail;
@@ -133,11 +132,11 @@ export function createAnalytics(browser:Window, id:string, origin:string, produc
   };
   consent=readPreference();
   if(browser.location.pathname==='/privacy'&&new URLSearchParams(browser.location.search).get('analytics')==='off'){consent='denied';try{browser.localStorage.setItem(consentKey,'denied');}catch{}}
-  const api={setConsent};win.SaveFrameAnalytics=api;
-  browser.addEventListener('storage',onStorage);browser.addEventListener('saveframe:analytics-consent',onConsent);browser.addEventListener('saveframe:analytics-event',onEvent);
+  const api={optOut};win.SaveFrameAnalytics=api;
+  browser.addEventListener('storage',onStorage);browser.addEventListener('saveframe:analytics-event',onEvent);
   if(state.configured&&allowed())load();
   apply();
-  const dispose=()=>{if(disposed)return;disposed=true;win[`ga-disable-${id}`]=true;browser.removeEventListener('storage',onStorage);browser.removeEventListener('saveframe:analytics-consent',onConsent);browser.removeEventListener('saveframe:analytics-event',onEvent);if(win.SaveFrameAnalytics===api)delete win.SaveFrameAnalytics;if(state.stop===dispose)state.stop=undefined;};
+  const dispose=()=>{if(disposed)return;disposed=true;win[`ga-disable-${id}`]=true;browser.removeEventListener('storage',onStorage);browser.removeEventListener('saveframe:analytics-event',onEvent);if(win.SaveFrameAnalytics===api)delete win.SaveFrameAnalytics;if(state.stop===dispose)state.stop=undefined;};
   state.stop=dispose;
   return {page,dispose};
 }

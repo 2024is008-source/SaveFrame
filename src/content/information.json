@@ -48,11 +48,11 @@
       ],
       [
         "Third-party connections",
-        "The server contacts TikTok and its media delivery networks. Preview images load directly from those networks, which can receive your IP address. Optional Google Analytics measures public page visits and download events using cookies. It does not receive submitted media links or download job identifiers. Collection follows regional policy and your analytics choice; unknown regions require consent. Browser Do Not Track and Global Privacy Control signals are respected."
+        "The server contacts TikTok and its media delivery networks. Preview images load directly from those networks, which can receive your IP address. Google Analytics loads automatically only under the configured regional policy or a previously saved consent, and respects browser privacy signals and opt-outs. Unknown or consent-required regions without an existing consent do not send Google Analytics requests. It does not receive submitted TikTok links or job identifiers."
       ],
       [
         "Your choices",
-        "Do not submit private information. Use the contact page to ask about privacy or deletion. Use Analytics settings at the bottom of any page to allow or decline optional analytics, or use the opt-out link below."
+        "We count public page requests and browser navigation in separate internal aggregate statistics, including visits from regions where Google Analytics is unavailable. These counters contain the page route, date, coarse device category, trusted country code or Unknown location, and approved traffic-source labels. They contain no raw IP address, visitor identifier, submitted TikTok URL or full referrer URL. They measure page views, not unique people. Analytics opt-outs, Do Not Track and Global Privacy Control exclude these optional traffic counters. Existing operational download records remain separate. Use the opt-out link below to disable optional analytics in this browser."
       ]
     ]
   },

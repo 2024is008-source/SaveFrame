@@ -4,7 +4,7 @@ async function run(){
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'saveframe-ga-production-')),base='http://127.0.0.1:3114';let server;
  try{
   server=spawn(process.execPath,['node_modules/next/dist/bin/next','start','-H','127.0.0.1','-p','3114'],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,NODE_ENV:'production',SAVEFRAME_ADMIN_DATA_DIR:directory,SAVEFRAME_ANALYTICS_DISABLED:'1',GA4_ENABLED:'1',GA4_TRUST_REGION_HEADER:'1',GA4_AUTOMATIC_COUNTRIES:'*'}});server.stdout.resume();server.stderr.resume();
-  let ready=false;for(let i=0;i<100;i++){if(server.exitCode!==null)throw Error('GA preview could not start; no existing server was stopped.');try{const response=await fetch(base+'/admin/login',{signal:AbortSignal.timeout(1000)});await response.arrayBuffer();if(response.status===404){ready=true;break;}}catch{}await delay(200);}assert.ok(ready);
+  let ready=false;for(let i=0;i<100;i++){if(server.exitCode!==null)throw Error('GA preview could not start; no existing server was stopped.');try{const response=await fetch(base+'/admin/login',{signal:AbortSignal.timeout(1000)});await response.arrayBuffer();if(response.status===200){ready=true;break;}}catch{}await delay(200);}assert.ok(ready);
   const rows=[];
   for(const [route,country,automatic]of [['/','US',true],['/fr/','US',true],['/photo-downloader','US',true],['/blog','US',true],['/privacy','US',true],['/','DE',false],['/','GB',false],['/','XX',false]]){
    const response=await fetch(base+route,{headers:{'x-saveframe-country':country}});assert.equal(response.status,200);
