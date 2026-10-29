@@ -1,0 +1,65 @@
+{
+  "base": "http://127.0.0.1:3139",
+  "pages": [
+    {
+      "route": "/reels-downloader",
+      "status": 200,
+      "title": "Instagram Reels Downloader – Free HD MP4 | SaveFrame",
+      "description": "Download Instagram Reels in HD MP4 for free. Paste a public Reel link, preview available video quality and save it with audio. No login required.",
+      "ogTitle": "Instagram Reels Downloader – Free HD MP4 | SaveFrame",
+      "ogDescription": "Download Instagram Reels in HD MP4 for free. Paste a public Reel link, preview available video quality and save it with audio. No login required.",
+      "twitterTitle": "Instagram Reels Downloader – Free HD MP4 | SaveFrame",
+      "twitterDescription": "Download Instagram Reels in HD MP4 for free. Paste a public Reel link, preview available video quality and save it with audio. No login required.",
+      "canonical": "https://saveframe.site/reels-downloader",
+      "h1": "Instagram Reels Downloader"
+    },
+    {
+      "route": "/photo-downloader",
+      "status": 200,
+      "title": "Instagram Photo Downloader – Free HD Images | SaveFrame",
+      "description": "Download Instagram photos in HD for free. Paste a public post link, preview the image and save it to your phone or PC. No login or app required.",
+      "ogTitle": "Instagram Photo Downloader – Free HD Images | SaveFrame",
+      "ogDescription": "Download Instagram photos in HD for free. Paste a public post link, preview the image and save it to your phone or PC. No login or app required.",
+      "twitterTitle": "Instagram Photo Downloader – Free HD Images | SaveFrame",
+      "twitterDescription": "Download Instagram photos in HD for free. Paste a public post link, preview the image and save it to your phone or PC. No login or app required.",
+      "canonical": "https://saveframe.site/photo-downloader",
+      "h1": "Instagram Photo Downloader"
+    },
+    {
+      "route": "/carousel-downloader",
+      "status": 200,
+      "title": "Instagram Carousel Downloader – Photos & ZIP | SaveFrame",
+      "description": "Download Instagram carousel photos for free. Preview each image, choose the photos you want or save them together as a ZIP file. No login required.",
+      "ogTitle": "Instagram Carousel Downloader – Photos & ZIP | SaveFrame",
+      "ogDescription": "Download Instagram carousel photos for free. Preview each image, choose the photos you want or save them together as a ZIP file. No login required.",
+      "twitterTitle": "Instagram Carousel Downloader – Photos & ZIP | SaveFrame",
+      "twitterDescription": "Download Instagram carousel photos for free. Preview each image, choose the photos you want or save them together as a ZIP file. No login required.",
+      "canonical": "https://saveframe.site/carousel-downloader",
+      "h1": "Instagram Carousel Downloader"
+    },
+    {
+      "route": "/audio-downloader",
+      "status": 200,
+      "title": "Instagram Audio Downloader – Reels to MP3 | SaveFrame",
+      "description": "Convert Instagram Reels and videos to MP3 for free. Paste a public link, choose 128, 192 or 320 kbps and download the available audio. No signup needed.",
+      "ogTitle": "Instagram Audio Downloader – Reels to MP3 | SaveFrame",
+      "ogDescription": "Convert Instagram Reels and videos to MP3 for free. Paste a public link, choose 128, 192 or 320 kbps and download the available audio. No signup needed.",
+      "twitterTitle": "Instagram Audio Downloader – Reels to MP3 | SaveFrame",
+      "twitterDescription": "Convert Instagram Reels and videos to MP3 for free. Paste a public link, choose 128, 192 or 320 kbps and download the available audio. No signup needed.",
+      "canonical": "https://saveframe.site/audio-downloader",
+      "h1": "Instagram Audio Downloader"
+    },
+    {
+      "route": "/video-downloader",
+      "status": 200,
+      "title": "Instagram Video Downloader – Free HD MP4 | SaveFrame",
+      "description": "Download Instagram videos in HD MP4 for free. Paste a public video link, preview available quality and save it to your phone or PC. No login required.",
+      "ogTitle": "Instagram Video Downloader – Free HD MP4 | SaveFrame",
+      "ogDescription": "Download Instagram videos in HD MP4 for free. Paste a public video link, preview available quality and save it to your phone or PC. No login required.",
+      "twitterTitle": "Instagram Video Downloader – Free HD MP4 | SaveFrame",
+      "twitterDescription": "Download Instagram videos in HD MP4 for free. Paste a public video link, preview available quality and save it to your phone or PC. No login required.",
+      "canonical": "https://saveframe.site/video-downloader",
+      "h1": "Instagram Video Downloader"
+    }
+  ]
+}

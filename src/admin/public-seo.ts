@@ -4,19 +4,20 @@ import { db, publicSettings } from './db';
 import { absoluteUrl } from '../lib/site';
 import { searchTitle, isLegacyHomepageTitle } from '../lib/search-title';
 import { isLegacyHomepageDescription } from '../lib/homepage-description';
+import {isLegacyToolTitle, isLegacyToolDescription} from '../lib/legacy-tool-seo';
 export function publishedSeo(route: string): any {
   noStore();
   if(process.env.SAVEFRAME_DISABLE_SEO_OVERRIDES==='1') return null;
   try { const row=db().prepare('SELECT published_json FROM seo_overrides WHERE route=?').get(route) as any; return row?.published_json ? JSON.parse(row.published_json) : null; }
   catch { return null; }
 }
-export function pageDescription(route: string, original: string) { return publishedSeo(route)?.contentDescription || original; }
+export function pageDescription(route: string, original: string) { const value=publishedSeo(route)?.contentDescription; return isLegacyToolDescription(route,value) ? original : value || original; }
 export function applySeo(route: string, base: Metadata): Metadata {
   const value=publishedSeo(route) || {}, site=publicSettings();
-  const overrideTitle=isLegacyHomepageTitle(route,value.title) ? undefined : value.title;
-  const overrideOgTitle=isLegacyHomepageTitle(route,value.ogTitle) ? undefined : value.ogTitle;
-  const overrideDescription=isLegacyHomepageDescription(route,value.description) ? undefined : value.description;
-  const overrideOgDescription=isLegacyHomepageDescription(route,value.ogDescription) ? undefined : value.ogDescription;
+  const overrideTitle=isLegacyHomepageTitle(route,value.title) || isLegacyToolTitle(route,value.title) ? undefined : value.title;
+  const overrideOgTitle=isLegacyHomepageTitle(route,value.ogTitle) || isLegacyToolTitle(route,value.ogTitle) ? undefined : value.ogTitle;
+  const overrideDescription=isLegacyHomepageDescription(route,value.description) || isLegacyToolDescription(route,value.description) ? undefined : value.description;
+  const overrideOgDescription=isLegacyHomepageDescription(route,value.ogDescription) || isLegacyToolDescription(route,value.ogDescription) ? undefined : value.ogDescription;
   const originalTitle=typeof base.title==='string' ? searchTitle(route,base.title) : '';
   const title=overrideTitle || (originalTitle ? site.siteName!=='SaveFrame' ? originalTitle.replace(/SaveFrame/g,site.siteName) : originalTitle : base.title);
   const description=overrideDescription || base.description || site.defaultDescription;

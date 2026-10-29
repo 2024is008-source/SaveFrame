@@ -12,7 +12,7 @@
     "lint": "eslint src next.config.ts",
     "test": "npm run test:site && npm run test:retired-media && npm run test:admin && npm run test:security && npm run test:preview && npm run test:downloader && npm run test:i18n && npm run test:blog && npm run test:analytics && npm run test:sitelinks && npm run test:audio",
     "test:site": "node scripts/check-site-config.cjs",
-    "test:sitelinks": "node scripts/check-sitelinks.cjs",
+    "test:sitelinks": "node scripts/check-sitelinks.cjs && node scripts/check-tool-seo.cjs",
     "test:audio": "node scripts/check-audio.cjs",
     "test:audio:browser": "node scripts/check-audio-browser.cjs",
     "test:sitelinks:browser": "node scripts/check-sitelinks-browser.cjs",

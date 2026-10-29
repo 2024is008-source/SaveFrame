@@ -1,0 +1,65 @@
+{
+  "base": "https://www.saveframe.site",
+  "pages": [
+    {
+      "route": "/reels-downloader",
+      "status": 200,
+      "title": "Instagram Reels Downloader – Preview & Save MP4 | SaveFrame",
+      "description": "Download supported public Instagram Reels as MP4. Preview available resolutions, choose video or audio, and check the finished file on your device.",
+      "ogTitle": "Instagram Reels Downloader – Preview & Save MP4 | SaveFrame",
+      "ogDescription": "Download supported public Instagram Reels as MP4. Preview available resolutions, choose video or audio, and check the finished file on your device.",
+      "twitterTitle": "Instagram Reels Downloader – Preview & Save MP4 | SaveFrame",
+      "twitterDescription": "Download supported public Instagram Reels as MP4. Preview available resolutions, choose video or audio, and check the finished file on your device.",
+      "canonical": "https://saveframe.site/reels-downloader",
+      "h1": "Instagram Reels Downloader"
+    },
+    {
+      "route": "/photo-downloader",
+      "status": 200,
+      "title": "Instagram Photo Downloader – Preview & Save Images | SaveFrame",
+      "description": "Download supported public Instagram photos from a post link. Preview the image, inspect available dimensions, and save a local copy without signing in.",
+      "ogTitle": "Instagram Photo Downloader – Preview & Save Images | SaveFrame",
+      "ogDescription": "Download supported public Instagram photos from a post link. Preview the image, inspect available dimensions, and save a local copy without signing in.",
+      "twitterTitle": "Instagram Photo Downloader – Preview & Save Images | SaveFrame",
+      "twitterDescription": "Download supported public Instagram photos from a post link. Preview the image, inspect available dimensions, and save a local copy without signing in.",
+      "canonical": "https://saveframe.site/photo-downloader",
+      "h1": "Instagram Photo Downloader"
+    },
+    {
+      "route": "/carousel-downloader",
+      "status": 200,
+      "title": "Instagram Carousel Downloader – Pick Photos or Save a ZIP | SaveFrame",
+      "description": "Download individual photos from supported public Instagram carousels. Preview each returned slide, choose the items you need, and preserve their order.",
+      "ogTitle": "Instagram Carousel Downloader – Pick Photos or Save a ZIP | SaveFrame",
+      "ogDescription": "Download individual photos from supported public Instagram carousels. Preview each returned slide, choose the items you need, and preserve their order.",
+      "twitterTitle": "Instagram Carousel Downloader – Pick Photos or Save a ZIP | SaveFrame",
+      "twitterDescription": "Download individual photos from supported public Instagram carousels. Preview each returned slide, choose the items you need, and preserve their order.",
+      "canonical": "https://saveframe.site/carousel-downloader",
+      "h1": "Instagram Carousel Downloader"
+    },
+    {
+      "route": "/audio-downloader",
+      "status": 200,
+      "title": "Instagram Audio Downloader – Download Reels MP3 | SaveFrame",
+      "description": "Download audio from Instagram Reels and videos as MP3. Paste a public Instagram link, extract audio online, and save it for free. No signup required.",
+      "ogTitle": "Instagram Audio Downloader – Download Reels MP3 | SaveFrame",
+      "ogDescription": "Download audio from Instagram Reels and videos as MP3. Paste a public Instagram link, extract audio online, and save it for free. No signup required.",
+      "twitterTitle": "Instagram Audio Downloader – Download Reels MP3 | SaveFrame",
+      "twitterDescription": "Download audio from Instagram Reels and videos as MP3. Paste a public Instagram link, extract audio online, and save it for free. No signup required.",
+      "canonical": "https://saveframe.site/audio-downloader",
+      "h1": "Instagram Audio Downloader"
+    },
+    {
+      "route": "/video-downloader",
+      "status": 200,
+      "title": "Save Instagram Videos as MP4 – Video Downloader | SaveFrame",
+      "description": "Save supported public Instagram feed videos to your phone or computer. Inspect MP4 options and troubleshoot processing or playback problems.",
+      "ogTitle": "Save Instagram Videos as MP4 – Video Downloader | SaveFrame",
+      "ogDescription": "Save supported public Instagram feed videos to your phone or computer. Inspect MP4 options and troubleshoot processing or playback problems.",
+      "twitterTitle": "Save Instagram Videos as MP4 – Video Downloader | SaveFrame",
+      "twitterDescription": "Save supported public Instagram feed videos to your phone or computer. Inspect MP4 options and troubleshoot processing or playback problems.",
+      "canonical": "https://saveframe.site/video-downloader",
+      "h1": "Instagram Video Downloader"
+    }
+  ]
+}

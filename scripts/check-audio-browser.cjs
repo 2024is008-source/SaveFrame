@@ -34,7 +34,7 @@ async function main() {
     for (const [width, quality] of [[1365, 1], [390, 2]]) {
       await page.setViewportSize({width, height: 900});
       await ready('/audio-downloader');
-      assert.equal(await page.title(), 'Instagram Audio Downloader – Download Reels MP3');
+      assert.equal(await page.title(), 'Instagram Audio Downloader – Reels to MP3 | SaveFrame');
       assert.equal((await page.locator('#hero-heading').textContent()).trim(), 'Instagram Audio Downloader');
       await page.locator('#instagram-url-input').fill(mediaUrl);
       await page.locator('#submit-download-btn').click();

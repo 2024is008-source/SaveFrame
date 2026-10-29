@@ -1,6 +1,7 @@
 import { db, transaction, audit, settingDefaults } from './db';
 import { AdminError } from './auth';
 import { seoCatalog, approvedImages } from './catalog';
+import {isLegacyToolTitle, isLegacyToolDescription} from '../lib/legacy-tool-seo';
 export interface SeoValues { title?:string; description?:string; targetKeyword?:string; ogTitle?:string; ogDescription?:string; image?:string; contentDescription?:string }
 export function validateSeo(route: string, values: SeoValues): SeoValues {
   const page=seoCatalog().find(page=>page.route===route);
@@ -21,7 +22,10 @@ export function seoEditor(route: string) {
   if(!page) throw new AdminError(404,'Page not found.');
   const record=db().prepare('SELECT * FROM seo_overrides WHERE route=?').get(route) as any;
   const baseline={title:page.title,description:page.description,targetKeyword:page.keyword,ogTitle:page.title,ogDescription:page.description,image:page.image,contentDescription:page.contentEditable ? page.description : ''};
-  return {page,values:record?.draft_json ? JSON.parse(record.draft_json) : record?.published_json ? JSON.parse(record.published_json) : baseline,version:record?.version || 0,draft:Boolean(record?.draft_json),published:record?.published_json ? JSON.parse(record.published_json) : null,history:db().prepare('SELECT id,action,created_at FROM seo_revisions WHERE route=? ORDER BY id DESC LIMIT 100').all(route)};
+  const values=record?.draft_json ? JSON.parse(record.draft_json) : record?.published_json ? JSON.parse(record.published_json) : {...baseline};
+  for(const key of ['title','ogTitle'] as const) if(isLegacyToolTitle(route,values[key])) values[key]=baseline[key];
+  for(const key of ['description','ogDescription','contentDescription'] as const) if(isLegacyToolDescription(route,values[key])) values[key]=baseline[key];
+  return {page,values,version:record?.version || 0,draft:Boolean(record?.draft_json),published:record?.published_json ? JSON.parse(record.published_json) : null,history:db().prepare('SELECT id,action,created_at FROM seo_revisions WHERE route=? ORDER BY id DESC LIMIT 100').all(route)};
 }
 export function saveSeo(route: string, values: SeoValues, action: 'draft'|'publish', actor: string, version: number) {
   const validated=validateSeo(route,values);

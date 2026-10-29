@@ -1,5 +1,5 @@
 {
-  "scope": "HTTP validation at http://127.0.0.1:3137; not a Google indexing confirmation",
+  "scope": "HTTP validation at http://127.0.0.1:3139; not a Google indexing confirmation",
   "sitemap": {
     "urlCount": 35,
     "localizedHomepages": 10,
@@ -24,7 +24,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 52
+      "responseAndBodyMs": 108
     },
     {
       "path": "/es/",
@@ -38,7 +38,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 52
+      "responseAndBodyMs": 110
     },
     {
       "path": "/pt-br/",
@@ -52,7 +52,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 60
+      "responseAndBodyMs": 100
     },
     {
       "path": "/de/",
@@ -66,7 +66,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 51
+      "responseAndBodyMs": 131
     },
     {
       "path": "/fr/",
@@ -80,7 +80,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 63
+      "responseAndBodyMs": 128
     },
     {
       "path": "/ja/",
@@ -94,7 +94,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 54
+      "responseAndBodyMs": 102
     },
     {
       "path": "/id/",
@@ -108,7 +108,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 58
+      "responseAndBodyMs": 126
     },
     {
       "path": "/tr/",
@@ -122,7 +122,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 56
+      "responseAndBodyMs": 119
     },
     {
       "path": "/hi/",
@@ -136,7 +136,7 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 53
+      "responseAndBodyMs": 126
     },
     {
       "path": "/ar/",
@@ -150,13 +150,13 @@
         "WebPage",
         "WebApplication"
       ],
-      "responseAndBodyMs": 64
+      "responseAndBodyMs": 112
     },
     {
       "path": "/reels-downloader",
       "status": 200,
-      "title": "Instagram Reels Downloader – Preview & Save MP4 | SaveFrame",
-      "description": "Download supported public Instagram Reels as MP4. Preview available resolutions, choose video or audio, and check the finished file on your device.",
+      "title": "Instagram Reels Downloader – Free HD MP4 | SaveFrame",
+      "description": "Download Instagram Reels in HD MP4 for free. Paste a public Reel link, preview available video quality and save it with audio. No login required.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -165,13 +165,13 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 92
+      "responseAndBodyMs": 170
     },
     {
       "path": "/video-downloader",
       "status": 200,
-      "title": "Save Instagram Videos as MP4 – Video Downloader | SaveFrame",
-      "description": "Save supported public Instagram feed videos to your phone or computer. Inspect MP4 options and troubleshoot processing or playback problems.",
+      "title": "Instagram Video Downloader – Free HD MP4 | SaveFrame",
+      "description": "Download Instagram videos in HD MP4 for free. Paste a public video link, preview available quality and save it to your phone or PC. No login required.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -180,13 +180,13 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 72
+      "responseAndBodyMs": 188
     },
     {
       "path": "/photo-downloader",
       "status": 200,
-      "title": "Instagram Photo Downloader – Preview & Save Images | SaveFrame",
-      "description": "Download supported public Instagram photos from a post link. Preview the image, inspect available dimensions, and save a local copy without signing in.",
+      "title": "Instagram Photo Downloader – Free HD Images | SaveFrame",
+      "description": "Download Instagram photos in HD for free. Paste a public post link, preview the image and save it to your phone or PC. No login or app required.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -195,13 +195,13 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 75
+      "responseAndBodyMs": 164
     },
     {
       "path": "/carousel-downloader",
       "status": 200,
-      "title": "Instagram Carousel Downloader – Pick Photos or Save a ZIP | SaveFrame",
-      "description": "Download individual photos from supported public Instagram carousels. Preview each returned slide, choose the items you need, and preserve their order.",
+      "title": "Instagram Carousel Downloader – Photos & ZIP | SaveFrame",
+      "description": "Download Instagram carousel photos for free. Preview each image, choose the photos you want or save them together as a ZIP file. No login required.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -210,13 +210,13 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 82
+      "responseAndBodyMs": 176
     },
     {
       "path": "/audio-downloader",
       "status": 200,
-      "title": "Instagram Audio Downloader – Download Reels MP3 | SaveFrame",
-      "description": "Download audio from Instagram Reels and videos as MP3. Paste a public Instagram link, extract audio online, and save it for free. No signup required.",
+      "title": "Instagram Audio Downloader – Reels to MP3 | SaveFrame",
+      "description": "Convert Instagram Reels and videos to MP3 for free. Paste a public link, choose 128, 192 or 320 kbps and download the available audio. No signup needed.",
       "h1": 1,
       "schemaTypes": [
         "Organization",
@@ -225,7 +225,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 74
+      "responseAndBodyMs": 163
     },
     {
       "path": "/profile-viewer",
@@ -240,7 +240,7 @@
         "WebApplication",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 70
+      "responseAndBodyMs": 150
     },
     {
       "path": "/about",
@@ -254,7 +254,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 31
+      "responseAndBodyMs": 41
     },
     {
       "path": "/contact",
@@ -268,7 +268,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 30
+      "responseAndBodyMs": 31
     },
     {
       "path": "/privacy",
@@ -282,7 +282,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 16
+      "responseAndBodyMs": 30
     },
     {
       "path": "/terms",
@@ -296,7 +296,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 18
+      "responseAndBodyMs": 32
     },
     {
       "path": "/copyright",
@@ -310,7 +310,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 36
+      "responseAndBodyMs": 33
     },
     {
       "path": "/blog",
@@ -324,7 +324,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 53
+      "responseAndBodyMs": 100
     },
     {
       "path": "/blog/how-to-download-instagram-photos-online",
@@ -336,7 +336,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 51
+      "responseAndBodyMs": 112
     },
     {
       "path": "/blog/how-to-copy-instagram-photo-link",
@@ -348,7 +348,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 60
+      "responseAndBodyMs": 104
     },
     {
       "path": "/blog/view-instagram-profile-picture-by-url",
@@ -360,7 +360,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 54
+      "responseAndBodyMs": 100
     },
     {
       "path": "/blog/how-to-download-instagram-reels-mp4",
@@ -372,7 +372,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 61
+      "responseAndBodyMs": 98
     },
     {
       "path": "/blog/download-instagram-reels-on-iphone",
@@ -384,7 +384,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 57
+      "responseAndBodyMs": 96
     },
     {
       "path": "/blog/download-instagram-videos-on-pc",
@@ -396,7 +396,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 64
+      "responseAndBodyMs": 90
     },
     {
       "path": "/blog/download-instagram-carousel-photos",
@@ -408,7 +408,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 62
+      "responseAndBodyMs": 89
     },
     {
       "path": "/blog/download-instagram-reels-with-audio",
@@ -420,7 +420,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 62
+      "responseAndBodyMs": 121
     },
     {
       "path": "/blog/instagram-downloader-not-working",
@@ -432,7 +432,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 54
+      "responseAndBodyMs": 92
     },
     {
       "path": "/blog/why-instagram-videos-wont-download",
@@ -444,7 +444,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 48
+      "responseAndBodyMs": 124
     },
     {
       "path": "/blog/download-instagram-photos-iphone-android",
@@ -456,7 +456,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 43
+      "responseAndBodyMs": 90
     },
     {
       "path": "/blog/instagram-photo-sizes-aspect-ratios",
@@ -468,7 +468,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 50
+      "responseAndBodyMs": 76
     },
     {
       "path": "/blog/backup-instagram-photos-videos-reels",
@@ -480,7 +480,7 @@
         "BlogPosting",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 47
+      "responseAndBodyMs": 80
     },
     {
       "path": "/blog?page=2",
@@ -494,7 +494,7 @@
         "WebPage",
         "BreadcrumbList"
       ],
-      "responseAndBodyMs": 37
+      "responseAndBodyMs": 69
     }
   ],
   "internalDestinationsChecked": [

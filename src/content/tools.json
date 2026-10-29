@@ -3,7 +3,7 @@
     "slug": "reels-downloader",
     "tool": "reels",
     "title": "Instagram Reels Downloader",
-    "description": "Download supported public Instagram Reels as MP4. Preview available resolutions, choose video or audio, and check the finished file on your device.",
+    "description": "Download Instagram Reels in HD MP4 for free. Paste a public Reel link, preview available video quality and save it with audio. No login required.",
     "intro": "Use a direct Reel link to inspect the video and audio Instagram makes available. SaveFrame prepares the selected format on the server and delivers the completed file to your browser. You do not need to install a browser extension or enter an Instagram password.",
     "heading": "Save a Reel with the right video and sound",
     "body": "A Reel may offer several resolutions or separate video and audio tracks. Choose a video option when you want moving pictures with available sound; audio-only is a separate choice. FFmpeg combines supported tracks when needed. A higher-resolution option does not guarantee access to a soundtrack that the source does not provide.",
@@ -37,7 +37,7 @@
     "slug": "video-downloader",
     "tool": "video",
     "title": "Instagram Video Downloader",
-    "description": "Save supported public Instagram feed videos to your phone or computer. Inspect MP4 options and troubleshoot processing or playback problems.",
+    "description": "Download Instagram videos in HD MP4 for free. Paste a public video link, preview available quality and save it to your phone or PC. No login required.",
     "intro": "SaveFrame helps you inspect a public Instagram video post and save an available file locally. This page is for feed video links such as /p/ and older /tv/ URLs. For a dedicated short-form clip, use the Reels downloader instead.",
     "heading": "Check the source video before downloading",
     "body": "A post thumbnail is a preview image, not the video itself. After the link resolves, choose a video format from the returned options. Resolution, audio and file availability depend on the original post. The browser receives the file after server preparation; it does not need a separate download extension.",
@@ -71,7 +71,7 @@
     "slug": "photo-downloader",
     "tool": "photo",
     "title": "Instagram Photo Downloader",
-    "description": "Download supported public Instagram photos from a post link. Preview the image, inspect available dimensions, and save a local copy without signing in.",
+    "description": "Download Instagram photos in HD for free. Paste a public post link, preview the image and save it to your phone or PC. No login or app required.",
     "intro": "Paste the direct link to a public photo post to inspect and save an available image. SaveFrame presents the source image dimensions when they are known. It does not enlarge a small preview or reconstruct detail removed by Instagram compression.",
     "heading": "Save a photo rather than a screenshot",
     "body": "A supported image download preserves the available photo file without the surrounding app interface. It may differ from the creator's original camera file: Instagram can resize or recompress uploads. Keep the supplied extension and inspect the downloaded image dimensions before using it in a layout or print project.",
@@ -105,7 +105,7 @@
     "slug": "carousel-downloader",
     "tool": "photo",
     "title": "Instagram Carousel Downloader",
-    "description": "Download individual photos from supported public Instagram carousels. Preview each returned slide, choose the items you need, and preserve their order.",
+    "description": "Download Instagram carousel photos for free. Preview each image, choose the photos you want or save them together as a ZIP file. No login required.",
     "intro": "A carousel is one Instagram post with multiple slides. Use the post's direct link to see the items returned by the source, then save the photos you need individually. This makes it easier to check slide order and avoid accidentally keeping only the cover image.",
     "heading": "Inspect every returned slide",
     "body": "Select a thumbnail to inspect its preview and use the matching save button for that item. Keep the post link and slide number with your downloaded files if order matters. Mixed photo/video posts can expose different formats per item; inspect what is actually returned rather than assuming every slide is an image.",
@@ -139,7 +139,7 @@
     "slug": "audio-downloader",
     "tool": "audio",
     "title": "Instagram Audio Downloader",
-    "description": "Download audio from public Instagram Reels and videos as MP3. Paste an Instagram link, extract the available audio, and save it to your device for free.",
+    "description": "Convert Instagram Reels and videos to MP3 for free. Paste a public link, choose 128, 192 or 320 kbps and download the available audio. No signup needed.",
     "heading": "Extract available Instagram audio as MP3",
     "intro": "Paste an accessible public Reel or video post link to inspect its audio track. Choose an MP3 output bitrate and prepare the file with the existing secure download queue.",
     "body": "Standard encodes at 128 kbps, High at 192 kbps, and Best available at up to 320 kbps. Encoding at a higher bitrate cannot restore detail absent from the source. Audio preparation supports videos up to 10 minutes.",
@@ -171,7 +171,7 @@
       "how-to-download-instagram-reels-mp4",
       "instagram-downloader-not-working"
     ],
-    "seoDescription": "Download audio from Instagram Reels and videos as MP3. Paste a public Instagram link, extract audio online, and save it for free. No signup required."
+    "seoDescription": "Convert Instagram Reels and videos to MP3 for free. Paste a public link, choose 128, 192 or 320 kbps and download the available audio. No signup needed."
   },
   {
     "slug": "profile-viewer",
