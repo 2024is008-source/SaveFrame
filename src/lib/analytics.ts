@@ -1,10 +1,11 @@
 import tools from '../content/tools.json';
 import information from '../content/information.json';
 import posts from '../content/blog/posts.json';
+import legacyPosts from '../content/blog/legacy-posts.json';
 import { locales } from '../i18n/config';
 
 export const consentKey = 'saveframe.analytics.consent';
-const routes = new Set(['/', '/blog', ...locales.filter(locale=>locale!=='en').map(locale=>`/${locale}`), ...tools.map(tool=>`/${tool.slug}`), ...information.map(page=>`/${page.slug}`), ...posts.filter(post=>post.published).map(post=>`/blog/${post.slug}`)]);
+const routes = new Set(['/', '/blog', ...locales.filter(locale=>locale!=='en').map(locale=>`/${locale}`), ...tools.map(tool=>`/${tool.slug}`), ...information.map(page=>`/${page.slug}`), ...[...posts, ...legacyPosts].filter(post=>post.published).map(post=>`/blog/${post.slug}`)]);
 const categories = new Set(['audio','reel','reels','video','photo','carousel','story','zip','profile','unknown']);
 const codes = new Set(['INVALID_URL','INVALID_STORY_LINK','UNSUPPORTED_OPERATION','UNSUPPORTED_MEDIA_TYPE','LOGIN_REQUIRED','PRIVATE_CONTENT','EXPIRED_STORY','DELETED_CONTENT','NO_ACTIVE_STORIES','RATE_LIMITED','EXTRACTOR_FAILURE','DOWNLOAD_TIMEOUT','FILE_TOO_LARGE','JOB_CANCELLED','INTERNAL_ERROR','YTDLP_NOT_INSTALLED','FFMPEG_ERROR','INSUFFICIENT_DISK_SPACE','PROCESS_RESTARTED','DELIVERY_STREAM_ERROR']);
 export function analyticsPath(pathname:string,search=''):string|null {
@@ -62,8 +63,8 @@ export function createAnalytics(browser:Window, id:string, origin:string, produc
   const preferenceDenied=()=>['1','yes'].includes(browser.navigator.doNotTrack)||(browser.navigator as Navigator & {globalPrivacyControl?:boolean}).globalPrivacyControl===true;
   const currentPath=()=>analyticsPath(browser.location.pathname,browser.location.search);
   const permitted=()=>consent==='granted'||(consent==='unset'&&options.automaticAllowed===true);
-  const allowed=()=>!disposed&&production&&/^G-[A-Z0-9]+$/.test(id)&&browser.location.origin===origin&&origin==='https://saveframe.site'&&permitted()&&!preferenceDenied()&&!browser.navigator.webdriver&&!/bot|crawler|spider|lighthouse|headless/i.test(browser.navigator.userAgent||'')&&currentPath()!==null;
-  const fields=()=>({page_location:origin+currentPath(),page_referrer:state.referrer,page_title:'SaveFrame',send_to:id});
+  const allowed=()=>!disposed&&production&&/^G-[A-Z0-9]+$/.test(id)&&browser.location.origin===origin&&/^https:\/\/(?:tiksavemp4\.online|saveframe\.site)$/.test(origin)&&permitted()&&!preferenceDenied()&&!browser.navigator.webdriver&&!/bot|crawler|spider|lighthouse|headless/i.test(browser.navigator.userAgent||'')&&currentPath()!==null;
+  const fields=()=>({page_location:origin+currentPath(),page_referrer:state.referrer,page_title:browser.document.title||'TikSaveMP4',send_to:id});
   const page=()=>{
     if(browser.location.pathname==='/privacy'&&new URLSearchParams(browser.location.search).get('analytics')==='off'&&consent!=='denied'){setConsent('denied');return;}
     if(!allowed()){win[`ga-disable-${id}`]=true;state.lastPath=null;return;}

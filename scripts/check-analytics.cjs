@@ -2,10 +2,10 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),ts=require('typ
 require.extensions['.ts']=(module,file)=>module._compile(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText,file);
 const {createAnalytics,analyticsPath,analyticsEvent,analyticsReferrer,analyticsCampaign,consentKey}=require('../src/lib/analytics.ts');
 const {analyticsPolicy}=require('../src/lib/analytics-policy.ts');
-const id='G-0EYTT0CW4Z',origin='https://saveframe.site';
+const id='G-XP63QEZK1R',origin='https://tiksavemp4.online';
 function fixture(options={}){
  const events=new Map(),stored=new Map();if(options.consent)stored.set(consentKey,options.consent);
- const win={location:{origin,hostname:'saveframe.site',pathname:'/',search:'?instagramUrl=https://instagram.com/private-user',hash:'#private'},navigator:{},document:{cookie:''},localStorage:{getItem:key=>stored.get(key),setItem:(key,value)=>stored.set(key,value)},addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:(name,fn)=>{if(events.get(name)===fn)events.delete(name);}};
+ const win={location:{origin,hostname:'tiksavemp4.online',pathname:'/',search:'?instagramUrl=https://instagram.com/private-user',hash:'#private'},navigator:{},document:{cookie:'',title:'TikTok Download Guides | TikSaveMP4'},localStorage:{getItem:key=>stored.get(key),setItem:(key,value)=>stored.set(key,value)},addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:(name,fn)=>{if(events.get(name)===fn)events.delete(name);}};
  Object.assign(win.navigator,options.navigator);if(options.path)win.location.pathname=options.path;
  if(options.referrer)win.document.referrer=options.referrer;if(options.search!==undefined)win.location.search=options.search;
  let loads=0;const controller=createAnalytics(win,options.id||id,options.origin||origin,options.production!==false,()=>loads++,options.policy);
@@ -13,15 +13,21 @@ function fixture(options={}){
 }
 assert.equal(analyticsPath('/admin/login'),null);assert.equal(analyticsPath('/api/media/download/secret'),null);assert.equal(analyticsPath('/someone-private'),null);assert.equal(analyticsPath('/fr/'),'/fr');
 for(const locale of require('../src/i18n/config.ts').locales)assert.notEqual(analyticsPath(locale==='en'?'/':`/${locale}/`),null);
-for(const post of require('../src/content/blog/posts.json'))if(post.published)assert.notEqual(analyticsPath('/blog/'+post.slug),null);
+for(const post of [...require('../src/content/blog/posts.json'),...require('../src/content/blog/legacy-posts.json')])if(post.published)assert.notEqual(analyticsPath('/blog/'+post.slug),null);
 for(const page of [...require('../src/content/tools.json'),...require('../src/content/information.json')])assert.notEqual(analyticsPath('/'+page.slug),null);
-let test=fixture();assert.equal(test.loads(),0);assert.deepEqual(test.commands(),[]);
+let test=fixture();
+const legacy=fixture({origin:'https://saveframe.site',consent:'granted'});
+assert.equal(legacy.loads(),0,'A different browser origin must be blocked');
+legacy.controller.dispose();
+legacy.win.location.origin='https://saveframe.site';legacy.win.location.hostname='saveframe.site';
+const legacyController=createAnalytics(legacy.win,id,'https://saveframe.site',true,()=>{},{});
+assert.equal(legacy.win['ga-disable-'+id],false,'Legacy production origin remains supported');legacyController.dispose();assert.equal(test.loads(),0);assert.deepEqual(test.commands(),[]);
 test.emit('saveframe:analytics-event',{name:'media_resolved',params:{media_type:'photo'}});assert.deepEqual(test.commands(),[]);
 test.win.SaveFrameAnalytics.setConsent('granted');assert.equal(test.loads(),1);assert.equal(test.commands().filter(c=>c[1]==='page_view').length,1);
 test.controller.page();test.controller.page();assert.equal(test.commands().filter(c=>c[1]==='page_view').length,1,'No duplicate route views');
 test.win.location.pathname='/blog';test.controller.page();assert.equal(test.commands().filter(c=>c[1]==='page_view').length,2);
 test.emit('saveframe:analytics-event',{name:'download_failed',params:{media_type:'photo',failure_stage:'resolve',error_code:'LOGIN_REQUIRED',url:'secret-url',username:'private-user',cookies:'secret-cookie',message:'private-error',job_id:'secret-job'}});
-const failure=test.commands().at(-1);assert.deepEqual(failure,['event','download_failed',{media_type:'photo',download_format:'unknown',download_method:'single',download_status:'failed',source_page:'unknown',failure_stage:'resolve',error_code:'LOGIN_REQUIRED',page_location:origin+'/blog',page_referrer:origin+'/',page_title:'SaveFrame',send_to:id}]);
+const failure=test.commands().at(-1);assert.deepEqual(failure,['event','download_failed',{media_type:'photo',download_format:'unknown',download_method:'single',download_status:'failed',source_page:'unknown',failure_stage:'resolve',error_code:'LOGIN_REQUIRED',page_location:origin+'/blog',page_referrer:origin+'/',page_title:'TikTok Download Guides | TikSaveMP4',send_to:id}]);
 const serialized=JSON.stringify(test.commands());for(const secret of ['instagramUrl','private-user','secret-cookie','private-error','secret-job','?','#private'])assert.equal(serialized.includes(secret),false);
 assert.equal(test.commands().find(c=>c[0]==='config')[2].send_page_view,false);
 assert.equal(test.commands().find(c=>c[0]==='config')[2].allow_google_signals,false);

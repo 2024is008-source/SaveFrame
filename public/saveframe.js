@@ -1035,7 +1035,7 @@ return{valid:true,detectedTab:post[2],shortcode:post[3],canonicalUrl:'https://ww
         });
       });
 
-      document.getElementById('nav-carousel-inspector-btn').addEventListener('click', (event) => {
+      document.getElementById('nav-carousel-inspector-btn')?.addEventListener('click', (event) => {
         if (event.currentTarget.tagName === 'A') return;
         closeAllDropdowns();
         selectTab('photo', true);

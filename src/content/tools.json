@@ -4,19 +4,59 @@
     "tool": "video",
     "title": "TikTok Video Downloader",
     "description": "Save public TikTok videos as MP4.",
-    "intro": "Save public TikTok videos as MP4.",
+    "intro": "Inspect a public TikTok video before saving an MP4 to your phone or computer.",
     "heading": "TikTok Video Downloader",
-    "body": "Save public TikTok videos as MP4.",
+    "body": "Use a direct /@creator/video/{id} address or an official TikTok share link. The preview lists the formats available for that post, so you can check resolution and sound before preparing a file.",
     "steps": [
-      "Copy the public TikTok post link.",
-      "Paste it into TikSaveMP4 and check the returned media.",
-      "Prepare and save your selected file."
+      "Open the video in TikTok, choose Share, then Copy link. Use the individual video link rather than a profile or live-stream address.",
+      "Paste the link into the video tool. Check the video preview and available MP4 resolution and audio information.",
+      "Choose an available MP4 format and download it. Find the completed file in your browser downloads or Files app and test playback."
     ],
-    "limits": "Public, accessible posts only. Source quality and regional access vary.",
-    "faqs": [],
+    "limits": "MP4 resolution and sound depend on the accessible source streams. TikSaveMP4 cannot restore missing audio, upscale the picture, remove every watermark, or access private and login-restricted videos.",
+    "faqs": [
+      [
+        "Which video URLs can I paste?",
+        "Use a public tiktok.com/@creator/video/{id} link or an official vm.tiktok.com, vt.tiktok.com or tiktok.com/t/ share link. Profile and live-stream links are not video posts."
+      ],
+      [
+        "Will the MP4 include sound?",
+        "Sound is included when it is available in the selected source format. If playback is silent, check the player volume and try another listed format. Removed or unavailable audio cannot be recovered."
+      ],
+      [
+        "Can I choose HD or 1080p?",
+        "Choose among the resolutions returned for that post. A 1080p option is available only when the source provides it; the downloader does not upscale a lower-resolution video."
+      ],
+      [
+        "Where does a video go on my phone?",
+        "The browser usually saves the MP4 in Downloads or the Files app. On iPhone, open a compatible file in Files and use Share to save a copy to Photos."
+      ],
+      [
+        "Does downloading remove the video watermark?",
+        "The result depends on the source file. TikSaveMP4 does not promise watermark removal. Keep creator attribution and only download content you own or have permission to save."
+      ]
+    ],
     "guides": [
       "how-to-download-tiktok-videos-mp4",
-      "tiktok-downloader-not-working"
+      "download-tiktok-videos-with-sound",
+      "download-tiktok-videos-iphone"
+    ],
+    "specs": [
+      [
+        "Post type",
+        "A single public TikTok video"
+      ],
+      [
+        "File output",
+        "MP4 from the available source formats"
+      ],
+      [
+        "Quality and audio",
+        "Listed resolutions and available sound; no upscaling"
+      ],
+      [
+        "Saving",
+        "One video file per selected format"
+      ]
     ]
   },
   {
@@ -24,19 +64,59 @@
     "tool": "photo",
     "title": "TikTok Photo Downloader",
     "description": "Save public TikTok photo posts and slideshows.",
-    "intro": "Save public TikTok photo posts and slideshows.",
+    "intro": "Save the still images from a public TikTok photo post, individually or together in an ordered ZIP.",
     "heading": "TikTok Photo Downloader",
-    "body": "Save public TikTok photo posts and slideshows.",
+    "body": "A photo slideshow contains separate images rather than video frames. Paste its /@creator/photo/{id} address or official share link, inspect the returned slides, and choose the images you want to keep.",
     "steps": [
-      "Copy the public TikTok post link.",
-      "Paste it into TikSaveMP4 and check the returned media.",
-      "Prepare and save your selected file."
+      "Open the photo slideshow in TikTok and use Share → Copy link. Choose the post address, not the creator profile.",
+      "Paste the link into the photo tool. Review the slide thumbnails and check that the sequence contains the images you need.",
+      "Download an individual image or choose the full slideshow ZIP. Extract the archive to see the numbered images in post order."
     ],
-    "limits": "Public, accessible posts only. Source quality and regional access vary.",
-    "faqs": [],
+    "limits": "Images retain the source format and resolution available from TikTok, commonly JPEG or WebP. An image ZIP does not turn slides into an MP4 or include a music track. Private, deleted and login-restricted photo posts cannot be retrieved.",
+    "faqs": [
+      [
+        "Can I save just one slide?",
+        "Yes. Inspect the returned slideshow and use the download control for the image you want. You do not need to download the entire post."
+      ],
+      [
+        "How do I download all photos together?",
+        "Choose the ZIP download when available. The server prepares an archive of the accessible images with numbered filenames to preserve their sequence."
+      ],
+      [
+        "Are photos saved as JPEG or WebP?",
+        "The extension follows the available source image. Check the returned format rather than assuming every slide is a JPEG. The tool does not add detail or upscale images."
+      ],
+      [
+        "Does the slideshow ZIP include music?",
+        "No. The ZIP contains image files. A TikTok soundtrack is separate from the still images, and saving a photo set does not create a video with music."
+      ],
+      [
+        "Why is a slideshow missing or unavailable?",
+        "Check that the link opens a public photo post. Deleted, private or login-restricted posts and temporary source limits can prevent extraction. A video that shows photos is still a video; use the video downloader for that post."
+      ]
+    ],
     "guides": [
       "download-tiktok-photo-slideshows",
-      "download-tiktok-photos-zip"
+      "download-tiktok-photos-zip",
+      "backup-your-tiktok-content"
+    ],
+    "specs": [
+      [
+        "Post type",
+        "A public TikTok photo post or carousel"
+      ],
+      [
+        "Individual files",
+        "Source images, commonly JPEG or WebP"
+      ],
+      [
+        "Full slideshow",
+        "ZIP archive with numbered images in post order"
+      ],
+      [
+        "Audio",
+        "Not included in image files or photo archives"
+      ]
     ]
   }
 ]

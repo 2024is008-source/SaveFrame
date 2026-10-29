@@ -10,5 +10,5 @@ export function crawlableNavigation(markup: string, home = '/') {
     // These are navigation disclosures, not application menus. Keep native
     // anchor/Tab behavior without promising ARIA menu-item arrow semantics.
     .replace(/(id="nav-(downloader|viewer)-menu"\s*)role="menu"/g, '$1role="group" aria-labelledby="nav-$2-btn"');
-  return linked.replace(/(<footer\b[\s\S]*)(<\/ul>)/, '$1<li><a href="/about" class="hover:text-ink hover:underline">About TikSaveMP4</a></li><li><a href="/copyright" class="hover:text-ink hover:underline">Copyright</a></li>$2');
+  return linked.replace(/(<footer\b[\s\S]*)(<\/ul>)/, '$1<li><a href="/about" class="hover:text-ink hover:underline">About TikSaveMP4</a></li><li><a href="/copyright" class="hover:text-ink hover:underline">Copyright</a></li><li><a href="/responsible-use" class="hover:text-ink hover:underline">Responsible Use</a></li>$2');
 }

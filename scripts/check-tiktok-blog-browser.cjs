@@ -34,8 +34,8 @@ async function main() {
     await page.goto(base + '/blog?q=no-matching-guide-xyz');
     assert.equal(await page.locator('.blog-empty').count(),1);
     await page.goto(base + '/blog?page=2');
-    assert.equal(await page.locator('.guide-card').count(),3);
-    assert.equal(await page.locator('link[rel=canonical]').getAttribute('href'),'https://tiksavemp4.online/blog?page=2');
+    assert.equal(await page.locator('.blog-catalog .guide-card').count(),13);
+    assert.equal(await page.locator('link[rel=canonical]').getAttribute('href'),'https://tiksavemp4.online/blog');
     for (const post of posts) {
       assert.equal((await page.goto(base + '/blog/' + post.slug)).status(),200);
       assert.equal(await page.locator('h1').count(),1);

@@ -14,7 +14,7 @@
       ],
       [
         "Independent service",
-        "TikSaveMP4 is not affiliated with TikTok or ByteDance. Downloading does not grant permission to republish someone else’s work. Respect copyright and keep creator attribution."
+        "TikSaveMP4 is not affiliated with TikTok or ByteDance. Downloading does not grant permission to republish someone elseâ€™s work. Respect copyright and keep creator attribution."
       ]
     ]
   },
@@ -48,11 +48,11 @@
       ],
       [
         "Third-party connections",
-        "The server contacts TikTok and its media delivery networks. Preview images load directly from those networks, which can receive your IP address. Optional Google Analytics is disabled in the supplied production configuration; if enabled later, regional policy and visitor preferences apply."
+        "The server contacts TikTok and its media delivery networks. Preview images load directly from those networks, which can receive your IP address. Optional Google Analytics measures public page visits and download events using cookies. It does not receive submitted media links or download job identifiers. Collection follows regional policy and your analytics choice; unknown regions require consent. Browser Do Not Track and Global Privacy Control signals are respected."
       ],
       [
         "Your choices",
-        "Do not submit private information. Use the contact page to ask about privacy or deletion. You can opt out of optional analytics using the link below."
+        "Do not submit private information. Use the contact page to ask about privacy or deletion. Use Analytics settings at the bottom of any page to allow or decline optional analytics, or use the opt-out link below."
       ]
     ]
   },
@@ -97,7 +97,7 @@
     "sections": [
       [
         "Use TikSaveMP4 responsibly",
-        "A video being public does not mean every use of it is permitted. Use TikSaveMp4 to save content responsibly and respect the people who made or appear in it."
+        "A video being public does not mean every use of it is permitted. Use TikSaveMP4 to save content responsibly and respect the people who made or appear in it."
       ],
       [
         "Before downloading",
@@ -109,15 +109,15 @@
       ],
       [
         "Respect service limits",
-        "Choose only a format offered for your analyzed video. Do not automate bulk scraping or work around rate, concurrency, duration or size limits. Unknown sizes and progress are shown as unknown; available source quality is never enhanced by this service. Available formats and quality depend on the source. TikSaveMp4 does not improve, upscale or restore source quality. Watermark behavior depends on the media source supplied by TikTok. The service does not crop, blur, paint over or artificially remove ownership marks; do not remove ownership information to misrepresent authorship."
+        "Choose only a format offered for your analyzed video. Do not automate bulk scraping or work around rate, concurrency, duration or size limits. Unknown sizes and progress are shown as unknown; available source quality is never enhanced by this service. Available formats and quality depend on the source. TikSaveMP4 does not improve, upscale or restore source quality. Watermark behavior depends on the media source supplied by TikTok. The service does not crop, blur, paint over or artificially remove ownership marks; do not remove ownership information to misrepresent authorship."
       ],
       [
         "Responsible and inappropriate examples",
-        "Responsible uses include saving your own published video, saving a video with the creator’s permission, or keeping a copy where applicable law permits that use. Check that any permission also covers the soundtrack and your intended later use. Inappropriate or prohibited uses include republishing another creator’s work without permission, selling content without rights, attempting to access private videos, removing attribution to pretend you created a video, or using content for harassment, exploitation or deception. This guidance is general information, not personalized legal advice."
+        "Responsible uses include saving your own published video, saving a video with the creatorâ€™s permission, or keeping a copy where applicable law permits that use. Check that any permission also covers the soundtrack and your intended later use. Inappropriate or prohibited uses include republishing another creatorâ€™s work without permission, selling content without rights, attempting to access private videos, removing attribution to pretend you created a video, or using content for harassment, exploitation or deception. This guidance is general information, not personalized legal advice."
       ],
       [
         "Report a concern",
-        "See the Copyright page for what to include in a rights complaint and the Contact page for the current reporting channel. TikSaveMp4 does not host a public library of submitted videos and cannot remove the original video from TikTok or recall copies already saved to another person’s device."
+        "See the Copyright page for what to include in a rights complaint and the Contact page for the current reporting channel. TikSaveMP4 does not host a public library of submitted videos and cannot remove the original video from TikTok or recall copies already saved to another personâ€™s device."
       ]
     ]
   }

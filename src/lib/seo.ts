@@ -9,7 +9,7 @@ export function pageGraph(path: string, name: string, description: string, langu
   const url = absoluteUrl(path);
   return { '@context': 'https://schema.org', '@graph': [
     { '@type': 'Organization', '@id': absoluteUrl('/#organization'), name: 'TikSaveMP4', url: absoluteUrl('/') },
-    { '@type': 'WebSite', '@id': absoluteUrl('/#website'), name: 'TikSaveMP4', url: absoluteUrl('/'), publisher: { '@id': absoluteUrl('/#organization') } },
+    { '@type': 'WebSite', '@id': absoluteUrl('/#website'), name: 'TikSaveMP4', alternateName: ['tiksavemp4.online', 'TikSave MP4'], url: absoluteUrl('/'), publisher: { '@id': absoluteUrl('/#organization') } },
     { '@type': 'WebPage', '@id': url + '#page', url, name, description, inLanguage: language, isPartOf: { '@id': absoluteUrl('/#website') }, ...(application ? { mainEntity: { '@id': url + '#application' } } : {}) },
     ...(application ? [{ '@type': 'WebApplication', '@id': url + '#application', name, url, description, inLanguage: language, applicationCategory: 'MultimediaApplication', operatingSystem: 'Any', browserRequirements: 'Requires a modern web browser', publisher: { '@id': absoluteUrl('/#organization') } }] : []),
     ...(path === '/' || /^\/[a-z]{2}(?:-br)?\/$/.test(path) ? [] : [{ '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Home', item: absoluteUrl('/') }, { '@type': 'ListItem', position: 2, name, item: url }] }]),

@@ -21,14 +21,14 @@ visit(parsed);
 function fixture({consent = 'granted', states = []} = {}) {
   const listeners = new Map(), emissions = [], timers = [];
   const window = {
-    location: {origin: 'https://saveframe.site', hostname: 'saveframe.site', pathname: '/reels-downloader', search: ''},
+    location: {origin: 'https://tiksavemp4.online', hostname: 'tiksavemp4.online', pathname: '/video-downloader', search: ''},
     navigator: {}, document: {cookie: ''},
     localStorage: {getItem: key => key === consentKey ? consent : null, setItem() {}},
     addEventListener: (name, fn) => listeners.set(name, fn),
     removeEventListener: name => listeners.delete(name),
   };
   let loads = 0, polls = 0;
-  const controller = createAnalytics(window, 'G-0EYTT0CW4Z', window.location.origin, true, () => loads++);
+  const controller = createAnalytics(window, 'G-XP63QEZK1R', window.location.origin, true, () => loads++);
   const sandbox = {
     window, previewedItems: new WeakMap(),
     analytics: (name, params, operation) => {
@@ -122,7 +122,7 @@ async function clientTests() {
   tracking.transition('download_started'); tracking.transition('download_started');
   tracking.transition('download_delivered'); // No handoff before preparation.
   tracking.transition('download_prepared'); tracking.transition('download_prepared');
-  const poll = test.sandbox.monitorDownloadHandoff('secret-job-id', tracking, '/reels-downloader');
+  const poll = test.sandbox.monitorDownloadHandoff('secret-job-id', tracking, '/video-downloader');
   await test.flush(); await poll;
   assert.deepEqual(test.events().map(event => event[1]), ['download_started', 'download_prepared']);
   assert.equal(test.events()[0][2].download_status, 'requested');
@@ -130,7 +130,7 @@ async function clientTests() {
   test = fixture({states: [{deliveryStatus: 'streaming'}, {deliveryStatus: 'handed_off'}]});
   const success = test.sandbox.createDownloadTracking(zip);
   success.transition('download_started'); success.transition('download_prepared');
-  const handoff = test.sandbox.monitorDownloadHandoff('secret-job-id', success, '/reels-downloader');
+  const handoff = test.sandbox.monitorDownloadHandoff('secret-job-id', success, '/video-downloader');
   await test.flush(); await handoff;
   success.transition('download_delivered'); success.transition('download_failed');
   assert.deepEqual(test.events().map(event => event[1]), ['download_started', 'download_prepared', 'download_delivered']);
@@ -140,14 +140,14 @@ async function clientTests() {
   const replay = () => test.sandbox.analytics(detail.name, detail.params, detail.operation);
   replay(); assert.equal(test.events().length, 3);
   test.controller.dispose();
-  createAnalytics(test.window, 'G-0EYTT0CW4Z', test.window.location.origin, true, () => {});
+  createAnalytics(test.window, 'G-XP63QEZK1R', test.window.location.origin, true, () => {});
   replay(); assert.equal(test.events().length, 3);
 
   for (const code of ['DELIVERY_CANCELLED', 'DELIVERY_STREAM_ERROR', 'FILE_UNAVAILABLE']) {
     test = fixture({states: [{deliveryStatus: 'failed', deliveryErrorCode: code}]});
     const failure = test.sandbox.createDownloadTracking(zip);
     failure.transition('download_started'); failure.transition('download_prepared');
-    const pending = test.sandbox.monitorDownloadHandoff('secret-job-id', failure, '/reels-downloader');
+    const pending = test.sandbox.monitorDownloadHandoff('secret-job-id', failure, '/video-downloader');
     await test.flush(); await pending;
     assert.equal(test.events().at(-1)[1], 'download_failed');
     assert.equal(test.events().at(-1)[2].failure_stage, 'handoff');
@@ -156,13 +156,13 @@ async function clientTests() {
   test = fixture({states: [new Error('secret network error')]});
   const uncertain = test.sandbox.createDownloadTracking(zip);
   uncertain.transition('download_started'); uncertain.transition('download_prepared');
-  const lost = test.sandbox.monitorDownloadHandoff('secret-job-id', uncertain, '/reels-downloader');
+  const lost = test.sandbox.monitorDownloadHandoff('secret-job-id', uncertain, '/video-downloader');
   await test.flush(); await lost;
   assert.equal(test.events().length, 2, 'Unknown transport outcome must not fabricate a failure or handoff');
 
   test = fixture({states: [{deliveryStatus: 'handed_off'}]});
   test.window.location.pathname = '/blog';
-  await test.sandbox.monitorDownloadHandoff('secret-job-id', test.sandbox.createDownloadTracking(zip), '/reels-downloader');
+  await test.sandbox.monitorDownloadHandoff('secret-job-id', test.sandbox.createDownloadTracking(zip), '/video-downloader');
   assert.equal(test.polls(), 0, 'Stop monitoring across navigation');
 
   for (const consent of ['granted', 'denied', 'unset']) {

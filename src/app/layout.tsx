@@ -29,10 +29,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const requestHeaders=await headers();
   const requested = requestHeaders.get('x-saveframe-locale') || 'en';
   const locale = isLocale(requested) ? requested : 'en';
+  const gaId = process.env.GA_MEASUREMENT_ID || process.env.NEXT_PUBLIC_GA_ID || '';
   return (
     <html lang={languageTag(locale)} dir={locale === 'ar' ? 'rtl' : 'ltr'} className="scroll-smooth">
       <head>{fontAssets.map(href => <link key={href} rel="preload" href={href} as="font" type="font/woff2" crossOrigin="anonymous" />)}</head>
-      <body className="tiksave-theme min-h-screen flex flex-col bg-canvas text-ink selection:bg-brand-violetSoft selection:text-brand-violet">{children}<Suspense fallback={null}><Analytics id={process.env.NEXT_PUBLIC_GA_ID || ''} origin={siteUrl} production={process.env.NODE_ENV==='production'&&process.env.GA4_ENABLED==='1'} options={analyticsPolicy(requestHeaders)}/></Suspense></body>
+      <body className="tiksave-theme min-h-screen flex flex-col bg-canvas text-ink selection:bg-brand-violetSoft selection:text-brand-violet">{children}<Suspense fallback={null}><Analytics id={gaId} origin={siteUrl} production={process.env.NODE_ENV==='production'&&process.env.GA4_ENABLED!=='0'} options={analyticsPolicy(requestHeaders)}/></Suspense></body>
     </html>
   );
 }

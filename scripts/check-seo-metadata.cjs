@@ -12,6 +12,8 @@ async function main() {
   const results = [];
   const seenTitles = new Set(), seenDescriptions = new Set();
   const sitemap = await (await fetch(base + '/sitemap.xml')).text();
+  for (const entry of sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)) assert.match(entry[1], /<lastmod>[^<]+<\/lastmod>/, 'Every sitemap entry needs a content date');
+  assert.ok(!sitemap.includes('?page=2'), 'All current guides fit on the main catalog');
   const paths = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => {
     const url = new URL(decode(match[1]));
     assert.equal(url.origin, 'https://tiksavemp4.online');
@@ -22,6 +24,24 @@ async function main() {
     const response = await fetch(base + path, { headers: { 'User-Agent': 'Googlebot' } });
     assert.equal(response.status, 200, path);
     const html = await response.text();
+    if (path === '/blog') {
+      for (const post of [...require('../src/content/blog/posts.json'), ...require('../src/content/blog/legacy-posts.json')].filter(post=>post.published)) assert.ok(html.includes(`href="/blog/${post.slug}"`), `Catalog links ${post.slug}`);
+    }
+    if (['/', '/video-downloader', '/photo-downloader', '/privacy'].includes(path)) assert.ok(html.includes('href="/responsible-use"'), 'Responsible use is linked');
+    if (path === '/') assert.match(html, /id="tab-video"[^>]*aria-selected="true"/, 'Video is the SSR default');
+    const tool = require('../src/content/tools.json').find(tool => '/' + tool.slug === path);
+    if (tool) {
+      const schemas=[...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(match=>JSON.parse(match[1]));
+      const faq=schemas.find(schema=>schema['@type']==='FAQPage');
+      assert.equal(faq?.mainEntity.length, 5);
+      for (const [index, [question, answer]] of tool.faqs.entries()) {
+        const panel=html.match(new RegExp(`<div[^>]*id="faq-panel-${index+1}"[^>]*>([\\s\\S]*?)<\\/div>`));
+        assert.equal(decode(panel?.[1]||'').trim(),answer,'Visible FAQ matches schema');
+        assert.equal(faq.mainEntity[index].name,question);
+        assert.equal(faq.mainEntity[index].acceptedAnswer.text,answer);
+      }
+      for (const slug of tool.guides) assert.ok(html.includes(`href="/blog/${slug}"`));
+    }
     const matches = [...html.matchAll(/<title>([^<]*)<\/title>/g)];
     assert.equal(matches.length, 1, path + ': one title');
     const title = decode(matches[0][1]), description = tag(html, 'name', 'description');
@@ -38,6 +58,11 @@ async function main() {
     const canonical = html.match(/<link[^>]*rel="canonical"[^>]*href="([^"]+)"/);
     assert.equal(new URL(decode(canonical?.[1] || '')).href, new URL(path, 'https://tiksavemp4.online').href, path + ': canonical');
     results.push({ path, title, description });
+  }
+  for (const locale of ['en','es','fr','pt-br']) for (const slash of ['', '/']) {
+    const response=await fetch(base+'/'+locale+slash,{redirect:'manual'});
+    assert.equal(response.status,308,'One permanent locale redirect');
+    assert.equal(new URL(response.headers.get('location')).pathname,'/');
   }
   for (const path of ['/admin', '/admin/login', '/api/admin/settings', '/nonexistent-seo-check']) {
     const response = await fetch(base + path);

@@ -7,7 +7,10 @@ module.exports = { apps: [{
     ADMIN_ORIGIN: 'https://tiksavemp4.online',
     SAVEFRAME_ADMIN_DATA_DIR: '/var/lib/tiksave/admin',
     DOWNLOAD_TEMP_DIR: '/var/lib/tiksave/downloads',
-    GA4_ENABLED: '0'
+    GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID || '',
+    NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID || 'G-XP63QEZK1R',
+    GA4_ENABLED: process.env.GA4_ENABLED || '1',
+    GA4_AUTOMATIC_COUNTRIES: process.env.GA4_AUTOMATIC_COUNTRIES || '*'
   },
   max_memory_restart: '1G', kill_timeout: 15000, time: true
 }] };

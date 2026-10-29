@@ -84,7 +84,7 @@ export function audit(actor: string | null, action: string, target: string, deta
 export const settingDefaults: Record<string, string> = {
   site_name: 'TikSaveMP4', contact_email: process.env.SAVEFRAME_SUPPORT_EMAIL || 'backbencherz@gmail.com',
   default_description: 'Download public TikTok videos and photo slideshows with a simple link.',
-  default_social_image: '/social/tiksave.png', analytics_retention_days: '30', default_tool: 'photo',
+  default_social_image: '/social/tiksave.png', analytics_retention_days: '30', default_tool: 'video',
 };
 export function settings(): Record<string, string> {
   const result = { ...settingDefaults };
@@ -92,9 +92,9 @@ export function settings(): Record<string, string> {
   return result;
 }
 export function publicSettings() {
-  if(process.env.SAVEFRAME_DISABLE_SEO_OVERRIDES==='1') return {siteName:settingDefaults.site_name,contactEmail:settingDefaults.contact_email,defaultTool:'photo',defaultDescription:settingDefaults.default_description,defaultSocialImage:settingDefaults.default_social_image};
+  if(process.env.SAVEFRAME_DISABLE_SEO_OVERRIDES==='1') return {siteName:settingDefaults.site_name,contactEmail:settingDefaults.contact_email,defaultTool:'video',defaultDescription:settingDefaults.default_description,defaultSocialImage:settingDefaults.default_social_image};
   try { const value = settings(); return { siteName: value.site_name, contactEmail: value.contact_email, defaultTool: value.default_tool, defaultDescription: value.default_description, defaultSocialImage: value.default_social_image }; }
-  catch { return { siteName: settingDefaults.site_name, contactEmail: settingDefaults.contact_email, defaultTool: 'photo', defaultDescription: settingDefaults.default_description, defaultSocialImage: settingDefaults.default_social_image }; }
+  catch { return { siteName: settingDefaults.site_name, contactEmail: settingDefaults.contact_email, defaultTool: 'video', defaultDescription: settingDefaults.default_description, defaultSocialImage: settingDefaults.default_social_image }; }
 }
 let lastCleanup = 0;
 export function cleanup(force = false) {
