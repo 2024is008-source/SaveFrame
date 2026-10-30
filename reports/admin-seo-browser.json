@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "browser draft isolation and publish matches actual search/social HTML",
+    "reload persistence and explicit default reset",
+    "page switching, independent social edits, and inheritance reset",
+    "responsive 1440/768/390 screenshots without page overflow",
+    "date-free evergreen pages, canonical tool defaults, and www permanent redirect"
+  ],
+  "errors": [],
+  "externalRequestsAllowed": false,
+  "disposableDatabase": true
+}

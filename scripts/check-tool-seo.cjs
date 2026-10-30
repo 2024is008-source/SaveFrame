@@ -37,8 +37,8 @@ try{
    publish(route,{title:oldTitle+' | SaveFrame',ogTitle:oldTitle,description,ogDescription:description,contentDescription:description});
    const stored=connection.prepare('SELECT * FROM seo_overrides WHERE route=?').get(route);
    verify(tool,render(tool));
-   const editor=seoEditor(route);assert.equal(editor.values.title,title);assert.equal(editor.values.ogTitle,title);
-   assert.equal(editor.values.description,tool.description);assert.equal(editor.values.ogDescription,tool.description);assert.equal(editor.values.contentDescription,tool.description);
+   const editor=seoEditor(route);assert.equal(editor.values.title,title);assert.equal(editor.values.ogTitle,'');
+   assert.equal(editor.values.description,tool.description);assert.equal(editor.values.ogDescription,'');assert.equal(editor.values.contentDescription,'');
    assert.deepEqual(connection.prepare('SELECT * FROM seo_overrides WHERE route=?').get(route),stored,'Read/preview must preserve published data and history');
   }
   publish(route,{title:'Custom tool title | SaveFrame',description:'Custom supported-media description.',ogTitle:'Custom social title',ogDescription:'Custom social description.',contentDescription:'Custom introduction.'});

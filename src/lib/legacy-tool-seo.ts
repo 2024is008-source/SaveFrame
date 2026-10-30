@@ -2,7 +2,7 @@
 // Google may rearrange title words; include the observed old search title forms.
 export const legacyToolSeo: Record<string, {titles: string[]; descriptions: string[]}> = {
   '/reels-downloader': {
-    titles: ['Instagram Reels Downloader', 'Instagram Reels Downloader – Preview & Save MP4'],
+    titles: ['Instagram Reels Downloader', 'Instagram Reels Downloader – Preview & Save MP4', 'Preview & Save MP4 - Instagram Reels Downloader'],
     descriptions: ['Download supported public Instagram Reels as MP4. Preview available resolutions, choose video or audio, and check the finished file on your device.'],
   },
   '/video-downloader': {

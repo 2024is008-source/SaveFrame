@@ -1,7 +1,7 @@
 // Runs against an isolated database and loopback-only production preview. Never seeds site analytics.
 const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path'),crypto=require('node:crypto'),{spawn}=require('node:child_process'),ts=require('typescript');
 const directory=fs.mkdtempSync(path.join(os.tmpdir(),'saveframe-admin-live-')),base='http://127.0.0.1:3107';
-Object.assign(process.env,{SAVEFRAME_ADMIN_DATA_DIR:directory,SAVEFRAME_ADMIN_EMAIL:'preview@example.test',ADMIN_ALLOW_LOCAL_HTTP:'1',ADMIN_ORIGIN:base,NODE_ENV:'production',ADMIN_SMTP_HOST:'127.0.0.1',ADMIN_SMTP_PORT:'3108',ADMIN_MAIL_FROM:'sender@example.test'});
+Object.assign(process.env,{SAVEFRAME_ADMIN_DATA_DIR:directory,SAVEFRAME_ADMIN_EMAIL:'preview@example.test',ADMIN_ALLOW_LOCAL_HTTP:'1',ADMIN_ORIGIN:base,NODE_ENV:'production',GA4_ENABLED:'0',SAVEFRAME_ANALYTICS_DISABLED:'1',ADMIN_SMTP_HOST:'127.0.0.1',ADMIN_SMTP_PORT:'3108',ADMIN_MAIL_FROM:'sender@example.test'});
 delete process.env.ADMIN_SMTP_USER;delete process.env.ADMIN_SMTP_PASSWORD;
 delete process.env.SAVEFRAME_DISABLE_SEO_OVERRIDES;
 require.extensions['.ts']=(module,file)=>module._compile(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText,file);
@@ -21,7 +21,7 @@ async function request(route,body,extra={}) {
 async function json(route,body,status=200,headers){const response=await request(route,body,headers);assert.equal(response.status,status,route+': '+await response.clone().text());return response.json();}
 function privateResponse(response){assert.match(response.headers.get('x-robots-tag')||'',/noindex/);assert.match(response.headers.get('cache-control')||'',/no-store/);}
 async function styledResponse(response){const html=await response.text();const links=[...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*>/g)].map(match=>match[0].match(/href="([^"]+)"/)?.[1]).filter(href=>href?.startsWith('/'));assert.ok(links.length,'Admin CSS links missing');let styles='';for(const href of new Set(links)){const asset=await fetch(new URL(href.replaceAll('&amp;','&'),base));assert.equal(asset.status,200,href);assert.match(asset.headers.get('content-type')||'',/text\/css/);styles+=await asset.text();}assert.ok(styles.includes('.sf-admin')&&styles.includes('.admin-shell')&&styles.includes('.admin-login-panel'),'Admin styles missing');}
-async function stop(){if(server&&!server.killed){server.kill();await Promise.race([new Promise(resolve=>server.once('exit',resolve)),delay(3000)]);}smtp.close();for(const connection of globalThis.__saveframeAdminDbs?.values?.()||[])connection.close();try{fs.rmSync(preview,{force:true});fs.rmSync(previewMail,{force:true});fs.rmSync(directory,{recursive:true,force:true});}catch{} }
+async function stop(){if(server&&!server.killed){server.kill();await Promise.race([new Promise(resolve=>server.once('exit',resolve)),delay(3000)]);}smtp.close();for(const connection of globalThis.__saveframeAdminDbs?.values?.()||[])connection.close();const target=path.resolve(directory);assert.equal(path.dirname(target),path.resolve(os.tmpdir()));assert.ok(path.basename(target).startsWith('saveframe-admin-live-'));try{if(process.argv.includes('--keep')){fs.rmSync(preview,{force:true});fs.rmSync(previewMail,{force:true});}fs.rmSync(target,{recursive:true,force:true});}catch{} }
 async function main(){
  await auth.createAdmin(email,password);
  await new Promise((resolve,reject)=>{smtp.once('error',reject);smtp.listen(3108,'127.0.0.1',resolve);});
@@ -47,11 +47,16 @@ async function main(){
  const report=await json('/api/admin/reports');assert.equal(report.totals.requests,0);assert.equal(report.totals.prepared,0);
  const csv=await request('/api/admin/reports/export');assert.equal(csv.status,200);privateResponse(csv);assert.match(csv.headers.get('content-type'),/text\/csv/);
  const route='/photo-downloader',editor=await json('/api/admin/seo?route='+encodeURIComponent(route));
- const values={...editor.values,title:'Private preview SEO title',targetKeyword:'editorial-preview-keyword'};
+ const values={...editor.values,title:'Private preview SEO title',description:'Published public photo description from the admin editor.',ogTitle:'',ogDescription:'',contentDescription:'',targetKeyword:'editorial-preview-keyword'};
  await json('/api/admin/seo',{route,values,action:'draft',version:editor.version});
  let html=await(await fetch(base+route)).text();assert.ok(!html.includes('<title>'+values.title+'</title>'));
  await json('/api/admin/seo',{route,values,action:'publish',version:editor.version+1});
  html=await(await fetch(base+route)).text();assert.ok(html.includes('<title>'+values.title+'</title>'));assert.match(html,/rel="canonical" href="https:\/\/saveframe.site\/photo-downloader"/);assert.ok(!html.includes('name="keywords"'));assert.ok(!html.includes(values.targetKeyword));
+ for(const name of ['og:title','twitter:title'])assert.ok(html.includes((name.startsWith('og:')?'property':'name')+'="'+name+'" content="'+values.title+'"'));
+ for(const name of ['description','og:description','twitter:description'])assert.ok(html.includes((name.startsWith('og:')?'property':'name')+'="'+name+'" content="'+values.description+'"'));
+ assert.ok(html.includes('id="hero-description"')&&html.includes(values.description));
+ await json('/api/admin/seo',{route,values:{...values,__saveframeSeoEditorVersion:1},action:'publish',version:editor.version+2},400);
+ await json('/api/admin/seo',{route,values,action:'publish',version:editor.version},409);
  const history=(await json('/api/admin/seo?route='+encodeURIComponent(route))).history;
  await json('/api/admin/seo',{route,action:'restore',revision:history.find(item=>item.action==='baseline').id,version:editor.version+2});
  await json('/api/admin/seo',{route,values:editor.values,action:'publish',version:editor.version+3});

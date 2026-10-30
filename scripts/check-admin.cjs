@@ -64,8 +64,9 @@ async function main(){
  const baseline=seo.seoEditor(route).history.find(row=>row.action==='baseline');seo.restoreSeo(route,baseline.id,id,2);assert.equal(publicSeo.applySeo(route,base).title,values.title);seo.saveSeo(route,seo.seoEditor(route).values,'publish',id,3);assert.equal(publicSeo.applySeo(route,base).title,original.page.title);
  const homeEditor=seo.seoEditor('/'),homeBase={title:'Homepage fallback',description:'Homepage description'};
  let homeVersion=homeEditor.version || 0;
+ const seedLegacyHome=values=>{homeVersion++;connection.prepare('INSERT INTO seo_overrides(route,published_json,version,updated_at) VALUES(?,?,?,?) ON CONFLICT(route) DO UPDATE SET draft_json=NULL,published_json=excluded.published_json,version=excluded.version').run('/',JSON.stringify({...homeEditor.values,...values}),homeVersion,Date.now());};
  for(const title of ['SaveFrame – Instagram Downloader for Photos, Reels, Videos & Audio','SaveFrame - Instagram Downloader for Photos, Reels, Videos & Stories','SaveFrame — Instagram Downloader for Photos, Reels, Videos & Audio']){
-  seo.saveSeo('/',{...homeEditor.values,title,ogTitle:title},'publish',id,homeVersion++);
+  seedLegacyHome({title,ogTitle:title});
   const result=publicSeo.applySeo('/',homeBase);assert.equal(result.title,require('../src/content/search-titles.json')['/']);assert.equal(result.openGraph.title,result.title);assert.equal(result.twitter.title,result.title);
  }
  seo.saveSeo('/',{...homeEditor.values,title:'Custom homepage title',ogTitle:'Custom social title'},'publish',id,homeVersion++);
@@ -74,16 +75,17 @@ async function main(){
  const {homepageMetadata}=require('../src/i18n/server.ts');
  const correctDescription=require('../src/i18n/dictionaries/en.json')[homepageDescriptionKey];
  for(const legacy of ['Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link. Fast, clean, mobile-friendly web utility.','Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link.']){
-  seo.saveSeo('/',{...homeEditor.values,description:legacy,ogDescription:legacy},'publish',id,homeVersion++);
+  assert.throws(()=>seo.saveSeo('/',{...homeEditor.values,description:legacy},'publish',id,homeVersion),rejectStatus(400));
+  seedLegacyHome({description:legacy,ogDescription:legacy});
   const before=connection.prepare('SELECT published_json FROM seo_overrides WHERE route=?').get('/').published_json;
   const result=homepageMetadata('en');assert.equal(result.description,correctDescription);assert.equal(result.openGraph.description,correctDescription);assert.equal(result.twitter.description,correctDescription);
   assert.equal(connection.prepare('SELECT published_json FROM seo_overrides WHERE route=?').get('/').published_json,before,'Rendering must not mutate published revisions');
   assert.equal(isLegacyHomepageDescription('/photo-downloader',legacy),false);
  }
  const customDescription='Custom homepage description for supported Instagram photos and Reels.';
- seo.saveSeo('/',{...homeEditor.values,description:customDescription,ogDescription:'Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link.'},'publish',id,homeVersion++);
+ seedLegacyHome({description:customDescription,ogDescription:'Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link.'});
  assert.equal(homepageMetadata('en').description,customDescription);assert.equal(homepageMetadata('en').openGraph.description,customDescription);
- seo.saveSeo('/',{...homeEditor.values,description:'Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link.',ogDescription:'Custom social description'},'publish',id,homeVersion++);
+ seedLegacyHome({description:'Save supported public Instagram photos, videos, Reels, carousels, and stories with a simple link.',ogDescription:'Custom social description'});
  assert.equal(homepageMetadata('en').description,correctDescription);assert.equal(homepageMetadata('en').openGraph.description,'Custom social description');assert.equal(homepageMetadata('en').twitter.description,'Custom social description');
  const filename='google1234567890abcdef.html',content='google-site-verification: '+filename;verification.saveVerification(filename,content,id);assert.equal(verification.verificationFile(filename).content,content+'\n');assert.ok(!fs.existsSync(path.join(process.cwd(),'public',filename)));
  for(const invalid of ['../google12345678.html','robots.txt','favicon.ico','evil.php','google12345678.html/evil','%2e%2e%2fevil.html'])assert.throws(()=>verification.validateVerification(invalid,'x'),rejectStatus(400));
